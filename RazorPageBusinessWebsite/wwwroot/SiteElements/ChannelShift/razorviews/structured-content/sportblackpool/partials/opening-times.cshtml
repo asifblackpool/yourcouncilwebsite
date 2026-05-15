@@ -1,0 +1,106 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Opening Times - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 15/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+@{
+    SportBlackPoolDTO DTO = Page.Model;
+    SportBlackpoolHelper helper = new SportBlackpoolHelper(null);
+
+    OpeningTimesHelper oth = null;
+    List<DisplayOpenTimes> openTimesShort = null;
+
+    bool hideRazorView = true;
+    SerialisedItem serialisedItem = null;
+    List<OpeningTimes> otList = new List<OpeningTimes>();
+    Venue venue = null;
+    if (DTO.Flow != null)
+    {
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            var list = item.Items.FindAll(x => x.ClassType == typeof(OpeningTimes));
+            if (list != null && list.Count > 0)
+            {
+                foreach (SerialisedItem si in list)
+                {
+                    OpeningTimes ot = SerializeHelper.Deseralize(si) as OpeningTimes;
+                    otList.Add(ot);
+                }
+            }
+        }
+
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            var list = item.Items.FindAll(x => x.ClassType == typeof(Venue));
+            if (list != null && list.Count > 0)
+            {
+                serialisedItem = list[0];
+                venue = SerializeHelper.Deseralize(serialisedItem) as Venue;
+                break;
+            }
+        }
+      
+    }
+ }
+
+    <div class="row zero-margin-all zero-pad-all">
+        <div class="col-md-12 col-sm-12 zero-margin-all zero-pad-all ">
+            @if (venue != null)
+            {
+                <strong class="font-16 visibility-hidden">@Html.Raw(venue.EntryTitle)</strong>
+            }
+
+            @foreach (OpeningTimeTypes enumItem in Enum.GetValues(typeof(OpeningTimeTypes)))
+            {
+                oth = (otList != null) ? new OpeningTimesHelper(otList, enumItem) : null;
+                if (oth != null)
+                {
+                    openTimesShort = oth.GetOpenTimes24hourShort();
+                    hideRazorView = false;
+                    hideRazorView = (venue == null);
+                }
+                if (enumItem != OpeningTimeTypes.NotFound)
+                {
+                    var attribute = AttributeExtensions.GetAttribute<OpeningTimeTypesAttribute>(enumItem);
+                    if (openTimesShort != null && openTimesShort.Count > 0)
+                    {
+                        <table class="sport-table">
+                             <caption class="font-16">@string.Format("Opening times for {0}", attribute.Name.ToLower())</caption>
+                            <tr><th scope="col">Day</th><th scope="col">Time</th></tr>
+                            @foreach (var item in openTimesShort)
+                            {
+                                <tr>
+                                    <td>@item.Day</td>
+                                    <td>@foreach (string time in item.OpenTime)
+                                    {@Html.Raw(string.Format("{0}<br/>", time))}</td>
+                                </tr>
+                            }
+                        </table>
+                    }
+                }
+            }
+        </div>
+    </div>
+
+   

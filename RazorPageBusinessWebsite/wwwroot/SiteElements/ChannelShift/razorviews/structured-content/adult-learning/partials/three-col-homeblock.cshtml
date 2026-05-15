@@ -1,0 +1,250 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// Name: 3 col block - used in Adult Learning pages
+// License: Blackpool council
+// Date: 11/04/2022
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;        
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+
+@{
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.BlackpoolAdultLearningKey }
+    };
+
+
+    BlackpoolAdultLearningDTO DTO = Page.Model;
+    DTO.Config = config;
+    Advert advert = null;
+
+    String path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+    SerialisedItem serialisedItem = null;
+    string AdvertImageUrl = DTO.NoImageUrl;
+    if (DTO.Flow != null)
+    {
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            var list = item.Items.FindAll(x => x.ClassType == typeof(Advert));
+            if (list != null && list.Count > 0)
+            {
+                serialisedItem = list[0];
+                advert = SerializeHelper.Deseralize(serialisedItem) as Advert;
+                break;
+            }
+        }
+    }
+
+    AdvertImageUrl = (advert != null && advert.Image != null && advert.Image.Asset != null) ? String.Format("{0}{1}", DTO.BaseImageUrl, advert.Image.Asset.Uri) : AdvertImageUrl;
+}
+
+
+<div class="row equal gallery zero-margin-all pad-bot-40 max-height-345 clearfix">
+    <!-- News Item to go here-->
+    <div id="news-item-container" class="col-lg-4 col-md-4 col-sm-6 col-xs-12 zero-pad-all" style="display:inline-block">
+        <div class="image-gallery news-block">
+            <h2><strong>News</strong></h2>
+            <a href="@string.Format("{0}News-and-Events.aspx",@DTO.Config.SeoUrlList.UrlPath)" class="hover-white accessibility-tab" style="color:black; text-decoration:none !important;">
+                <p class="font-20"><strong>“All the latest news and information from Blackpool Learning Rooms”</strong></p>
+                <p class="font-16">&nbsp;</p>
+                <span class="span-link"></span>
+            </a>
+        </div>
+    </div>
+    <!-- Blog Item to go here -->
+    <div id="blog-item-container" class="col-lg-4 col-md-4 col-sm-6 col-xs-12 zero-pad-all" style="display:inline-block">
+        <div class="image-gallery blog-block">
+            <h2><strong>Blog</strong></h2>
+            <a href="@string.Format("{0}Blog.aspx",@DTO.Config.SeoUrlList.UrlPath)" class="hover-white accessibility-tab" style="color:black; text-decoration:none !important;">
+                <p class="font-20"><strong>Find out what Blackpool Learning Rooms have been getting up to in our latest blog posts</strong></p>
+                <p class="font-16">&nbsp;</p>
+                <span class="span-link"></span>
+            </a>
+        </div>
+    </div>
+    <!--Advert to go here -->
+    <div id="dfn-item-container" class="col-lg-4 col-md-4 col-sm-6 col-xs-12 zero-pad-all" >
+        <div class="image-gallery dfn-block">
+            <h2><strong>DFN Project Search</strong></h2>
+            <a href="@string.Format("{0}project-search.aspx",@DTO.Config.SeoUrlList.UrlPath)" class="hover-white accessibility-tab" style="color:black; text-decoration:none !important;">
+              <p class="font-20"><strong>Part of Blackpool Learning Rooms, is an employability programme which helps students to enhance their skills and gain vital work experience</strong></p>
+               <span class="span-link"></span>
+            </a>
+        </div>
+    </div>
+    
+</div>
+<style type="text/css">
+
+    /* homeblock - news and blog, advert blocks*/
+    div.blog-block {
+        background-image: url("/SiteElements/ChannelShift/Content/images/adult-learning/svgs/blog.svg");
+        background-color: #EFBAC7;
+        height: 305px;
+        background-position: 90% 10%;
+        background-repeat: no-repeat;
+        padding: 0px 15px 0px 15px;
+    }
+
+    div.news-block {
+        background-image: url("/SiteElements/ChannelShift/Content/images/adult-learning/svgs/news.svg");
+        background-color: #E6E9BB;
+        height: 305px;
+        background-position: 90% 10%;
+        background-repeat: no-repeat;
+        padding: 0px 15px 0px 15px;
+    }
+
+    div.dfn-block {
+        background-color: #ED8B23 !important;
+        background-position: 90% 10%;
+        background-repeat: no-repeat;
+        padding: 0px 15px 0px 15px;
+        height:305px;
+        
+    }
+
+    div.news-block > h2, div.blog-block > h2, div.dfn-block > h2 {
+        min-height: 100px;
+        font-size: 39px;
+        font-family: 'Open Sans';
+        position: relative;
+        top: 30px;
+        margin-top: 0px;
+        margin-bottom: 15px;
+    }
+
+    div.dfn-block > h2
+    {
+        font-size:36px
+    }
+
+    span.span-link {
+        position: absolute;
+        width: 100%;
+        height: 305px;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+        cursor: pointer;
+    }
+
+    @@media all and (max-width:1024px) and (min-width: 300px) {
+        div.news-block > h2, div.blog-block > h2 {
+            min-height: 46px;
+            font-size: 30px;
+            top: 10px;
+            margin-top: 0px;
+            margin-bottom: 30px;
+        }
+
+        div.blog-block {
+            background-image: url("/SiteElements/ChannelShift/Content/images/adult-learning/group-1890.png");
+            background-color: #EFBAC7;
+            height: 210px;
+            background-position: 93% 5%;
+            background-repeat: no-repeat;
+            padding: 0px 15px 0px 15px;
+            background-size: 60px 49px;
+        }
+
+        div.news-block {
+            background-image: url("/SiteElements/ChannelShift/Content/images/adult-learning/group-1888.png");
+            background-color: #E6E9BB;
+            height: 210px;
+            background-position: 92% 5%;
+            background-repeat: no-repeat;
+            padding: 0px 15px 0px 15px;
+            background-size: 60px 49px;
+        }
+
+        span.span-link {
+            height: 210px;
+        }
+
+        div#news-item-container, div#blog-item-container {
+            margin-bottom: 0px;
+     
+        }
+
+        div#advert-item-container {
+            margin-bottom: 0px;
+            height: 210px;
+        }
+
+        div.advert-home > a > img {
+            height:210px !important;
+        }
+
+    }
+
+    @@media all and (max-width:640px) and (min-width: 300px) {
+
+        div.news-block > h2, div.blog-block > h2 {
+            min-height: 85px;
+            font-size: 31px;
+            top: 30px;
+            margin-top: 0px;
+            margin-bottom: 10px;
+        }
+
+        div.blog-block {
+            background-image: url("/SiteElements/ChannelShift/Content/images/adult-learning/group-1890.png");
+            background-color: #EFBAC7;
+            height: 215px;
+            background-position: 90% 10%;
+            background-repeat: no-repeat;
+            padding: 0px 15px 0px 15px;
+            background-size: 60px 60px;
+        }
+
+        div.news-block {
+            background-image: url("/SiteElements/ChannelShift/Content/images/adult-learning/group-1888.png");
+            background-color: #E6E9BB;
+            height: 215px;
+            background-position: 90% 10%;
+            background-repeat: no-repeat;
+            padding: 0px 15x 0px 15px;
+            background-size: 60px 60px;
+        }
+
+        span.span-link {
+            height: 215px;
+        }
+
+        div#news-item-container, div#blog-item-container {
+            margin-bottom: 20px;
+    
+        }
+
+        div#advert-item-container {
+            margin-bottom: 0px;
+            height: 292px;
+        }
+
+
+        div.advert-home > a > img {
+            height: 292px !important;
+        }
+    }
+</style>
+

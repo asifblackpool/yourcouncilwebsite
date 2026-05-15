@@ -1,0 +1,124 @@
+﻿/* overlay pop up*/
+.overlay {
+    margin: auto;
+    position: absolute;
+    top: 0px;
+    left: 0;
+    right: 50px;
+    width: 0;
+    z-index: 105;
+    height: 100%;
+    background-color: #fff;
+    background-color: rgba(255,255,255,.9);
+    overflow-x: hidden;
+    overflow-y: hidden;
+    transition: .2s;
+}
+
+    .overlay .closebtn {
+        position: absolute;
+        right: 25px;
+        font-size: 60px;
+    }
+
+.overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.overlay-message {
+    padding: 8px;
+    font-weight: 700;
+    font-size: 24px;
+    color: #830065;
+    display: block;
+}
+
+ul.dropdown-menu > li a {
+    text-decoration: none !important;
+}
+
+td > a.more-info {
+    position: relative;
+    left: 25px;
+}
+
+.red-color {
+    color: #D50032;
+}
+
+.green-color {
+    color: #2E8540;
+}
+
+.bkg-red-color {
+    background-color: #D50032;
+}
+
+bkg-green-color {
+    background-color: #2E8540;
+}
+
+.bkg-light-blue-color {
+    background-color: #00A6CB
+}
+
+
+
+div .modal-content {
+    max-width: 780px;
+    min-height:600px;
+    transform: translate(0, 25%);
+    border: none;
+    top:50px;
+}
+
+section.center-modal {
+    margin: auto;
+    max-width: 740px;
+    margin: 10px;
+}
+
+    section.center-modal div.row {
+        display: table;
+        width: 100%;
+        max-width: 740px;
+        margin: 0px;
+    }
+
+.modal-header {
+    height: 80px;
+    background-color: #2E8540;
+    border-bottom: none;
+}
+
+.modal-header > h3 {
+    color: #fff;
+    font-size: 32px;
+    text-align: center;
+    position: relative;
+    top: 4px;
+    z-index: 1;
+    max-width: 680px;
+}
+
+.modal-title {
+    text-align: center;
+    font-size: 24px;
+    position: relative;
+    top: -5px;
+}
+
+.modal-header .close {
+    background-color: #fff;
+    z-index: 99;
+    width: 40px;
+    height: 40px;
+    opacity: 1;
+    border-radius: 50%;
+    position: relative;
+    top: 0px;
+}

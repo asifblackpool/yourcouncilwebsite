@@ -1,0 +1,1 @@
+﻿//window.location.replace("https://www.blackpool.gov.uk/Your-Council/Have-your-say/Consultations/Open-consultations.aspx")

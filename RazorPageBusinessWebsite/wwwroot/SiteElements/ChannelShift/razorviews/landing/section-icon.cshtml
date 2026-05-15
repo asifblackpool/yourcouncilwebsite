@@ -1,0 +1,84 @@
+﻿@*<control name="Channel Shift Section Icon" showInMenu="true" viewingGroup="2" category="Favourites">
+  <properties>
+    <category name="titleIcon">
+      <text name="Image" label="Please Select Image Type">
+        <options>
+          <option label="Residents" value="Residents" />
+          <option label="Business" value="Business" />
+          <option label="TheCouncil" value="Council" />
+          <option label="Council Tax" value="Council Tax" />
+          <option label="Waste &amp; Recycling" value="Waste &amp; Recycling" />
+          <option label="Benefits" value="Benefits" />
+          <option label="Parking " value="Parking " />
+          <option label="Roads and Highways" value="Roads and Highways" />
+          <option label="Housing" value="Housing" />
+          <option label="Planning" value="Planning" />
+          <option label="Building Control" value="Building Control" />
+          <option label="Environmental and community" value="Environmental and community" />
+          <option label="Parks and community facilities" value="Parks and community facilities" />
+          <option label="Sports and leisure" value="Sports and leisure" />
+          <option label="Libraries, arts and heritage" value="Libraries, arts and heritage" />
+          <option label="Life events" value="Life events" />
+          <option label="Education and schools" value="Education and schools" />
+          <option label="Advice and support" value="Advice and support" />
+          <option label="Health and social care" value="Health and social care" />
+          <option label="Blackpool Illuminations" value="Blackpool Illuminations" />
+          <option label="Licences and permits" value="Licences and permits" />
+          <option label="Business rates" value="Business rates" />
+          <option label="Working with Blackpool Council" value="Working with Blackpool Council" />
+          <option label="Commercial waste" value="Commercial waste" />
+          <option label="Business support and advice" value="Business support and advice" />
+          <option label="Residential landlords" value="Residential landlords" />
+          <option label="Voting and elections" value="Voting and elections" />
+          <option label="Have your say" value="Have your say" />
+          <option label="Transparency and open data" value="Transparency and open data" />
+          <option label="Community rights" value="Creating a better Blackpool" />
+          <option label="Statistics and research" value="Statistics and research" />
+          <option label="Citizenship" value="Citizenship" />
+          <option label="News" value="News" />
+          <option label="YourArea" value="YourArea" />
+        </options>
+      </text>
+         <node name="ImageUrl" />
+        <text name="ProxyImageUrl" />
+    </category>                      
+  </properties>
+</control>*@@using Contensis.Framework.Web
+@using Contensis.Framework.Web.Search
+@using System.Web;
+@using System.Collections;
+
+@{
+
+    // Name: Channel Shift - Title with BreadCrumb (Used within the Landing Page)
+    // Developer: Asif Nissar
+    // License: Blackpool council
+}
+
+@{
+  
+    // Title Icon Section
+    string titleIcon = Properties.Image.Replace(" ", "-");
+    string ImageIcon = (Properties.ImageUrl == null) ? Properties.ProxyImageUrl : Properties.ImageUrl.Path;
+    String ImagePathWithNameIcon = "/SiteElements/ChannelShift/content/images/landing-pages/" + titleIcon + ".svg";
+ }
+
+<style type="text/css" scoped="scoped">
+  i.icon-section-title
+  {
+    background: url("@ImageIcon");
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-position: 0px -8px;
+    background-size: 170px 170px;
+    height: 170px;
+    width:170px;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    display:block
+  }
+  
+  
+</style>
+<i class="icon-section-title" title="@titleIcon">&nbsp;</i>

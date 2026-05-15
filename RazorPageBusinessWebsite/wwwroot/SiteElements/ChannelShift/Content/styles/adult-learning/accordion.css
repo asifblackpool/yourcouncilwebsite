@@ -1,0 +1,256 @@
+﻿
+div.accordion {
+    margin-bottom: 40px;
+    margin-top: 30px;
+    
+}
+
+div.accordion-togglable {
+    border-left: solid 2px #CDE1E7;
+    border-right: solid 2px #CDE1E7;
+    border-bottom: solid 2px #CDE1E7;
+    padding-top: 1px;
+    background-color: #CDE1E7
+}
+
+/*
+table.sport-table {
+    border-left: solid 3px #A5CCD6;
+    border-right: solid 3px #A5CCD6;
+    border-bottom: solid 3px #A5CCD6;
+
+}
+*/
+
+
+div.accordion-togglable table, table.sport-table {
+    width: 100%;
+}
+
+div.accordion-togglable table tr,
+table.sport-table tr {
+    height: 45px;
+    font-size: 16px;
+}
+
+div.accordion-togglable table tr td,
+table.sport-table tr td {
+    padding: 0px 3px 0px 3px;
+}
+
+div.accordion-togglable table tr:nth-child(2n+1),
+table.sport-table tr:nth-child(2n+1) {
+    background-color: #D9B1D0;
+}
+
+div.accordion-togglable table tr:first-child,
+table.sport-table tr:first-child {
+    background-color: #A5CCD6;
+}
+
+#accordion-ul {
+    padding-left: 0px;
+}
+
+#accordion-ul li a {
+    cursor: pointer;
+    color: #041C2C;
+    padding-bottom: 25px;
+    background-color: #A5CCD6;
+}
+
+#accordion-ul li a.open {
+    background-color: #CDE1E7;
+}
+
+#accordion-ul li {
+    position: relative;
+    background-color: #CDE1E7
+}
+
+li.head a {
+    color: #fff;
+    outline: 0 !important;
+}
+
+li.head a {
+    text-decoration: none;
+    display: block;
+}
+
+li.head, li.head:hover {
+    font-size: 34.12px;
+}
+
+li.head {
+    list-style-type: none;
+    width: 100%;
+    border-bottom: solid 2px #fff;
+}
+
+span.arrow-span {
+    position: relative;
+    top: -12px;
+    right: -705px;
+}
+
+span.title-span {
+    position: relative;
+    left: -77px;
+    font-family: 'Open Sans' !important;
+}
+
+li.head a h2 i.icon-arrow-up {
+    background: transparent url(/SiteElements/ChannelShift/content/images/adult-learning/close.png) no-repeat 5px 13px;
+    background-size: 35px 35px;
+    height: 55px;
+    position:relative;
+  
+}
+
+li.head a h2 i.icon-arrow-down {
+    background: transparent url(/SiteElements/ChannelShift/content/images/adult-learning/open.png) no-repeat 5px 13px;
+    background-size: 35px 35px;
+    height: 55px;
+    position: relative;
+
+}
+
+li.head a h2 i {
+    float: right;
+    background-color: #830065;
+    width: 45px;
+    height: 45px;
+    margin-right: 30px;
+}
+
+li.head a h2 {
+    font-size: 31px;
+    font-weight: bold;
+    /*text-transform:capitalize !important; */
+}
+
+li.head a h2 {
+   
+    position: relative;
+    top: 18px;
+    height: 55px;
+    color: #041C2C;
+    max-width: 1160px;
+ 
+    font-family:'Open Sams';
+    margin:auto;
+}
+
+div.accordion-togglable > div >  div a {
+    background-color: #ED8B23 !important;
+    border-radius: 20px;
+    color: #041C2C !important;
+    font-family: Calibri;
+    text-align: center;
+    position: relative;
+    height: 32px;
+    text-decoration: none !important;
+    font-weight: bold;
+    display: inline-block;
+    padding-top: 4px;
+    padding-bottom: 7px;
+    padding-left: 30px;
+    padding-right: 30px;
+    font-weight: bold !important;
+}
+
+div.accordion-togglable > div > div a:hover {
+    background-color: #041C2C !important;
+    color: #ED8B23 !important;
+    text-decoration: none;
+}
+
+div.accordion-outer-container {
+    max-width:1160px;
+    margin:auto;
+}
+
+div.accordion-container {
+    margin: 00px 0px 0px 0px;
+    padding: 0px 5px;
+    font-size: 16px;
+    width:690px;
+    border:solid 0px red;
+}
+
+div.accordion-container p {
+    padding-bottom:25px;
+}
+
+    /* mobile devices iphone 5/6/7/8  */
+@media all and (max-width: 1024px) and (min-width: 300px) {
+    li .head a h2 {
+    font-size: 36px;
+    height: auto;
+    padding-bottom: 10px;
+    display: table-cell;
+}
+
+a.link-head > h2 > span.pull-left:nth-child(2) {
+    max-width: 620px;
+    width: 620px;
+    text-align: left;
+}
+
+    li.head a h2 i.icon-arrow-down,
+    li.head a h2 i.icon-arrow-up {
+        background-size: 35px 35px;
+        top: -23px;
+        left: -16px;
+        width: 40px;
+    }
+
+li.head a h2 i {
+    margin-right: -5px;
+}
+
+span.arrow-span {
+    position: relative;
+    top: 8px;
+    right: -90%;
+}
+
+span.title-span {
+    position: relative;
+    left: -2%;
+}
+}
+
+
+/* mobile devices iphone 4/5  */
+@media all and (max-width: 640px) and (min-width: 300px) {
+
+    ul {
+        margin-bottom:20px !important;
+    }
+
+    .accessibility-tab-100:focus span.title-span {
+        top:-15px;
+    }
+
+    li.head a h2 {
+        font-size: 26px;
+        font-weight: bold;
+    }
+
+    span.arrow-span {
+        position: relative;
+        top: 8px;
+        right: -90%;
+    }
+
+    span.title-span {
+        left: -6%;
+    }
+
+    a.link-head > h2 > span.pull-left:nth-child(2) {
+        max-width: 300px;
+        width:300px;
+    }
+}

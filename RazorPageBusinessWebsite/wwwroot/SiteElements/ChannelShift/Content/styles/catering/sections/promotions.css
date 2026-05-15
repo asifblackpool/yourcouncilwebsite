@@ -1,0 +1,136 @@
+﻿.promotions-title-container {
+    min-height: 110px;
+}
+
+.promotions-title {
+    margin: 40px auto;
+    text-align: center;
+    font: normal normal 900 36px/30px Montserrat;
+    letter-spacing: 0.72px;
+    color: #00A2C7;
+    opacity: 1;
+}
+
+.promotions-box {
+    min-height: 300px;
+}
+
+.img-container {
+    display: block;
+    border: solid 0px red;
+    margin: auto;
+    text-align: center;
+}
+
+.promotions-img {
+    width: 142px;
+    height: 89px;
+    vertical-align: middle;
+}
+
+.box-shaddow-week1 {
+    background-color: var(--main-green-color);
+    box-shadow: var(--default-box-shadow);
+}
+
+.box-shaddow-week2 {
+    background-color: var(--main-orange-color);
+    box-shadow: var(--default-box-shadow);
+}
+
+.box-shaddow-week3 {
+    background-color: var(--main-red-color);
+    box-shadow: var(--default-box-shadow);
+}
+
+
+
+.promo-schools > div.col-md-4 > div.img-container {
+    padding: 25px;
+    height: 300px;
+    margin-bottom: 40px;
+}
+
+    .promo-schools > div.col-md-4 > div.img-container > img {
+        max-height: 180px;
+    }
+
+
+.promo-schools > div.col-md-4:first-child > div.img-container {
+    border-color: var(--main-green-color);
+    border-width: 3px;
+    border-style: solid;
+}
+
+.promo-schools > div.col-md-4:nth-child(2) > div.img-container {
+    border-color: var(--main-orange-color);
+    border-width: 3px;
+    border-style: solid;
+}
+
+.promo-schools > div.col-md-4:nth-child(3) > div.img-container {
+    border-color: var(--main-red-color);
+    border-width: 3px;
+    border-style: solid;
+}
+
+.promo-schools > div.col-md-4:first-child > div.img-title {
+    text-align: left;
+    font: var(--main-font-spacing);
+    letter-spacing: var(--main-character-spacing);
+    color: var(--main-green-color);
+    opacity: var(--default-opacity);
+}
+
+.promo-schools > div.col-md-4:nth-child(2) > div.img-title {
+    text-align: left;
+    font: var(--main-font-spacing);
+    letter-spacing: var(--main-character-spacing);
+    color: var(--main-orange-color);
+    opacity: var(--default-opacity);
+}
+
+.promo-schools > div.col-md-4:nth-child(3) > div.img-title {
+    text-align: left;
+    font: var(--main-font-spacing);
+    letter-spacing: var(--main-character-spacing);
+    color: var(--main-red-color);
+    opacity: var(--default-opacity);
+}
+
+.promo-schools > div.col-md-4:first-child > div.img-information,
+.promo-schools > div.col-md-4:nth-child(2) > div.img-information,
+.promo-schools > div.col-md-4:nth-child(3) > div.img-information {
+    text-align: left !important;
+    margin-bottom: 30px;
+}
+
+.img-title {
+    color: #1BA2C7;
+    text-align: center;
+    margin: 15px auto;
+}
+
+.img-information {
+    text-align: center;
+    font: normal normal normal 19px/23px Calibri;
+    letter-spacing: 0.38px;
+    color: #000000;
+}
+
+div.link-container {
+    min-width: 90px;
+    position: relative;
+    text-decoration: underline;
+    font: normal normal bold 19px/27px Calibri;
+    letter-spacing: 0.38px;
+    color: #000000;
+    opacity: 1;
+    text-align: left;
+    margin-top: 23px;
+}
+
+div.link-container > a {
+    color: #000000 !important;
+    font-weight: bold;
+}

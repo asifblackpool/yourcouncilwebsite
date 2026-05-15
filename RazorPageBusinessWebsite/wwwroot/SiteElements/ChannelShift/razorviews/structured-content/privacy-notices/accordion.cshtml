@@ -1,0 +1,71 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Accordion Content - used in privacy notices
+    // License: Blackpool council
+    // Date: 19/10/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.PrivacyNotice;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+
+    SerialisedContent sc    = Page.Model;
+    var title               = Page.Title;
+
+    ContentSorter sorter = new ContentSorter();
+    SerialisedContentFlow scf = sorter.sortByGroup(sc);
+    List<AccordionContent> accordion = new List<AccordionContent>();
+
+        foreach (var item in scf.GetContent)
+        {
+            List<SerialisedItem> SerailisedList = item.Items.FindAll(x => x.ClassType == typeof(AccordionContent));
+            if (SerailisedList != null)
+            {
+                foreach (SerialisedItem si in SerailisedList)
+                {
+                    AccordionContent temp = SerializeHelper.Deseralize(si) as AccordionContent;
+                    accordion.Add(temp);
+                }
+            }
+        }
+    }
+
+<h2><a id="@title.Replace(" ", "-").ToLower()">@title</a></h2>
+@if (accordion.Count > 0)
+{
+ <div class="accordion clearfix">
+    <ul id="accordion-ul" class="outer-ul">
+        @foreach (var item in accordion)
+        {
+            <li class="head">
+                <a class="link-head" href="#">
+                    <h2 class="clearfix">
+                    <span class="pull-left">@item.Title</span><span class="pull-right"><i title="Open or close" class="icon-arrow-down"></i></span>
+                    </h2>
+                </a>
+                <div class="accordion-togglable" style="display: none; background-color:#fff;">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12 zero-pad-all" style="background-color:#fff;">@Html.Raw(item.Body)</div>
+                     </div>
+                </div>
+            </li>
+        }
+    </ul>
+</div><br/>
+}
+

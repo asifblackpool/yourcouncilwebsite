@@ -1,0 +1,285 @@
+﻿@{
+
+    // Name: Channel Shift - News Item using News Story Content types
+    // Developer: Asif Nissar
+    // Name: News Stories Home (used in the homepage for blackpool council)
+    // License: Blackpool council
+    // Date: 13/10/2022
+}
+
+@using System;
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Helpers.Standard;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+@using Blackpool.Zengenti.CMS.Models.NewsStory;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Data;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+
+
+@{
+
+    Zengenti.Data.PageOptions options = new PageOptions(0, 200);
+    string currentUrl = this.Request.RawUrl.ToLower();
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                            ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+    List<NewsStory> stories = null;
+    int count = 0;
+    string category = null;
+    string title = null;
+    Config config = null;
+
+    //Configurable sections
+    var items = Properties.Details;
+    foreach (var item in items)
+    {
+        category = item.Category;
+        title = item.Title;
+        break;
+    }
+
+
+
+    try
+    {
+
+        config = new Config()
+        {
+            SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.NewsStoryKey }
+        };
+
+        string newsUrl = config.SeoUrlList.UrlPath + config.SeoUrlList.DefaultPage;
+        String pagePath = config.SeoUrlList.UrlPath + "{0}.aspx?date={1}";
+
+
+        Zengenti.Data.PagedList<NewsStory> list = client.Entries.List<NewsStory>(new EntryListOptions
+        {
+            ContentTypeId = ContensisClientKeys.NEWS_STORY,
+            LinkDepth = 1,
+            PageOptions = options
+
+        });
+
+
+
+        stories = list.Items.Where(x => x.Published == true
+                    && x.Categories.Contains(category)).ToList().OrderByDescending(y => y.DatePublished).Take<NewsStory>(3).ToList();  //get the last two items only
+
+    }
+    catch { }
+
+    <div class="latest-news-column-3 clearfix">
+        <strong class="home-h3">@title</strong>
+        <div class="row clearfix latest-news-wrapper">
+
+            @foreach (NewsStory item in stories)
+            {
+
+                var cls = "figure-wrapper pull-right";
+                var cls2 = "thirty-pad-right news-items";
+                String pagePath = config.SeoUrlList.UrlPath + "{0}.aspx?date={1}";
+                var linkNewStory = String.Format(pagePath, item.Slug, StringUtility.DateSlug(item.DatePublished));
+                string imagePath = (item.ThumbnailImage != null && item.ThumbnailImage.Asset != null)
+                 ? string.Format("{0}{1}", UrlHelper.GetBaseUrl(true, currentUrl), item.ThumbnailImage.Asset.Uri) : "/SiteElements/ChannelShift/Content/images/placeholders/600x380.png";
+
+                ++count;
+                try
+                {
+
+                    if (count == 4) { break; }
+                    if (count > 0) { cls2 = "zero-pad-right news-item"; }
+
+                    <div class="col-xs-12 col-sm-12 col-md-4 zero-pad-left @cls2">
+                        <a href="@linkNewStory" title="link description: @item.Title" class="accessibility-tab">
+                            <figure class="figure-wrapper">
+                                <div class="icon-wrapper clearfix">	<img src="@imagePath" alt="@item.Title" /></div>
+                                <figcaption> <h4 style="color:#000; font-size:22px;">@item.Title</h4></figcaption>
+                            </figure>
+                        </a>
+                    </div>
+                }
+                catch (Exception e)
+                {
+                    Response.Write(" error " + e + " <br />");
+                }
+            }
+        </div>
+    </div>
+}
+
+<style type='text/css'>
+
+    .latest-news-column-3 {
+        float: left;
+        width: 100%;
+        border:solid;
+    }
+
+    .latest-news-column-3 .news-item:nth-child(2n+1) {
+        border: solid 0px red;
+        padding-right: 2.5%;
+        padding-left: 0%;
+        width: calc(33.33%);
+    }
+
+    .latest-news-column-3 .news-item:nth-child(3n+3) {
+        border: solid 0px green;
+        padding-right: 0%;
+        padding-left: 2.5%;
+        width: calc(33.33%);
+    }
+
+
+    .latest-news-column-3 .news-item {
+        width: 300px;
+        border:solid 0px blue;
+        padding-right: 2.5%;
+        padding-left: 2.5%;
+        width: calc(33.33%);
+    }
+
+
+    .latest-news-column-3 .home-h3 {
+        padding-bottom: 20px;
+        font-size: 1.8em;
+    }
+
+    .latest-news-column-3 .home-h3 a {
+    }
+
+    .latest-news-column-3 .figure-wrapper {
+        width: 100%;
+        padding-left: 0px;
+        padding-right: 0px;
+        max-height: 295px;
+    }
+
+    .latest-news-column-3 .figure-wrapper .icon-wrapper {
+        height: 100%;
+        margin-bottom: 30px;
+    }
+
+    .latest-news-column-3 .figure-wrapper figcaption {
+        text-align: center;
+    }
+
+    .latest-news-column-3 .figure-wrapper {
+        min-height: 180px;
+    }
+
+    .latest-news-column-3 .figure-wrapper figcaption a {
+        font-weight: normal;
+    }
+
+    .latest-news-column-3 .figure-wrapper img {
+        height: 182px;
+        width: 100%;
+        position: relative;
+        top: 0px;
+        float: left;
+    }
+
+    .latest-news-column-3 .figure-wrapper h4 a {
+        color: #000;
+    }
+
+    .interact {
+        display: none;
+    }
+
+    .center {
+        text-align: center;
+        float: none;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    /* media queries */
+
+    @@media screen and (min-width: 615px) and (max-width: 1170px) {
+     
+        footer {
+            text-align: center;
+        }
+    }
+
+    @@media screen and (min-width: 768px) and (max-width: 992px) {
+        .latest-news-column-3 .figure-wrapper figcaption {
+            padding-left: 0px;
+        }
+
+        .latest-news-column-3 .figure-wrapper {
+            max-height: 100%;
+        }
+
+        .latest-news-column-3 .figure-wrapper figcaption {
+            border: solid 0px red;
+        }
+    }
+
+    @@media screen and (min-width: 320px) and (max-width: 768px) {
+
+        .latest-news-column-3 .figure-wrapper figcaption a {
+        }
+
+        .latest-news-column-3 .news-item {
+            width: 100%;
+            color: #fff;
+        }
+
+        .latest-news-column-3 .figure-wrapper h4 {
+            text-align: center;
+        }
+
+        div.latest-news-column-3 {
+            /*  border:solid 2px pink;  */
+
+            width: auto;
+            max-width: 620px;
+            float: none;
+            margin: auto;
+            text-align: center;
+        }
+
+        .latest-news-column-3 .figure-wrapper {
+            max-width: 100%;
+            width: 100%;
+            float: none;
+            padding-left: 0px;
+            padding-right: 0px;
+            min-height: inherit;
+            margin: auto;
+        }
+
+        .latest-news-column-3 .figure-wrapper figcaption {
+            width: 100%;
+        }
+    }
+</style>
+
+@*<control name="channel shift news item by category" showInMenu="true" category="favourites" viewingGroup="1">
+     <properties>
+        <category name="Welcome">
+          <instruction label="Configurable News item by Category">
+            Example 	: Configure by Cateogry
+
+            Category	: Local offer
+
+          </instruction>
+
+          <repeater name="Details" min="1" max="1">
+            <text name="Title" />
+            <text name="Category" />
+          </repeater>
+        </category>
+      </properties>
+    </control>
+*@

@@ -1,0 +1,389 @@
+﻿/* firefox link outline hide*/
+
+a.menu-anchor,
+a.search-anchor {
+    outline: none
+}
+/* block grid default dimentions */
+
+.grid-block {
+    width: 170px;
+    border: solid 0px red;
+    height: 170px;
+    display: inline;
+    float: left;
+    margin-right: 30px;
+}
+/* Home icons */
+
+div.home-icon > div {
+    position: relative;
+    margin-bottom: 0px;
+}
+div.home-icon .last {
+    margin-right: 0px
+}
+
+
+.figure-wrapper {
+    text-align: center;
+    border: dashed 0px gray;
+    vertical-align: top;
+    margin: 0;
+    overflow: hidden;
+    min-height: 150px;
+    width: 170px;
+    max-height: 170px;
+}
+div.icon-wrapper {
+    text-align: center;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    height: 140px;
+}
+/* -------------- My Area -------------------*/
+
+#myarea-container {
+    padding-bottom: 2px;
+    padding-top: 8px;
+}
+#myarea-container .panel-heading {
+    background-color: #7d0063;
+    color: #fff;
+}
+#myarea-container .panel {
+    margin-bottom: 10px
+}
+#myarea-container .panel-heading h3 {} #myarea-container div.left-col-padding,
+#myarea-container div.right-col-padding {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.middle-col-padding {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+div.my-area-search-container {
+    background-color: #B3BD00;
+    height: 170px;
+}
+.my-area-search-container .home-outline {
+    /* padding: 10px 0 20px 0; */
+    
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+}
+.my-area-search-container div.img-placeholder {
+    background: url("/SiteElements/ChannelShift/content/images/your-area/yourareaicon.svg");
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-size: 90px 138px;
+    height: 150px;
+    float: left;
+    position: relative;
+    top: 17px;
+    left: 40px;
+}
+.my-area-search-container .home-outline {
+    margin-top: 35px
+}
+.my-area-search-container .home-outline h3.home-h3 {
+    margin-top: 50px
+}
+.my-area-search-container #image-box {
+    max-width: 190px;
+    width: 70%;
+    height: 140px;
+    float: left;
+}
+.my-area-search-container #text-box {
+    float: left;
+    width: 100%;
+    max-width: 970px;
+}
+.my-area-search-container .my-area-text-box {
+    padding-right: 0px;
+    position: relative;
+}
+.my-area-search-container .my-area-input-box {
+    padding-left: 0px;
+    margin-top: 4px;
+}
+.my-area-search-container .my-area-sub-container {} .my-area-search-container .home-outline span {
+    margin: auto;
+    left: 0px;
+    float: left;
+}
+.my-area-search-container .input-group {
+    text-align: center;
+    margin-top: 5px;
+    margin-left: 0px;
+    margin-right: 0px;
+    display: inline-block;
+    min-width: 250px;
+}
+.my-area-search-container button {
+    color: #fff;
+    text-transform: uppercase;
+    background-color: #830065;
+    border: solid 1px #B5bd00;
+    height: 52px;
+    width: 55px;
+}
+#find-services-input {
+    height: 52px;
+    width: 213px;
+    border: solid 1px #B5bd00;
+    font-size: 24px;
+}
+div#myarea-container div.panel-heading h3 {
+    color: #fff;
+    margin: 0px;
+    padding: 0px;
+}
+div#myarea-container h3 {} div#myarea-container h4 {} div#myarea-container h5 {} div#myarea-container h6 {} div#signup .form-group input {
+    border: solid 1px #ddd;
+    background-color: #ddd;
+}
+#signup input[type='button'] {
+    color: #fff;
+    text-transform: uppercase;
+    background-color: #830065;
+    border: solid 1px #fff;
+}
+/* councillor styles*/
+
+div.councillor-title-placeholder h3, div.polling-title-placeholder h3 {
+    margin-top: 0px
+}
+div.image-container {
+    float: left;
+    min-width: 100px;
+    display: inline;
+    padding-right: 10px;
+}
+div.text-container h5 {
+    display: inline;
+    min-width: 200px;
+}
+table.services-table {
+    margin: auto;
+    position: relative;
+    top: -5px;
+}
+table.services-table tr td {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+table.services-table tr td.no-right-padding {
+    padding-right: 0px
+}
+table.services-table tr td.no-left-padding {
+    padding-left: 0px
+}
+table.services-table h3 {
+    color: #ffffff
+}
+
+
+div.home-icon .figure-wrapper figcaption h4 { margin:0px;}
+
+/*desktop view (maximum screen display)*/
+@media (min-width: 1170px) and (max-width: 9000px) {
+    .my-area-search-container .home-outline {
+        margin-top: 35px
+    }
+    div#where-is-my-nearest-container {
+        border: solid 0px red
+    }
+    div.home-icon > div {
+        width: 170px;
+        margin-right: 30px;
+        margin-bottom: 20px;
+        border: solid 0px blue;
+        margin-top: 0px;
+    }
+    div.home-icon .figure-wrapper figcaption {
+        width: 170px
+    }
+
+ 
+    div.icon-wrapper {
+        width: 170px
+    }
+    div.icon-wrapper {
+        width: 170px
+    }
+    .my-area-search-container .my-area-text-box {
+        width: 600px;
+        max-width: 600px;
+    }
+}
+@media (min-width: 300px) and (max-width: 1169px) {
+    .my-area-search-container #text-box {
+        border: solid 0px red;
+        max-width: 70%;
+        width: 70%;
+    }
+    div.home-icon > div {
+        margin-right: 0px;
+        border: solid 0px red;
+    }
+    #text-box .col-md-5 {
+        width: 35.0%;
+        margin-top: 5px;
+    }
+    .home-icon .figure-wrapper {
+        max-height: 180px;
+        min-height: 160px;
+    }
+  
+  	
+}
+/* when you start to shrink the browser to less than 992 px*/
+
+@media (max-width: 992px) {
+    .middle-col-padding {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    div.my-area-search-container {
+        height: 100%
+    }
+    #text-box .col-md-5 {
+        width: 100%
+    }
+    .my-area-search-container .home-outline span {} .my-area-search-container .my-area-input-box {
+        width: 100%;
+        text-align: center;
+        margin-top: 5px;
+    }
+    .my-area-search-container .my-area-text-box {
+        width: 100%;
+        text-align: center;
+        margin: auto;
+    }
+    .my-area-search-container .home-outline {
+        margin-top: 15px
+    }
+    .my-area-search-container .home-outline span.input-group-btn {
+        width: 55px;
+        position: relative;
+        left: -1px;
+    }
+    /**/
+    
+    div#myarea-container div.panel-heading h3 {
+        color: #fff
+    }
+    /*twitter dimensions */
+    
+    .twitter-logo {
+        background-position: 27px 15px
+    }
+}
+/* ----------  Smartphones (portrait and landscape) ----------- */
+
+@media screen and (max-width: 768px) {
+    #find-services-input {
+        height: 40px
+    }
+    .my-area-search-container .home-outline span {} .my-area-search-container button {
+        color: #fff;
+        height: 40px;
+        width: 55px;
+    }
+    .my-area-search-container .input-group {
+        margin-top: 10px;
+        width: 310px;
+    }
+    .my-area-search-container .my-area-text-box {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 4px;
+    }
+    .my-area-search-container .my-area-input-box {
+        width: 100%;
+        max-width: 100%;
+    }
+    #text-box .col-md-5 {
+        width: 100%
+    }
+    .middle-col-padding {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    .my-area-search-container div#image-box {
+        max-width: 0px;
+        width: 0%;
+    }
+    .my-area-search-container div#text-box {
+        width: 100%;
+        max-width: 100%;
+        border: solid 0px blue;
+        display: inline-block;
+        float: none;
+    }
+    div#image-box-container.grid-block {
+        display: none
+    }
+    div.my-area-search-container {
+        height: auto;
+        padding-bottom: 10px;
+    }
+    .my-area-search-container div.img-placeholder {
+        background: url('');
+        background-size: 0px 0px;
+        margin: auto;
+        text-align: center;
+        width: 100%;
+    }
+    .my-area-search-container .home-outline {
+        text-align: center;
+        margin: 0px 5px 0px 5px;
+    }
+    .my-area-search-container .home-outline span {
+        float: none
+    }
+}
+@media only screen and (min-width: 420px) and (max-width: 768px) {
+    .home-icon .col-xs-4 {
+        width: 33%
+    }
+    .home-icon .figure-wrapper {
+        width: 100%;
+        max-height: 180px;
+        min-height: 160px;
+    }
+}
+/* small fones such as iphone 4, 4S etc ...*/
+
+@media screen and (max-width: 480px) {
+    div#myarea-container div.panel-heading h3 {
+        color: #fff
+    }
+    .col-md-12 {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    .my-area-search-container {
+        min-height: 180px;
+    }
+    .my-area-search-container .my-area-input-box {
+        margin-top: 10px;
+    }
+    .my-area-search-container .home-outline span {} .my-area-search-container .input-group {
+        width: 270px;
+        margin-top: 10px;
+        text-align: center;
+        margin: auto;
+    }
+    .table {
+        margin-left: -10px;
+    }
+    .my-area-search-container .home-outline {
+        margin-top: 20px;
+    }
+}

@@ -1,0 +1,56 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date: 03/12/2017
+}
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolCentral;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+
+
+@{
+    BlackpoolCentralDTO DTOModel = Page.Model;
+
+}
+
+@foreach (SerialisedContent item in DTOModel.Flow.GetContent)
+{
+    string partial = string.Empty;
+    string className = item.Items[0].ClassName;
+    string containerType = item.Items[0].ContainerType;
+    <strong style="display:none;">@className</strong>
+    switch (className)
+    {
+
+        case "ContentBox":
+            partial = "markup.cshtml";
+            @RenderPage(String.Format("{0}{1}", DTOModel.RazorViewPath + "partials/", partial), new { Model = DTOModel, Markup = item.Items })
+            break;
+        case "ContentBoxRaw":
+            partial = "markup_raw.cshtml";
+            @RenderPage(String.Format("{0}{1}", DTOModel.RazorViewPath + "partials/", partial), new { Model = DTOModel, Markup = item.Items })
+            break;
+        case "CTALink":
+            partial = "cta-link.cshtml";
+            @RenderPage(String.Format("{0}{1}", DTOModel.RazorViewPath + "partials/", partial), new { Model = DTOModel, CTA = item.Items })
+            break;
+            case "BlackpoolCentralComponent":
+            partial = "features-list.cshtml";
+            @RenderPage(String.Format("{0}{1}", DTOModel.RazorViewPath + "partials/", partial), new { Model = DTOModel, Features = item.Items })
+            break;
+        default:
+            break;
+    }
+}

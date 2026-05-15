@@ -1,0 +1,20 @@
+﻿ @media print
+{
+      div#searchbox-outer-container {none;}
+      div#search-box-inner {none;}
+      div#library-message { display:none; }
+      div#library-loading-indicator { display:none; }
+      div#sidebar, div#topbar { display: none; }
+      div.library-menu {display:none;}
+      div#library-login-link { display:none; }
+      div.library-banner { display: none; }
+      label.custom-checkbox { display:none;}
+      button.btn { display:none;}
+      li a.link-head {  display: none;}
+      li a.open { display:block; }
+      ul#accordion-ul li { list-style-type: none; margin-top:0px;   }
+
+
+
+} /*end of print settings*/
+   

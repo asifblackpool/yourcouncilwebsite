@@ -1,0 +1,68 @@
+﻿@*<control name="sunbed navigation list" />*@
+@using Contensis.Framework.Web
+@using Contensis.Framework.Web.Search
+@using System.Web;
+@using System.Collections;
+@using System.Collections.ObjectModel;
+
+@{
+    //-----------------------------------------------------------------------------------------------------------------
+    // Name: Channel Shift - top navigation menu
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date: 07/07/2017
+    //----------------------------------------------------------------------------------------------------------------
+
+    ContentNode node = @CurrentNode;
+    var siblings = node.Siblings(true);
+    var currentUrl = node.Path;
+    
+}
+
+<div class="homepage-outer-container clearfix noprint" id="searchbox-outer-container">
+    <div class="homepage-max-width fluid-container " id="search-box-inner">
+        <div class="row">
+            <div class="col-xs-12 zero-pad-right">
+                <div class="row">
+                    <div class="col-xs-2 col-sm-2 col-md-2 zero-pad-left zero-pad-right top-link">
+                        @foreach (var item in siblings) {
+                            if (item.IsHomePage) {
+                              <a title="@item.Title" href="@item.Path">
+                                <img alt="@String.Format("{0} homepage", @item.Title)" src="/SiteElements/ChannelShift/Content/images/sunbeds/if-looks-coud-kill.png" />
+                              </a>
+                            }
+                        }
+                    </div>
+                    <div class="col-xs-9 col-sm-9 col-md-10 zero-pad-left zero-pad-right" id="gateway">
+                        <div class="gateway-container desktop-view" id="navigation">
+                            <ul class="gateway-links">
+                                @foreach (var item in siblings){
+                                    if (item.IsWebPage && !item.IsHomePage){
+                                        <li><a title="@item.Title" class="@String.Format("{0}", currentUrl.Equals(item.Path) ? "selected" : "")",  href="@item.Path">@item.Title</a></li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xs-1 col-sm-1" id="search-container">
+                        <div class="mobile-home-link">
+                             @foreach (var item in siblings) {
+                            if (item.IsHomePage) {
+                           
+                                <a title ="@item.Title" href="@item.Path" class="top-link-mobile">
+                                <img alt="@String.Format("{0} homepage", @item.Title)" src="/siteElements/channelshift/content/images/sunbeds/if-looks-coud-kill.png" />
+                            </a>
+                            }
+                        }
+                          
+                        </div>
+                        <div class="right-inner-addon">
+                            &nbsp;<span id="mobile-menu-view" class="mobile-view"> <a id="toggle-menu" title="mobile icon" class="menu-anchor" href="#" onclick="return false;"><span id="menu-anchor-icon" class="mobile-nav-icon"></span> </a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="display:none;"><div class="col-md-12"><h1>if looks could kill</h1></div></div>
+    </div>
+</div>

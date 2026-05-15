@@ -1,0 +1,57 @@
+﻿
+@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - render the gallery page
+    // License: Blackpool council
+    // Date: 21/02/2018
+
+}
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+
+@{
+    HeadStartContent model = Page.Content.PageContent[0]; //Passed Model
+    String path = Page.RazorPath;
+}
+
+<div class="intro-text">@Html.Raw(model.BodyContent)</div>
+
+@if (model.Video != null && model.Video.SelectedPosition == "top")
+{
+    RenderPage(String.Format("{0}{1}", path, "partials/video.cshtml"), new { Video = model.Video });
+}
+
+@if (model.GalleryImages != null){
+<div class="row equal clearfix">
+    @foreach (var item in model.GalleryImages)
+    {
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 zero-pad-all">
+            <div class="gallery-container">
+                <div class="image-gallery">
+                    <img src="@item.Asset.Uri" class="img-responsive">
+                </div>
+                <div class="text-gallery">
+                    <h3 class="purple"><strong>@StringUtility.CutString(item.Caption, 30, true)</strong></h3>
+                    <p class="dark-blue">@item.Caption</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+}
+
+@if (model.Video != null && model.Video.SelectedPosition == "bottom")
+{
+    RenderPage(String.Format("{0}{1}", path, "partials/video.cshtml"), new { Video = model.Video });
+}

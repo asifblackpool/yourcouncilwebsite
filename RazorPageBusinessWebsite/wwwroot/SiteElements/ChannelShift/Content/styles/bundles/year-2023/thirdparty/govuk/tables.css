@@ -1,0 +1,117 @@
+﻿div.govuk-body table,
+.tbl-responsive {
+    margin: 0 auto;
+    width: 100%;
+    margin-bottom: 15px;
+    border: none;
+}
+
+div.govuk-body table thead th,
+div.govuk-body table tr th,
+.tbl-responsive thead th,
+.tbl-responsive tr th {
+    border: solid 1px #fff;
+    background: #830065;
+    color: #fff;
+}
+
+div.govuk-body table thead th,
+div.govuk-body table tr th,
+div.govuk-body table td,
+.tbl-responsive thead th,
+.tbl-responsive tr th,
+.tbl-responsive tbody td {
+    padding: .8rem;
+}
+
+div.govuk-body table tbody td,
+.tbl-responsive tbody td {
+    background: #e3e4e6;
+    border: solid 1px #fff;
+}
+
+div.govuk-body table caption {
+    display:none;
+}
+
+    @media screen and (max-width: 640px) {
+        div .govuk-body {
+        font-size: 1.5rem;
+    }
+
+    div.govuk-body table thead,
+    div.govuk-body table tr th,
+    .tbl-responsive thead,
+    .tbl-responsive tr th {
+        display: none;
+    }
+
+    div.govuk-body table tbody td,
+    .tbl-responsive tbody td {
+        display: block;
+        padding: .6rem;
+        text-align: right;
+        padding-right: 20px;
+        width:100% !important;
+
+    }
+
+    div.govuk-body table tbody tr td:first-child,
+    .tbl-responsive tbody tr td:first-child {
+        background: #830065;
+        color: #fff;
+        width:100% !important;
+    }
+
+    div.govuk-body table tbody tr td.background-gray
+    .tbl-responsive tbody tr td.background-gray {
+        background: #e3e4e6;
+        color: #000;
+    }
+
+    div.govuk-body tbody td:before,
+    .tbl-responsive tbody td:before {
+        content: attr(data-th);
+        font-weight: bold;
+        display: inline-block;
+        width: 1rem;
+        float: left;
+    }
+
+    div.govuk-body table tbody td[data-title]:before,
+    .tbl-responsive tbody td[data-title]:before {
+        content: attr(data-title);
+        float: left;
+        font-size: .8em;
+        color: #041c2c;
+        padding-right: 6px;
+        min-width: 100px;
+        display: inline-block;
+        text-align: left;
+    }
+
+    div.govuk-body table tbody td[data-title].text-white:before,
+    .tbl-responsive tbody td[data-title].text-white:before {
+        color: #fff !important;
+    }
+
+    div.govuk-body table tbody td.width-full,
+    .tbl-responsive tbody td.width-full {
+        display: block;
+        padding: 5px;
+        text-align: left;
+    }
+
+    div.govuk-body table td.width-full:before,
+    .tbl-responsive tbody td.width-full:before {
+        content: attr(data-th);
+        font-weight: 700;
+        display: inline-block;
+        width: 100%;
+        float: left;
+        text-align: left;
+        background-color: #830065;
+        color: #fff;
+        padding: 10px 5px;
+    }
+}

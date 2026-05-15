@@ -1,0 +1,45 @@
+﻿
+<br/>
+<br/>
+<br/>
+<br/>
+<div class="row my-area-search-container clearfix " style="width: 90%;margin-left: 5%; margin-right: 5%;">
+    <div class="col-md-12 zero-pad-left zero-pad-right">
+        <div id="image-box-container" class="grid-block clearfix">
+            <div id="image-box" class="img-placeholder">&nbsp;</div>
+        </div>
+        <div id="text-box">
+            <div class="row home-outline">
+                <div id="where-is-my-nearest-container" class="col-sm-12 col-md-4 my-area-text-box zero-pad-left zero-pad-bottom;" style="width:450px;">
+                    <strong class="home-h3" style="margin: auto; display:block; font-size:36px;">Search</strong>
+                </div>
+                <div class="col-sm-12 col-md-8 my-area-input-box">
+                    <div id="postcode-search" class="input-group">
+                        <input id="find-services-input" class="form-control" type="text" maxlength="60" placeholder="Search" size="18" name="b" style="width:320px;">
+                        <span class="input-group-btn"><button id="find-services-button" class="btn btn-default" type="button">GO</button> </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<link href="/SiteElements/ChannelShift/Content/styles/bundles/base.min.css" rel="stylesheet" type="text/css" />
+<link href="/SiteElements/ChannelShift/Content/styles/bundles/home.min.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#find-services-button').click(function (e) {
+            var term = $("#find-services-input").val().trim();
+            document.location.href = "/Testing/search/Results.aspx?search_keywords=" + term;
+            e.preventDefault();
+        });
+    });
+  
+
+</script>
+
+

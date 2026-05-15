@@ -1,0 +1,64 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Template (used for ) privacy notices
+    // License: Blackpool council
+    // Date: 19/10/2108
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.PrivacyNotice;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+
+@{
+    string razorPath = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/privacy-notices";
+    List<PrivacyNotice> notices = null;
+    Zengenti.Data.PageOptions options = new PageOptions(0, 10000);
+
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                           ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+    Zengenti.Data.PagedList<PrivacyNotice> list = client.Entries.List<PrivacyNotice>(new EntryListOptions
+    {
+        ContentTypeId = ContensisClientKeys.PRIVACY_NOTICE,
+        LinkDepth = 1,
+        PageOptions = options
+
+    });
+
+    notices = list.Items = list.Items.FindAll(x => x.IsActive == true);
+    notices = notices.OrderBy(x => x.Position).ToList();
+}
+
+<ul>
+    @foreach (PrivacyNotice item in notices){
+        <li><a href="#@item.Section.Replace(" ", "-").ToLower()">@item.Section</a></li>
+        }
+    </ul>
+
+@foreach (PrivacyNotice item in notices)
+{
+    SerialisedContent accord = item.GetSerialisedContent();
+        @RenderPage(String.Format("{0}{1}", razorPath, "/accordion.cshtml"), new { Model = accord, Title = item.Section })
+}
+
+
+
+@*<control name="privacy notice - accrodion list" showInMenu="true" category="favourites" viewingGroup="1">
+</control>*@

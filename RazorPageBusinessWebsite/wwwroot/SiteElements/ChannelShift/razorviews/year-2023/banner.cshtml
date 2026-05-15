@@ -1,0 +1,67 @@
+﻿@{
+
+    // Emergency Box
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Require
+
+    //<span class='small-text'>Welcome to</span><br /><h1 class='large-text'>Blackpool Council</h1>
+}
+@{
+  	   String  display = (Properties.BannerBox.Count  > 0 ) ? Properties.BannerBox[0] : "Hide";
+       String  message = Properties.BannerText;
+       String  color = (Properties.BannerTextColour != null) ? Properties.BannerTextColour : "#fff";
+       string  backgroundImage = (Properties.BannerImageUrl != null) ? Properties.BannerImageUrl.Path  : string.Empty;
+  	   String  show = (display == "Hide") ? "none;" : "block;";
+       string  style = string.Format("style=\"background-image: url('{0}');display:{1}\"", backgroundImage, show);
+       
+
+}
+
+
+<div id="homepage-banner" @Html.Raw(style)>
+    <div id="homepage-banner-container" class="row">
+        <div class="col-md-12 zero-pad-left zero-pad-right">@Html.Raw(message)</div>
+    </div>
+</div>
+
+<style type="text/css">
+.small-text {
+    color: @color;
+}
+
+.large-text {
+    color: @color;
+}
+
+</style>@*<control name="banner homepage" showInMenu="true" category="favourites" viewingGroup="1">
+ <properties>
+    <category name="Banner box">
+      <instruction label="Configurable Banner Box">
+        Banner box
+
+            1. Text ('span class='small-text'>XXXXXX /span> br/> h1> class='large-text'>XXXXX h1>")
+            2. Color (eg #fff - this is for white)
+            2. BackgroundImage (eg. /siteElements/channelshift/content/images/placeholders/1180x300.png)
+      </instruction>
+      
+      <instruction label="BannerBox Details"></instruction>
+      <text name="BannerBox" editor="checkbox">
+    		<options>
+        		<option label="Show" value="show" />  
+    		</options>
+	  </text>
+        <text name="BannerText" label="Text" description="">
+        <parameters>
+          <parameter name="MultiLine" value="true"/>
+        </parameters>
+      </text>
+        <text name="BannerTextColour" label="Banner Text Color" description="">
+        <parameters>
+          <parameter name="SingleLine" value="true"/>
+        </parameters>
+      </text>
+       <node name="BannerImageUrl" />
+    </category>
+  </properties>
+</control>*@

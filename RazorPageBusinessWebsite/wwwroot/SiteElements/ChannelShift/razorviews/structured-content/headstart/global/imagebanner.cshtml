@@ -1,0 +1,29 @@
+﻿@*<control name="headstart image banner" showInMenu="true" category="Favourites" viewingGroup="2" />*@
+@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - used in head start page
+    // License: Blackpool council
+    // Date: 15/01/2018
+}
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+    HeaderStart content = Page.Content; //Passed Model
+    
+    <div class="image-home-banner-placeholder move">
+        <img class="@string.Format("image-banner", content.Alias == "Home" ? "image-banner-homepage" : "")" src="@content.ImageBanner.Asset.Uri" alt="@content.ImageBanner.Caption" />
+    </div>
+}
+
+
+@*<control name="headstart image banner" showInMenu="true" category="Favourites" viewingGroup="2" />*@@*<control name="headstart image banner" showInMenu="true" category="Favourites" viewingGroup="2" />*@@*<control name="headstart image banner" showInMenu="true" category="Favourites" viewingGroup="2" />*@

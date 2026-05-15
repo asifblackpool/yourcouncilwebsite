@@ -1,0 +1,81 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Gallery Image - used in Catering pages
+    // License: Blackpool council
+    // Original Date: 11/01/2024
+
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+    CateringDTO DTO = Page.Model;
+    Promotions promotions = null;
+    List<ImageBox> lists = new List<ImageBox>();
+    Config config = DTO.Config;
+    String path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+
+
+
+    SerialisedItem serialisedItem = null;
+    string Url = "#";
+    if (DTO.Flow != null)
+    {
+        int counter = 0;
+        foreach (var item in DTO.Flow.GetContent)
+        {
+
+            var list = item.Items.FindAll(x => x.ClassType == typeof(Promotions));
+            if (list != null && list.Count > 0)
+            {
+                serialisedItem = list[0];
+                promotions = SerializeHelper.Deseralize(serialisedItem) as Promotions;
+                lists.Add(promotions.Promotion1);
+                lists.Add(promotions.Promotion2);
+                lists.Add(promotions.Promotion3);
+                break;
+            }
+
+        }
+    }
+}
+@if (lists.Count > 0)
+
+{
+    <div class="row zero-pad-left zero-pad-right">
+        <div class="col-md-12 col-sm-12 promotions-title-container">
+                <h2 class="promotions-title">@promotions.Title</h2>
+        </div>
+    </div>
+    <div class="row zero-pad-left zero-pad-right">
+        @foreach(var item in lists)
+        {
+         
+         string ImageBoxUrl = (item != null && item.Image != null && item.Image.Asset != null) ? String.Format("{0}{1}", DTO.BaseImageUrl, item.Image.Asset.Uri) : DTO.NoImageUrl; ;
+        <div class="col-md-4 promotions-box">
+            <div class="img-container">
+                <img class="promotions-img" src="@ImageBoxUrl" alt="@item.Image.AltText" />
+            </div>
+            <div class="img-title ">@item.Title</div>
+            <div class="img-information">@item.Information</div>
+        </div>
+        }
+    </div>
+
+
+}

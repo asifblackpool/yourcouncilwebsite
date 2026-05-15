@@ -1,0 +1,144 @@
+﻿div#top-tasks-menu {
+    background-color: #830065;
+    min-height:60px;
+}
+
+div#top-tasks-menu-container {
+    float:none;
+    border:solid 0px yellow;
+    min-height:60px;
+}
+
+ul.top-tasks-ul {
+    list-style-type: none;
+    display: inline-block;
+    max-width:360px;
+    padding-left:0px;
+    position:relative;
+    top:10px;
+    margin:0px;
+}
+
+ul.top-tasks-ul > li {
+    float: left;
+    padding-right: 60px;
+    height:50px;
+}
+
+ul.top-tasks-ul > li > span {
+    display:inline-block;
+    height:100%;
+  
+}
+
+ul.top-tasks-ul > li > span.open {
+    border-bottom: solid 7px yellow;
+}
+
+ul.top-tasks-ul > li > span > a {
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 23px;
+    position: relative;
+    top: 11px;
+}
+
+ul.top-tasks-ul > li  > span > a:hover {
+    text-decoration:none !important;
+}
+
+ul.all-services-ul {
+    padding-left:0px;
+}
+
+ul.all-services-ul > li {
+    list-style-type:none;
+    padding-bottom:15px;
+}
+
+ul.all-services-ul > li > a {
+    color: #041C2C !important;
+    text-decoration:underline;
+}
+
+.top-pad-30 {
+    padding-top: 30px !important;
+}
+
+div.row div.col-md-4:nth-child(odd) {
+    border: solid 0px blue;
+    padding-right:1.75%;
+    width: 33.33%;
+}
+
+div.row div.col-md-4:nth-child(even ) {
+    border: solid 0px red;
+    padding-right: 1.75%;
+    padding-left:1.75%;
+    width: 33.33%;
+}
+
+div.row div.col-md-4:nth-child(2n+3) {
+    border: solid 0px pink;
+    padding-left:1.75%;
+    padding-right:0%;
+    width: 33.33%;
+}
+
+
+.top-task-heading {
+    border-top: solid 1px grey;
+    padding: 3px 0px 25px 0px;
+    text-decoration: underline;
+    margin: 0px;
+    font-weight:bold;
+}
+
+.arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+}
+
+.right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    float: right;
+    position: relative;
+    top: 15px;
+    right: 5px;
+}
+
+#find-services-input {
+    height: 50px;
+    width: 76%;
+    float:left;
+    border: solid 0px transparent;
+}
+
+#postcode-search {
+    border: solid 0px yellow;
+    display: block;
+    height: 100%;
+    margin-top: 10px;
+}
+
+#find-services-button-container {
+    border:solid 0px red;
+    float:left;
+    width:24%;
+    height:50px;
+    display:block;
+}
+
+#find-services-button {
+    height: 100%;
+    width: 100%;
+    margin-left: 0px;
+    border-radius: 0px;
+    background-color: #E6CCE0;
+    font-size: 19px;
+    font-weight: bold;
+    color: #041C2C;
+}

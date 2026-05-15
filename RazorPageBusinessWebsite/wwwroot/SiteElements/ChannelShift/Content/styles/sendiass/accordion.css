@@ -1,0 +1,173 @@
+﻿div.accordion {
+    margin-bottom: 30px;
+    margin-top: 30px;
+    max-width: 770px;
+    margin:auto;
+}
+
+div.accordion-togglable {
+    border-left: solid 2px #21828A;
+    border-right: solid 2px #21828A;
+    border-bottom: solid 2px #21828A;
+}
+
+    div.accordion-togglable table {
+        width: 100%;
+    }
+
+    div.accordion-togglable table tr {
+            height: 45px;
+            font-size: 16px;
+    }
+
+    div.accordion-togglable table tr td {
+        padding: 0px 3px 0px 3px;
+    }
+
+    div.accordion-togglable table tr:nth-child(2n+1) {
+        background-color: #D9B1D0;
+    }
+
+div.accordion-togglable table tr:first-child {
+    background-color: #21828A;
+    color: #fff;
+    text-wrap: normal;
+}
+
+#accordion-ul {
+    padding-left: 0px;
+}
+
+#accordion-ul li a {
+    cursor: pointer;
+    color: #000;
+    text-decoration:underline;
+    display:inline;
+}
+
+#accordion-ul li {
+    position: relative;
+}
+
+li.head a {
+    color: #fff;
+    outline: 0 !important;
+}
+
+li.head a {
+    text-decoration: none;
+    display: block;
+}
+
+ li.head::before {
+    content: "";
+    color: transparent;
+    font-weight: bold;
+    display: inline-block;
+    margin-left: 0px;
+    width: 0px;
+    left: 0px;
+    position: relative;
+}
+
+li.head, li.head:hover {
+    
+}
+
+li.head {
+    list-style-type: none;
+    width: 100%;
+    background-color: #21828A;
+    border-bottom: solid 5px #fff;
+}
+
+li.head a h2 i.icon-arrow-up {
+    background: transparent url(/SiteElements/ChannelShift/content/images/sport-blackpool/cross.svg) no-repeat 5px 13px;
+    background-size: 35px 20px;
+    height: 45px;
+    position: relative;
+    top: -12px;
+    left: 0;
+}
+
+li.head a h2 i.icon-arrow-down {
+    background: transparent url(/SiteElements/ChannelShift/content/images/sport-blackpool/plus.svg) no-repeat 5px 13px;
+    background-size: 35px 20px;
+    height: 45px;
+    position: relative;
+    top: -12px;
+    left: 0;
+}
+
+li.head a h2 i {
+    float: right;
+    background-color: #830065;
+    width: 45px;
+    height: 45px;
+    margin-right: 30px;
+}
+
+li.head a h2 {
+    font-size: 24px;
+    font-weight: bold;
+    /*text-transform:capitalize !important;
+    */
+}
+
+li.head a h2 {
+    margin: 5px 0;
+    padding-left: 16px;
+    position: relative;
+    top: 7px;
+    height: 55px;
+}
+/* mobile devices iphone 5/6/7/8 */
+@media all and (max-width: 567px) and (min-width: 300px) {
+    li.head a h2 {
+        font-size: 14px;
+        height: auto;
+        padding-bottom: 10px;
+        display: table-cell;
+        position: relative;
+        top: 20px;
+    }
+
+    a.link-head > h2 > span.pull-left:nth-child(2) {
+        max-width: 355px;
+        width: 300px;
+        text-align: left;
+    }
+
+    li.head a h2 i.icon-arrow-down, li.head a h2 i.icon-arrow-up {
+        background-size: 17px 10px;
+        top: -10px;
+        left: -16px;
+        width: 20px;
+    }
+
+    li.head a h2 i {
+        margin-right: -5px;
+    }
+
+
+    /* form over rides */
+
+    .sys_cms-form-body .sys_namesubelement,
+    .sys_cms-form-body .sys_lastnamesubelement,
+    .sys_cms-form-body .sys_fieldcontent,
+    .sys_cms-form-body input.sys_medium, .sys_cms-form-body select.sys_medium,
+    .sys_cms-form-body .sys_cms-form-item,
+    .sys_cms-form-body select.sys_medium {
+        width: 100% !important;
+    }
+
+}
+/* mobile devices iphone 4/5 */
+@media all and (max-width: 330px) and (min-width: 300px) {
+    a.link-head > h2 > span.pull-left:nth-child(2) {
+        max-width: 260px;
+    }
+}
+
+
+

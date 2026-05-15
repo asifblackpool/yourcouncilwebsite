@@ -1,0 +1,55 @@
+﻿@*<control name="Channel Shift Contact Article " showInMenu="true" category="Favourites" viewingGroup="1">
+ <properties>
+   <category name="Heading">
+         <text name="Title" label="Title Name" default="" />
+   </category>
+   <category name="Addresss Details">
+       <text name="AddressLine1" label="Line1" default="" />
+       <text name="AddressLine2" label="Line2" default="" />
+       <text name="AddressLine3" label="Town/City" default="" />
+       <text name="AddressLine4" label="County" default="" />
+       <text name="AddressLine5" label="Post Code" default="" /> 
+  </category>
+  <category name="Contact Details">
+   		<text name="Tel1" label="Telephone 1" default="" />
+    	<text name="Tel2" label="Telephone 2" default="" />
+    	<text name="Tel3" label="Telephone 3" default="" />
+        <text name="Email" label="Email" default="" />
+  </category>
+  </properties>
+</control>*@@{
+
+    // Name: Channel Shift - article control
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date:24/02/2016
+}
+
+@{
+  
+  String Title = Properties.Title;
+  String Telephone = Properties.Tel1;
+  String Email = Properties.Email;
+  String Address = "";
+  String spacer  = "";
+  String spacerTel = "/";
+  
+  if (Properties.AddressLine1 != "") {	Address = Properties.AddressLine1; spacer = ", "; }
+  if (Properties.AddressLine2 != "") {	Address += String.Format("{0}{1}", spacer,Properties.AddressLine2); spacer = ", "; }
+  if (Properties.AddressLine3 != "") {	Address += String.Format("{0}{1}", spacer,Properties.AddressLine3); spacer = ", "; }
+  if (Properties.AddressLine4 != "") {	Address += String.Format("{0}{1}", spacer,Properties.AddressLine4); spacer = ", "; }
+  if (Properties.AddressLine5 != "") {	Address += String.Format("{0}{1}", spacer,Properties.AddressLine5); spacer = ", "; }
+  
+  if (Properties.Tel2 != "") {	Telephone += String.Format("{0}{1}", (Telephone.Length > 0) ? "/" : "",Properties.Tel2); }
+  if (Properties.Tel3 != "") {	Telephone += String.Format("{0}/{1}", (Telephone.Length > 0) ? "/" : "", Properties.Tel3); }
+ 
+}
+
+<div id="contact-details" class="row clearfix">
+ <div id="contact-wrapper" class="clearfix">
+  <div class="col-md-12 zero-pad-all"><h4>@Title</h4></div>
+  <div id="contact-address" class="col-md-12 zero-pad-all">@Address</div>
+  <div id="contact-tel" class="col-md-12 zero-pad-all" style="@String.Format("display:{0}", Telephone !="" ? "block;" : "none;")"><strong>Telephone&nbsp;</strong>@Telephone</div>
+  <div id="contact-email" class="col-md-12 zero-pad-all" style="@String.Format("display:{0}", Email !="" ? "block;" : "none;")"><strong>Email&nbsp;</strong><a href="mailto:@Email">@Email</a></div>
+ </div>
+</div>

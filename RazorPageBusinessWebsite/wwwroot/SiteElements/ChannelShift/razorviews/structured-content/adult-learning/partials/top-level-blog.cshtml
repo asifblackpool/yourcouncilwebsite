@@ -1,0 +1,206 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Load Google Map - used in Adult Learning Pages
+    // License: Blackpool council
+    // Date: 24/11/2021
+}
+
+
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.Paging;
+
+@{
+
+    BlackpoolAdultLearningDTO DTO = Page.Model;
+
+    List<SerialisedContent> sc = new List<SerialisedContent>();
+    List<Blog> blogs = new List<Blog>();
+    string blogUrl = String.Format("{0}{1}{2}.aspx", DTO.Config.SeoUrlList.UrlPath, DTO.CurrentItem.SiteViewSlug, DTO.CurrentItem.Slug);
+
+    string BlogDatePosted = Request.QueryString["postdate"];
+    Blog SelectedBlog = null;
+    List<String> slugs = new List<String>();
+
+
+    List<SerialisedContent> Content = (DTO.Flow.GetContent != null & DTO.Flow.GetContent.Count > 0) ? DTO.Flow.GetContent : null;
+
+
+    PaginationModel<string> pagingSlugs = new PaginationModel<string>(slugs);
+    PaginationModel<SerialisedContent> pagingContent = new PaginationModel<SerialisedContent>(Content);
+    pagingSlugs.PageSize = pagingContent.PageSize = PagingKeys.DEFAULT_PAGE_SIZE;
+
+    try
+    {
+        pagingSlugs.CurrentPage = pagingContent.CurrentPage = (!String.IsNullOrEmpty(Request.QueryString["page"])) ? Convert.ToInt32(Request.QueryString["page"]) : 1;
+    }
+    catch
+    {
+        pagingSlugs.CurrentPage = pagingContent.CurrentPage = 1;
+    }
+
+    
+}
+
+@foreach (var content in Content)
+{
+    string ImageBoxUrl = DTO.NoImageUrl;
+    string AltText = string.Empty;
+    string HtmlText = string.Empty;
+    var listBlogs = content.Items.FindAll(x => x.ClassType == typeof(Blog));
+
+
+
+    // current page = 1, pagesize = 3 => pageStart =  1, pageEnd = 3
+    // current page = 2, pagessiz = 3 => pageStart = 4,  pageEnd = 6
+    // current page = 3, pagesize = 3 => pageStart = 7,  pageEnd = 9
+    //
+    // pageEnd = currentPage * pageSize
+    // pageStart = pageEnd-(PageSize-1)
+
+
+    if (listBlogs != null && listBlogs.Count > 0)
+    {
+        foreach (var item in listBlogs)
+        {
+
+            SerialisedItem serialisedItem = item;
+            var blog = SerializeHelper.Deseralize(serialisedItem) as Blog;
+            blogs.Add(blog);
+            slugs.Add(blog.DateOfPostSlug);
+        }
+   
+    }
+
+
+}
+
+
+@if (!String.IsNullOrEmpty(BlogDatePosted))
+{
+    SelectedBlog = blogs.Find(x => x.DateOfPostSlug == BlogDatePosted);
+}
+
+
+@if (SelectedBlog == null)
+{
+    int pageEnd = pagingContent.CurrentPage * pagingContent.PageSize;
+    int pagestart = pageEnd - (pagingContent.PageSize - 1);
+    int blogCounter = 1;
+
+
+    //Remove duplicates 
+   
+
+
+    foreach (var item in blogs)
+    {
+
+
+        if (blogCounter <= pageEnd && blogCounter >= pagestart)
+        {
+            <div class="row item-box clearfix">
+                <div class="imagebox-list-container col-md-6 col-sm-12 col-xs-12 zero-pad-all">
+                    @if (item.Image.Length < 1)
+                    {
+                        <img src="http://placehold.it/370x250" alt="no image" class="img-responsive" />
+                    }
+                    else
+                    {
+                        <img src="@String.Format("{0}{1}", DTO.BaseImageUrl, item.Image[0].Asset.Uri)" alt="@item.Image[0].Caption" class="img-responsive" />
+                    }
+                    <hr class="border" />
+                </div>
+                <div class="textbox-list-container col-md-6 col-sm-12 col-xs-12">
+                    <span class="date-published">@StringUtility.DateTextFull(item.DateOfPost)</span>
+                    <h2 class="purple" style="margin-top:0px;"><strong>@StringUtility.CutString(item.Title, 22, true)</strong></h2>
+                    <p class="dark-blue">@Html.Raw(StringUtility.CutString(HTMLParser.cleanHtml(item.Post), 200, true))</p>
+                    <div class="button-container">
+                     <a href="@string.Format("{0}?postdate={1}", blogUrl, item.DateOfPostSlug)" class="button">Read More</a>
+                    </div>
+                </div>
+            </div>
+        }
+
+        blogCounter++;
+        if (blogCounter > pageEnd)
+        {
+            break;
+        }
+    }
+
+
+    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/sub/paging.cshtml"), new { Model = slugs, PageUrl = blogUrl  })
+
+}
+else
+{
+
+<div class="row pad-bot-40">
+    <div class="col-md-6 col-sm-6 col-xs-12 zero-pad-all blog-text-container">
+        <p class="dark-blue">@Html.Raw(HTMLParser.cleanHtml(SelectedBlog.Post))</p>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-12 zero-pad-all blog-image-container">
+        @if (SelectedBlog.Image.Length < 1)
+        {
+            <img src="http://placehold.it/370x250" alt="no image" class="img-responsive" />
+        }
+        else
+        {
+            <img src="@String.Format("{0}{1}",DTO.BaseImageUrl,SelectedBlog.Image[0].Asset.Uri)" alt="@SelectedBlog.Image[0].Caption" class="img-responsive" style="min-width:300px;" />
+        }
+    </div>
+
+</div>
+    <style type="text/css">
+        div.container-image {
+            display:none;
+        }
+        @@media all and (max-width:1024px) and (min-width: 300px) {
+
+
+            div.blog-text-container {
+                width: calc(50% - 7.5px);
+                float: left;
+            }
+
+            div.blog-image-container 
+            {
+                float: right;
+                width: calc(50% - 7.5px);
+            }
+        }
+        @@media all and (max-width:640px) and (min-width: 300px) {
+
+
+            div.blog-text-container {
+                width: calc(100% - 0px);
+                float: left;
+            }
+            div.blog-image-container {
+                float: right;
+                width: calc(100% - 0px);
+            }
+            
+        }
+    </style>
+    <script type="text/javascript">
+        var replaceheader = function (text) {
+            document.getElementById("content-inner-h1").innerHTML = text;
+        };
+        replaceheader('@SelectedBlog.Title');
+
+    </script>
+}
+
+
+

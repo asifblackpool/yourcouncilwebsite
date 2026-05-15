@@ -1,0 +1,196 @@
+﻿
+
+    span.dtr-title { font-weight:bold; font-size:0.75em;}
+    span.dtr-data { font-weight:normal; font-size:0.75em; }
+
+    .embed-container { }
+
+    .embed-container iframe, .embed-container object, .embed-container embed {}
+
+    table#roadworks {}
+
+    table#roadworks th {
+        background-color: #830065;
+        color: #ffffff;
+    }
+
+    table#roadworks tr td {
+        font-size: 0.75em;
+        font-weight: bold;
+        text-transform: lowercase;
+        vertical-align: text-top;
+    }
+
+    table#roadworks tr td:first-letter {
+        text-transform: uppercase;
+    }
+
+    table#roadworks tr td.date-text, table#roadworks tr td.date-text:first-letter {
+        text-transform: none;
+    }
+
+   
+
+
+ @media screen and (max-width: 960px) {
+
+        div#roadworks-container {
+            width: 100%;
+            border: solid 0px red;
+        }
+
+
+    #mainbar a:not([href]) {
+        text-decoration: none;
+        font-size: inherit;
+        margin-left: 10px;
+     
+    }
+
+    #roadworks_paginate { text-align:center; margin:auto;}
+}
+
+
+@media screen and (max-width: 480px) {
+   
+    
+}
+
+
+@media screen and (max-width: 350px) {
+    
+    
+ }
+
+
+
+/*-- sidebar work >*/
+
+
+.trafficinfo 
+{
+    height: 92.8%;
+    width: 0;
+    position: absolute;
+    z-index: 1;
+    top: 35px;
+    background-color:lightgrey;
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+
+.sidenav {
+    height: 92.8%;
+    width: 0;
+    position: absolute;
+    z-index: 1;
+    top: 37px;
+    background-color: #fff;
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;       
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover, .offcanvas a:focus {
+   color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: -20px;
+    right: 5px;
+    margin-left: 50px;
+    color:#000;
+    font-weight:bold;
+    font-size:40px;
+}
+
+.sidenav a.closebtn:hover {
+    color:#000;
+ }
+.sidenav ul li {
+    list-style-type: none;
+}
+
+.sidenav input[type=checkbox] {
+    border: solid 1px #830065;
+    width: 12px;
+    top: 13px;
+    height: 13px;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -o-appearance: none;
+ }
+
+.fixed-list { 
+    margin-left:-20px;
+
+}
+
+ul.roadworks-menu .roadwork-status { 
+    border-bottom: dashed 1px silver;
+    padding:10px 0px 10px 0px;
+}
+
+ul.roadworks-menu .roadwork-status img {
+    width:14px;
+    height:14px;
+    position:relative;
+    top:-1px
+ }
+
+a.roadwork-traffic-link {
+        padding: 0px;
+        font-size: 14px;
+        text-transform:lowercase;
+
+ }
+
+a.roadwork-traffic-link::first-letter {
+    text-transform:uppercase;
+}
+
+div.button-container {
+        padding: 10px 0px 10px 0px;
+        background-color: #830065;
+}
+
+div.button-container button.btn-default {
+    background-color: #830065;
+    color:#fff;
+    border:none;
+}
+
+div.button-container .traffic-title {
+     font-weight:bold;
+     color:#fff;
+}
+
+div.traffic-panel {
+        padding: 20px 0px 20px 0px;
+        text-transform:lowercase;
+}
+
+div.traffic-panel > .row { padding-bottom:10px; }
+
+div.traffic-panel  div.traffic-panel-label {
+    font-size:14px;
+    font-weight:bold;
+    color:grey;
+}
+
+div.traffic-panel  div.traffic-panel-detail {
+    font-size:17px;
+}
+
+div.traffic-panel div.traffic-panel-label:first-letter,
+div.traffic-panel div.traffic-panel-detail:first-letter {
+        text-transform: uppercase;
+    }
+

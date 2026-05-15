@@ -1,0 +1,32 @@
+﻿  input.form-control,
+    input.form-control:focus {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    }
+
+    input[type=radio], .radio-inline input[type=radio] {
+        margin-top: 8px;
+    }
+
+    .form-horizontal .has-feedback .radio-inline .form-control-feedback {
+        right: -195px;
+    }
+
+    .form-horizontal .has-feedback .date .form-control-feedback {
+        right: 38px;
+    }
+
+    .datepicker {
+        z-index: 1151 !important;
+    }
+
+    body.modal-open ui-datepicker {
+        z-index: 1200 !important;
+    }
+
+    .ui-datepicker {
+        z-index: 10000004 !important;
+    }

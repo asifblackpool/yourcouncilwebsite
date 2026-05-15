@@ -1,0 +1,139 @@
+﻿@{
+
+    // Name: Channel Shift - Polling Station Control
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Requires the following scripts 
+    //
+    // 1. include file handlebars.min.js 
+    // 2. include file utilites.js - used for post code validation.
+}
+
+<div id="polling-content">
+<div class="input-group" id="postcode-search">
+    <input id="post-code" class="form-control" type="text" maxlength="8" placeholder="FY1 1NA" size="18" name="b">
+    <span class="input-group-btn"> 
+        <button id="postcode-button" class="btn btn-default" type="button">GO</button> 
+    </span>
+
+</div>
+ <span id="postcode_error" class="error" style="position: relative; top: -1px;"></span><br/>
+<style type="text/css">
+   span.input-group-btn {
+        border: 2px solid #830065;
+        background-color: #830065;
+        left: 0;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+
+    #post-code {
+        border: 2px solid #830065;
+        font-size:24px;
+        height:36px;
+    } 
+
+    #postcode-button {
+        color: #fff;
+        background-color: #830065;
+        border-width: 0;    
+    }
+
+</style>
+
+
+
+<div id="polling-loading-indicator" style="position: relative; left: 40%; top: 50%; display: none;"><strong><img alt="" height="44" width="44" src="/SiteElements/ChannelShift/Content/images/gif.gif" /> ... Loading Polling</strong></div>
+<div class="polling-placeholder"></div>
+</div>
+
+<script>
+$(document).ready(function () {
+
+
+    var getPollingStation = function () {
+        var pc = $("#post-code").val().trim();
+        var errorMessage = window.utilities.validateUKPostCode(pc);
+        $("#postcode_error").html(errorMessage);
+        if (errorMessage === "") {
+
+            $.ajax({
+                url: window.commonservices.Config().pollingStationUrl + 'ValidatePostCode?postcode=' + pc,
+                type: 'GET',
+                success: function (data) {
+
+                    if (data.indexOf("OK") > -1) {
+                         var isOk = true;
+                         window.votingservices.init(pc, function (isOK) {
+                          if (isOK) { $("#polling-loading-indicator").hide(); }
+                         });
+                    }
+                    else {
+                        $("#postcode_error").html('This post code is not valid for blackpool council');
+                    }
+                }
+            }).fail(function (jqXHR, textStatus, error) {
+                $("#postcode_error").html('Oops an error occured validating the post code');
+            });
+        }
+    };
+
+  
+
+    var postcodeClick = function () {
+        $('#postcode-button').click(function (e) {
+            getPollingStation();
+            e.preventDefault();
+        });
+    };
+
+    
+    postcodeClick();
+
+});
+
+
+</script>
+
+
+<!-- polling station templates-->
+<script id="polling-template" type="text/x-handlebars-template">
+    
+    {{#if this.apiproperties}}
+    <div class="row" style="margin-bottom:15px;">
+        <div class="selectbox-container-streetname" style="width:100%; text-align:center; margin:auto">
+            <p>To find your polling station please select your address below.<br /></p>
+            <select class="selectpicker" id="streetDropDownList" name="streetDropDownList" style="display:block !important; text-align:center; margin:auto;">
+                <option value="0">-- Select property --</option>
+                {{#each apiproperties}}
+                <option value="{{ PollingPlaceId}}">{{ PropertyNumber}} {{ Streetname }}</option>
+                {{/each }}
+            </select>
+            <style type="text/css">select.selectpicker{display:block!important; text-align:center; margin:auto;}</style>
+        </div>
+    </div>
+    <!--load polling address template in div-->
+    <div class="row polling-station-address"></div>
+
+    {{else}}
+    <strong>Polling station not found for the post code entered.</strong>
+    {{/if}}
+</script>
+
+<script id="polling-address-template" type="text/x-handlebars-template">
+    {{#if this.apipolling.length}}
+    {{#each apipolling}}
+    <h4>Your nearest polling station is located at <strong>{{ this.name }}</strong></h4>
+    <dl class="dl-horizontal">
+        <dt><strong>Address:&nbsp;</strong></dt><dd>{{ this.address }}</dd>
+    </dl>
+    {{/each }}
+    <p>
+        You do not need to have your polling card to vote in an election.<br />
+        You can find more information on voting including postal and proxy votes on the <a href="/Your-Council/Voting-and-elections/Voting-and-elections.aspx">voting and elections</a> section of our website
+    </p>
+    {{/if}}
+</script>
+	<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/services/voting/votingservices.js"></script><noscript>@*<control name="Polling Station Control" showInMenu="true" category="Favourites" viewingGroup="2">
+
+</control>*@

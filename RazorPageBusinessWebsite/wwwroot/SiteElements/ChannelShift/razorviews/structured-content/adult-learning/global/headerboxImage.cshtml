@@ -1,0 +1,68 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: headerbox Image - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+@{
+    BlackpoolAdultLearningDTO DTO = Page.Model;
+    SerialisedItem serialisedItem = null;
+    ImageHeaderBox box = null;
+
+
+
+    string ImageBoxUrl = DTO.NoImageUrl;
+    if (DTO.Flow != null)
+    {
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            var list = item.Items.FindAll(x => x.ClassType == typeof(ImageHeaderBox));
+            if (list != null && list.Count > 0)
+            {
+                serialisedItem = list[0];
+                box = SerializeHelper.Deseralize(serialisedItem) as ImageHeaderBox;
+                break;
+            }
+        }
+
+        ImageBoxUrl = (box != null && box.Image != null && box.Image.Asset != null) ? String.Format("{0}{1}", DTO.BaseImageUrl, box.Image.Asset.Uri) : ImageBoxUrl;
+
+    }
+
+}
+
+@if (box != null)
+{
+    <div class="container-image pad-bot-40 clearfix">
+        <div class="centered-text">
+            <img src="@ImageBoxUrl" alt="@box.Image.AltText" />
+        </div>
+    </div>
+
+}
+
+
+
+
+
+

@@ -1,0 +1,21 @@
+﻿/* Custom CSS following GOV.UK Design System principles */
+:root {
+    /* Main brand colors */
+    --quote-primary-color: #041c2c; /* Your original green */
+    --quote-primary-dark: #5f7604; /* Darker shade you asked for */
+    --quote-secondary-color: #0b0c0c; /* GOV.UK text color */
+    --quote-background: #f3f2f1; /* GOV.UK light grey */
+    --quote-border: #b1b4b6; /* GOV.UK border grey */
+}
+
+
+.quote {
+    font-size: 2.25rem; /* 36px assuming base 16px */
+    line-height: 1.25;
+    color: var(--quote-primary-color); /* GOV.UK text color */
+    background-color: var(--quote-background);
+    padding: 1rem 1.5rem;
+    border-left: 10px solid var(--quote-border);
+    margin: 2rem 0;
+}
+

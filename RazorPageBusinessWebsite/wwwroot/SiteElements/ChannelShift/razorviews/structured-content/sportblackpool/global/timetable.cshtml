@@ -1,0 +1,96 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: TimeTable - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+
+@{
+    SportBlackPoolDTO DTO = Page.Model;
+    Zengenti.Data.PagedList<SportBlackpool> list = DTO.List;
+    SportBlackpoolHelper helper = new SportBlackpoolHelper(list.Items);
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = Blackpool.Zengenti.CMS.Constants.SeoKeys.SportBlackPoolKey }
+    };
+
+    DTO.Config = config;
+
+    string path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+    List<MenuLink> topLinks = new List<MenuLink>();
+
+    try
+    {
+        topLinks = (from item in list.Items
+                    where (item.TimeTables.Count > 0 && item.IsActive)
+                    select new MenuLink()
+                    {
+                        Href = helper.NavigationBuilder(item, path),
+                        Text = item.Alias,
+                        Order = item.MenuOrder,
+                        Level = item.PageType,
+                        ChildMenu = (item.PageType == SportBlackpoolKeys.TOP_LEVEL) ? null : helper.GetChildLinks(list.Items, item, path)
+                    }).ToList();
+    }
+    catch
+    {
+        topLinks = null;
+    }
+
+
+    int counter = 0;
+
+    topLinks = (topLinks != null) ? topLinks.OrderBy(x => x.Order).ToList() : new List<MenuLink>();
+}
+
+<div id="timetable-container" class="timetable-normal clearfix">
+    <div class="time-table clearfix">
+
+        @foreach (var menulink in topLinks)
+        {
+            <div class="clearfix @string.Format("{0}", menulink.Text.ToLower().Contains("class") ? "class-timetable" : "swim-timetable")">
+                <a id="@string.Format("{0}", menulink.Text.ToLower().Contains("class") ? "class-link" : "swim-link")" href="@menulink.Href" class="hover-white">
+                    <h3 class="@string.Format("{0}", menulink.Text.ToLower().Contains("class") ? "class-text accessibility-tab-100" : "swim-text accessibility-tab-100")">@menulink.Text</h3>
+                </a>
+            </div>
+
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    $("#class-link").hover(function () {
+        $('#timetable-container').removeClass("timetable-normal").addClass("timetable-hover-class");
+    }, function () {
+        $('#timetable-container').removeClass("timetable-hover-class").addClass("timetable-normal");
+    });
+
+    $("#swim-link").hover(function () {
+        $('#timetable-container').removeClass("timetable-normal").addClass("timetable-hover-swim");
+    }, function () {
+        $('#timetable-container').removeClass("timetable-hover-swim").addClass("timetable-normal");
+    });
+
+
+</script>
+
+
+
+
+

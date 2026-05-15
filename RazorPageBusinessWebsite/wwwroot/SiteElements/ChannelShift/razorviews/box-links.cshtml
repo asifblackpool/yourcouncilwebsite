@@ -1,0 +1,190 @@
+﻿@{
+
+    // Name: Channel Shift - box links - to be used within landing pages
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date:27/09/2020
+}
+
+
+ <style type="text/css">
+
+        #crumbs {
+            float: left;
+            position: relative;
+            top: 10px;
+        }
+
+        div.box-links-row {
+             display:flex;
+             justify-content: center;
+        }
+
+        div.box-link:hover {
+            background-color:#830065;
+        }
+
+         div.box-link:hover a {
+            text-decoration:none;
+            color:white !important;
+        }
+
+        h2.box-link-text {
+            text-align:center;
+            vertically-align:middle;
+            font-weight:bold;
+        }
+
+        h2.box-link-text a {
+            position:absolute;
+            top:0px;
+            left:0px;
+            right:0px;
+            bottom:0px;
+            width:100%;
+            height:100%;
+        }
+
+        .span-link {
+            position:relative;
+            top:30px;
+            display:inline-block;
+            padding:0 4px;
+        }
+
+        div.box-link { 
+              border-radius: 25px;
+              height: 140px;
+              border:solid 2px #830065;
+              margin-left:5px;
+              margin-right:5px;
+        }
+
+       @@media (max-width: 9000px) and (min-width: 1170px) {
+
+        div.box-link { 
+            width:25% !important;
+            max-width:25% !important;
+        }
+       }
+
+       @@media (max-width: 1169px) and (min-width: 768px) {
+
+         div.box-link { 
+            width:25% !important;
+            max-width:25% !important;
+         }
+        }
+
+        @@media (max-width: 767px) and (min-width: 300px) {
+           
+         div.box-link { 
+            height: 110px;
+            width:100% !important;
+            max-wdith:100% !important;
+         }
+
+         div.box-links-row {
+            display: inline-block;
+            width:95%;
+         }
+       }
+  </style>
+
+@functions {
+
+      public class BoxLinks
+      {
+          private List<BoxLink> _boxLinks = null;
+
+          public BoxLinks()
+          {
+              _boxLinks = new List<BoxLink>();
+          }
+          
+        public void AddBox(BoxLink item)
+        {
+            _boxLinks.Add(item);
+        }
+        
+        public List<BoxLink> Items 
+        {
+            get { return _boxLinks; }
+        }    
+      }
+      
+  
+      public class BoxLink
+      {
+          public String Name { get; set; }
+          public String Url { get; set; }
+      } 
+}
+
+
+@{
+   //Grab configurable data 
+   BoxLinks links = new BoxLinks();
+   String Url = "";
+   String PerRow = Properties.ItemsPerRow;
+
+
+   foreach (var lks in Properties.Items)
+   {  
+        Url =  lks.ExternalUrl;
+        Url = (lks.Url != null && Url == "") ? lks.Url.Path : Url;
+        links.AddBox(new BoxLink() { Name = lks.Title, Url = (Url != "") ? Url : "#" });
+   }
+
+   int Total = links.Items.Count;
+   int TotalPerRow = (PerRow != string.Empty) ? Convert.ToInt32(PerRow) : 4;
+   int CurrentPerRow = 0;
+
+}
+
+
+<div id='box-links-container'>
+
+@foreach (var boxlink in links.Items)
+{
+   if (CurrentPerRow == 0) { 
+     @Html.Raw("<div class='row'>");
+     @Html.Raw("<div class='col-md-12 zero-pad-left zero-pad-right box-links-row'>");
+   }
+        <div class="col-xs-12 col-sm-3 col-md-2 zero-pad-left zero-pad-right box-link" style="margin-bottom:1.3em">
+            <h2 class="box-link-text">
+                <a class="accessibility-tab text-center" href="@boxlink.Url" style="text-decoration:none;">
+                    <span class="span-link">@boxlink.Name</span>
+                </a>
+            </h2>
+        </div>
+        
+   CurrentPerRow++;
+
+   if (CurrentPerRow == TotalPerRow) { 
+        CurrentPerRow = 0; 
+     @Html.Raw("</div></div>");
+
+   }
+} 
+</div><br/>
+
+
+@*<control name="Channel Shift Box Links" showInMenu="true" category="Favourites" viewingGroup="2">
+ <properties>
+   <category name="Boxes in a row">
+    <text name="ItemsPerRow" label="Number of Items in a row" />
+   </category>
+   <category name="Box Links">
+       <repeater name="Items" min="1" max="12" label="Page Links">  
+        <text name="Title" label="Title (Link)" />
+         <node name="Url" label="URL"   >
+          	<parameters>
+              <parameter name="ContentTypes" value="0,16"></parameter>
+          </parameters>
+        </node>
+        <text name="ExternalUrl" label="External URL" />
+      </repeater> 
+  </category>
+  </properties>
+</control>*@

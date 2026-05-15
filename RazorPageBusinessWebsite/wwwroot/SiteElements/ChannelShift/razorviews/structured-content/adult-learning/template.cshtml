@@ -1,0 +1,327 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date: 23/08/2021
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolAdultLearning;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+@using Blackpool.Zengenti.CMS.Models.SiteView;
+
+
+@{
+
+    Zengenti.Data.PageOptions options = new PageOptions(0, 200);
+    String exceptionError = string.Empty;
+    Boolean isError = false;
+    BlackpoolAdultLearningDTO DTO = null;
+    BlackpoolAdultLearning defaultItem = null;
+    SiteView TopMenu = new SiteView();
+
+    string defaultSlugName = "";
+    String RazorViewlPath = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/adult-learning";     //adult-learning
+    String RazorViewDeathOfaRoyalPath = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/death-of-a-royal";
+
+
+    TopMenu.HomeNodePath = "adult-learning";
+    TopMenu.DefaultNodePath = TopMenu.HomeNodePath;
+
+
+    string currentUrl = this.Request.RawUrl.ToLower();
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                           ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+
+    Zengenti.Contensis.Delivery.Node node = null;
+    Zengenti.Contensis.Delivery.Node topNode = null;
+    List<Zengenti.Contensis.Delivery.Node> temp = new List<Zengenti.Contensis.Delivery.Node>();
+
+
+    try
+    {
+        Zengenti.Data.PagedList<BlackpoolAdultLearning> list = client.Entries.List<BlackpoolAdultLearning>(new EntryListOptions
+        {
+            ContentTypeId = ContensisClientKeys.ADULT_LEARNING_CONTENTTYPE,
+            LinkDepth = 1,
+            PageOptions = options
+
+        });
+
+
+        Config config = new Config()
+        {
+            SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.BlackpoolAdultLearningKey }
+        };
+
+        list.Items = list.Items.FindAll(x => x.IsActive == true);
+
+
+
+        string alias = (!String.IsNullOrEmpty(Request.QueryString["alias"])) ? Request.QueryString["alias"] : "";
+        //Response.Write("alias " + alias);
+
+        string slugs = (!String.IsNullOrEmpty(Request.QueryString["slug"])) ? Request.QueryString["slug"] : "";
+        string slugPath = (!String.IsNullOrEmpty(Request.QueryString["siteViewPath"])) ? Request.QueryString["siteViewPath"] : "";
+        BlackpoolAdultLearning currentItem = null;
+        defaultItem = currentItem = list.Items.Find(x => x.PageTitle == "Home");
+        Zengenti.Contensis.Delivery.Node homeNode = (client.Nodes.GetByEntryId(currentItem.Id)).FirstOrDefault();
+        defaultSlugName = currentItem.Slug = homeNode.Slug;
+        currentItem.Slug = "";
+
+
+        List<Zengenti.Contensis.Delivery.Node> adultLearningNodes = new List<Zengenti.Contensis.Delivery.Node>();
+        adultLearningNodes.Add(homeNode);
+
+        //SiteViewHelper siteviewHelper = new SiteViewHelper(3,config.SeoUrlList.UrlPath, SiteViewKeys.ADULT_LEARNING_PATH);
+        //var listSiteViewLinks = siteviewHelper.GetItemsByName(adultLearningNodes, homeNode.Slug, 0);
+
+
+
+        //if slug is not empty attempt to get associated entry
+        //Get Adult Learning Node (top)
+        topNode = client.Nodes.GetByPath(TopMenu.DefaultNodePath, null, entryLinkDepth: 1, allowPartialMatch: true);
+
+
+        List<Zengenti.Contensis.Delivery.Node> second_level_nodes = new List<Zengenti.Contensis.Delivery.Node>();
+        List<BlackpoolAdultLearning> seccond_level_items = new List<BlackpoolAdultLearning>();
+        if (!string.IsNullOrEmpty(slugs))
+        {
+
+            slugPath = (slugPath != string.Empty) ? slugPath.Substring(0, slugPath.Length - 1) : string.Empty;
+            TopMenu.DefaultNodePath = (slugPath != string.Empty) ? TopMenu.DefaultNodePath + "/" + slugPath + "/" : TopMenu.DefaultNodePath + "/";
+            //Get Adult Learning Node
+            node = client.Nodes.GetByPath(String.Format("{0}/{1}", TopMenu.DefaultNodePath, slugs), null, entryLinkDepth: 1, allowPartialMatch: true);
+            //Response.Write(slugs);
+            //Response.End();
+            if (node != null && node.Entry() != null)
+            {
+
+                currentItem = list.Items.Find(x => x.Id.ToString() == node.Entry().Id.ToString() && x.IsActive == true);
+                currentItem.Slug = slugs;
+                currentItem.SiteViewSlug = slugPath;
+
+                //get all the child nodes ... to be listed on the second level
+                var level_2_nodes = node.Children();
+                foreach (Zengenti.Contensis.Delivery.Node item in level_2_nodes)
+                {
+                    if (item.Entry() != null)
+                    {
+                        var childItem = list.Items.Find(x => x.Id.ToString() == item.Entry().Id.ToString() && x.IsActive == true);
+                        if (childItem != null)
+                        {
+                            childItem.SiteViewSlug = currentItem.Slug + "/" + item.Slug;
+                            second_level_nodes.Add(item);
+                            seccond_level_items.Add(childItem);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        DTO = new BlackpoolAdultLearningDTO()
+        {
+            Config = config,
+            List = null,
+            CurrentItem = currentItem,
+            DefaultItem = defaultItem, //this is the homepage
+            ChildItems = seccond_level_items,
+            BaseImageUrl = Request.Url.AbsoluteUri.Contains("localhost") ? AppSettingKeys.PRVEVIW_CMS_URL : string.Empty,
+            RazorViewPath = RazorViewlPath
+        };
+
+
+        SerialisedContent RawContent = currentItem.GetSerialisedContent();
+
+        ContentSorter sorter = new ContentSorter();
+        DTO.Flow = sorter.sortByGroup(RawContent);
+        DTO.NoImageUrl = "/SiteElements/ChannelShift/Content/Images/sport-blackpool/no-imagebox.png";
+        DTO.IsLocal = true;
+
+        //sitemap work
+        string Id = DTO.CurrentItem.Id;
+        //Grab the children this will be the top menu
+        foreach (var item in topNode.Children())
+        {
+            temp.Add(item);
+        }
+
+
+        TopMenu.Nodes = temp;
+        TopMenu.DefaultSlugName = defaultSlugName;
+        TopMenu.MenuPosition = Menulevel.level_1;
+        TopMenu.ChildNodes = second_level_nodes;
+        DTO.SiteView = TopMenu;
+        DTO.PageType = (DTO.CurrentItem.PageType != string.Empty)
+            ? (AdultLearningPages)Enum.Parse(typeof(AdultLearningPages), DTO.CurrentItem.PageType) : AdultLearningPages.Other;
+
+    }
+
+    catch (Exception ex)
+    {
+        exceptionError = ex.Message;
+        exceptionError = exceptionError + "<br/><br/>" + ex.StackTrace;
+        isError = true;
+    }
+}
+
+<link href="~/SiteElements/ChannelShift/Content/styles/adult-learning/accessibility.css" type="text/css" />
+ <div id="container" class="gutter clearfix" style="max-width:100%; margin: auto;">
+    <a class="blackpooluk-skip-link"  aria-label="skip content link" href="#contemt-inner" tabindex="1">Skip to main content</a>
+    @if (!isError)
+    {
+        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/topmenu.cshtml"), new { Model = DTO })
+        @RenderPage(String.Format("{0}{1}", RazorViewDeathOfaRoyalPath, "/banner.cshtml"), new { });
+
+        if (DTO.PageType == AdultLearningPages.Top_Level_Home)
+        {
+            <div id="homepage-banner" role="navigation" class="zero-pad-all pad-bot-40">
+                <div class="banner-container-text  box-percentage-padding-container">
+                    <div id="light-blue-box">
+                        &nbsp;&nbsp;
+                    </div>
+                    <div id="image-box">
+
+
+                        <img src="~/SiteElements/ChannelShift/Content/images/adult-learning/tablet/group2276tablet.png" alt="adult learning" class="tablet" style="float:right;" />
+
+                        <img src="~/SiteElements/ChannelShift/Content/images/adult-learning/group2276.png" alt="adult learning" class="desktop banner-desktop" />
+                    </div>
+                    <div id="message-box">
+                        <div id="inner-message-box">
+
+                            <div id="banner-heading">
+                                <h2>Welcome to <strong>Blackpool Learning Rooms</strong></h2>
+                            </div>
+                            <div id="banner-image" class="mobile">
+                                <img src="~/SiteElements/ChannelShift/Content/images/adult-learning/mobile/group2276mobile.png" alt="adult learning" class="mobile" style="width:100%;" />
+                            </div>
+                            <div id="banner-text-box">
+                                We are a trusted provider of adult education courses in Blackpool.
+                            </div>
+                            <div id="banner-button">
+                                <a href=" https://courses.blackpoolglobal.net/AvailableCoursesList.asp" class="orange-button accessibility-tab">Enrol Now</a>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="homepage-root-outer-container move clearfix content-space" style="padding: 0px;background-color: #F6F8F9;">
+            <main id="root-container" class="homepage-max-width clearfix">
+                <div id="dynamic-html-content" class="content-inner zero-pad-left zero-pad-right clearfix zero-margin-all">
+                    @if (DTO.PageType != AdultLearningPages.Top_Level_Home)
+                    {
+                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/breadcrumb.cshtml"), new { Model = DTO, Client = client });
+                    }
+
+                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/content.cshtml"), new { Model = DTO, Client = client })
+
+                    @if (DTO.PageType == AdultLearningPages.Top_Level_Home)
+                    {
+                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/three-col-homeblock.cshtml"), new { Model = DTO, Client = client });
+                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/carousel.cshtml"), new { Model = DTO, Client = client });
+                    }
+                    @if (DTO.PageType == AdultLearningPages.Search)
+                    {
+                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/search-results.cshtml"), new { Model = DTO });
+                    }
+                </div>
+                <!-- Accordion Control-->
+                @if (DTO.PageType == AdultLearningPages.Other)
+                {
+                    <div id="accordion-control" class="row zero-margin-all clearfix">
+                        <div class="col-md-12 col-sm-12 zero-pad-all">
+                            @foreach (SerialisedContent item in DTO.Flow.GetContent)
+                            {
+                                string className = item.Items[0].ClassName;
+                                switch (className)
+                                {
+                                    case "AccordionContent":
+                                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/accordion.cshtml"), new { Model = DTO })
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+            </main>
+        </div>
+        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/footer.cshtml"), new { Model = DTO });
+    }
+    else
+    {
+
+        Response.Write(exceptionError);
+        //Response.Redirect("/Errors/404-Error.aspx?error=sb");
+
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(function () {
+            var $body = $(document);
+            $body.bind('scroll', function () {
+                // "Disable" the horizontal scroll.
+                if ($body.scrollLeft() !== 0) {
+                    $body.scrollLeft(0);
+                }
+            });
+        });
+
+        $(function () {
+            $("a", "div#mainbar").addClass("accessibility-tab");
+        });
+    });
+
+
+    $(document).ready(function () {
+
+        $('#responsive-menu-button').sidr({
+            name: 'sidr-main',
+            source: '#navigation',
+            timing: 'ease-in-out',
+            side: 'right',
+            speed: 500,
+            onOpen: function onOpen() {
+                console.log('open menu');
+                $('#responsive-menu-button').hide();
+            },
+            onClose: function onClose() {
+                console.log('close menu');
+                $('#responsive-menu-button').show();
+            }
+        });
+
+        $(".sidr-class-close").click(function (e) {
+            console.log('click close button');
+            $.sidr('close', 'sidr-main');
+            e.preventDefault();
+            return false;
+        });
+
+    });
+</script>
+

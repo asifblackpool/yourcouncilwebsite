@@ -1,0 +1,52 @@
+﻿@{
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - used in head start page
+    // License: Blackpool council
+    // Date: 17/01/2018
+}
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+    HeaderStart contentModel = Page.Content; //Passed Model
+}
+
+<footer class="move">
+    <div class="outer-footer">
+        <div class="row zero-margin-all" style="margin-left:0px; margin-right:0px;">
+            <div class="col-md-3 col-sm-3 col-xs-6  zero-pad-all">
+                <ul class="footer-links">
+                    @if (contentModel != null)
+                    {
+                        <li class="text-links"><a href="@string.Format("{0}{1}.aspx", contentModel.BaseUrlPath,contentModel.Alias)">Contact</a></li>
+                    }
+                    <li class="text-links"><a href="https://www.blackpool.gov.uk/Disclaimer.aspx">Terms & Conditions</a></li>
+                    <li class="text-links"><a href="https://www.blackpool.gov.uk/Privacy-policy-and-cookies.aspx">Privacy Notice</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-6  zero-pad-all">
+                <ul class="footer-links">
+                    <li><a href="https://www.facebook.com/HSBlackpool/" class="fa fa-facebook"><span class="social-media-title">&nbsp;Facebook</span></a></li>
+                    <li><a href="https://twitter.com/HSBLACKPOOL" class="fa fa-twitter"><span class="social-media-title">Twitter</span></a></li>
+                    <li><a href="https://www.instagram.com/hsblackpool/" class="fa fa-instagram"><span class="social-media-title">Instagram</span></a></li>
+                    <li><a href="https://www.youtube.com/channel/UCgW4b98BSpp0a7wh2_h6nCQ" class="fa fa-youtube-play"><span class="social-media-title">Youtube</span></a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-12 national-lottery-image  zero-pad-all">
+                <a href="https://www.lotterygoodcauses.org.uk/funding"><img alt="National Lottery" src="/SiteElements/ChannelShift/Content/images/headstart/global/national-lottery.png"></a>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-12 blackpool-council-image  zero-pad-all">
+                <a href="https://www.blackpool.gov.uk/"><img class="footer-council-logo" alt="Blackpool Council" src="/SiteElements/ChannelShift/Content/images/headstart/global/BlackpoolCouncilLogo.png"></a>
+            </div>
+        </div>
+    </div>
+</footer>
+@*<control name="headstart footer" showInMenu="true" category="Favourites" viewingGroup="2" />*@@*<control name="headstart footer" showInMenu="true" category="Favourites" viewingGroup="2" />*@

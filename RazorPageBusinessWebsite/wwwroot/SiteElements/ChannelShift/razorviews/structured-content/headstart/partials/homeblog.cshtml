@@ -1,0 +1,60 @@
+﻿
+@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - render the blog home page
+    // License: Blackpool council
+    // Date: 21/02/2018
+
+}
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+
+@{
+    HeaderStart model = Page.Content; //Passed Model
+    List<Blog> bloglist = model.PageContent[0].Blogs; //Passed Model
+    bloglist.Sort(new BlogSort());
+}
+
+
+
+<div class="intro-text">@Html.Raw(model.PageContent[0].BodyContent)</div>
+@if (bloglist != null && bloglist.Count > 0)
+            {
+<div class="row equal clearfix">
+ 
+    @foreach (var item in bloglist)
+    {
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 zero-pad-all" onclick="window.location = '@string.Format("{0}{1}/{2}/{3}.aspx", model.BaseUrlPath , model.Alias.ToLower(), item.DateOfPostSlug, item.TitleSlug)'" style="cursor:pointer">
+            <div class="blog-container">
+                <div class="image-gallery">
+                    <a href="@string.Format("{0}/{1}{2}/{3}.aspx", model.BaseUrlPath, model.Alias.ToLower(), item.DateOfPostSlug, item.TitleSlug)">
+                        @if (item.Image.Length < 1)
+                        {
+                            <img src="http://placehold.it/370x250" alt="no image" class="img-responsive" />
+                        }
+                        else
+                        {
+                            <img src="@item.Image[0].Asset.Uri" alt="@item.Image[0].Caption" class="img-responsive" />
+                        }
+                    </a>
+                </div>
+                <div class="text-gallery">
+                    <h3 class="purple"><strong>@StringUtility.CutString(item.Title, 22, true)</strong></h3>
+                    <p class="dark-blue">@Html.Raw(StringUtility.CutString(HTMLParser.cleanHtml(item.Post), 200, true))</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+            }

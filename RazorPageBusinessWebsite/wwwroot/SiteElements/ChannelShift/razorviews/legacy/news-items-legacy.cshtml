@@ -1,0 +1,58 @@
+﻿@using Contensis.Framework.Web
+@using Contensis.Framework.Web.Search
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess
+
+@{
+	Uri myuri = new Uri(System.Web.HttpContext.Current.Request.Url.AbsoluteUri);
+ 	string pathQuery = myuri.PathAndQuery;
+ 	string hostName = myuri.ToString().Replace(pathQuery , "");
+	var table = "SearchContent";
+	
+
+    SqlDataAccess sda = new SqlDataAccess(AppContext.Current.Server.ConnectionString);
+	string sql = "SELECT TOP 4 SC_NodeID, PROPERTY_Title, PROPERTY_ImageUrl, Property_FullPath FROM " + table + " WHERE [SC_T_ID] in ('-672', '-33982') Order By property_datepublished desc";
+
+	DataRowCollection drc = sda.GetDataRows(sql);
+    var count = 0;
+  
+}
+
+
+<div class="latest-news clearfix" >
+<strong class="home-h3">Latest News</strong>
+  <div class="row clearfix latest-news-wrapper">
+    @if (drc!= null) {      
+	    foreach(DataRow dr in drc)
+        {     
+  		    var title = dr["PROPERTY_Title"];
+  		    var imagePath = dr["PROPERTY_ImageUrl"];
+  		    var path = dr["Property_FullPath"];
+  		    var cls  = "figure-wrapper pull-right"; 
+  		    var cls2 = "thirty-pad-right news-items";
+
+            ++count;       
+      	    try
+            {
+          
+        	    if (count == 3) { break;}
+                if (count > 0 ) { cls2 = "zero-pad-right news-item"; }
+    
+          	     <div class="col-xs-12 col-sm-6 col-md-6 zero-pad-left @cls2">
+				    <a href="@path" title="link description: @title" class="accessibility-tab">
+                        <figure class="figure-wrapper">
+                    	     <div class="icon-wrapper">	<img src="@imagePath" alt="@title" /></div>
+                            <figcaption> <h4 style="color:#000; font-size:22px;">@title</h4></figcaption>
+                        </figure>
+				    </a>
+                 </div>  
+            } 
+  		    catch (Exception e) 
+            {
+        	    Response.Write(" error " + e + " <br />"); 
+            }
+	    }
+    }
+</div>
+ </div>@*<control name="channel shift news item legacy" showInMenu="true" category="favourites" viewingGroup="1">
+</control>*@

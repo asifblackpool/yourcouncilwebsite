@@ -1,0 +1,302 @@
+﻿@{
+
+    // Name: Channel Shift - News Item using News Story Content types
+    // Developer: Asif Nissar
+    // Name: News Item
+    // License: Blackpool council
+    // Date: 14/07/2022
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Helpers.Standard;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+@using Blackpool.Zengenti.CMS.Models.NewsStory;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+
+
+
+@{
+    string pagePath = Page.PagePath;
+    Zengenti.Data.PageOptions options = new PageOptions(0, 1000);
+    string currentUrl = this.Request.RawUrl.ToLower();
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                            ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+
+    NewsStory defaultNewsStory = null;
+    SerialisedContent articleContent = null;
+    Zengenti.Data.PagedList<NewsStory> list = null;
+    List<NewsStory> categories = null;
+    Config config = null;
+    string slug = null;
+    string noImageUrl = "/SiteElements/ChannelShift/Content/Images/sport-blackpool/no-imagebox.png";
+    String RazorPath = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/newsstory";
+
+    try
+    {
+        list = client.Entries.List<NewsStory>(new EntryListOptions
+        {
+            ContentTypeId = ContensisClientKeys.NEWS_STORY,
+            LinkDepth = 1,
+            PageOptions = options
+
+        });
+
+        config = new Config()
+        {
+            SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.NewsStoryKey }
+        };
+
+
+
+        slug = UrlHelper.GetPageAspxName(currentUrl);     //we are using entry title (as it picks up special characters like £, etc ..
+        slug = slug.Replace("'", string.Empty).Replace("£", string.Empty);
+
+        if (list != null && slug != string.Empty)
+        {
+
+            if (list.Items.Find(x => x.Slug.ToLower().Trim() == slug.ToLower().Trim()) != null)
+            {
+                defaultNewsStory = list.Items.Find(x => x.Slug.Trim().ToLower() == slug.Trim().ToLower() && x.Published == true);
+            }
+        }
+
+        if (defaultNewsStory == null)
+        {
+            defaultNewsStory = list.Items.Where(x => x.Published == true).FirstOrDefault();
+        }
+
+        articleContent = (defaultNewsStory != null) ? defaultNewsStory.ArticleContent : articleContent;
+
+    }
+    catch
+    {
+
+    }
+
+
+}
+
+@if (defaultNewsStory != null)
+{
+    List<NewsStory> stories = list.Items.Where(x => x.Published == true).ToList().OrderByDescending(y => y.DatePublished).ToList();
+    var selectedCategories = defaultNewsStory.Categories.FirstOrDefault();
+
+    if (selectedCategories != null)
+    {
+        categories = (from s in stories
+                      where s.Categories.Contains(selectedCategories)
+                      orderby s.Title
+                      select s).OrderByDescending(x => x.DatePublished).ToList();
+    }
+
+    <div style="display:none;">
+        <p> current Url is @string.Format("{0}", currentUrl)</p>
+    </div>
+    <div class="news-container">
+        <p class="date-published" style="margin-top:20px;">@string.Format("{0}", StringUtility.DateTextFull(defaultNewsStory.DatePublished))</p>
+        <h1 class="pad-bot-20">@defaultNewsStory.Title</h1>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 pad-bot-20 zero-pad-left zero-pad-right">
+                <h2>@Html.Raw(defaultNewsStory.Introduction)</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 pad-bot-20 zero-pad-left zero-pad-right">
+                @if (defaultNewsStory.MainImage != null)
+                {
+                    <img src="@String.Format("{0}{1}",UrlHelper.GetBaseUrl(false, currentUrl),defaultNewsStory.MainImage.Asset.Uri)" alt="@defaultNewsStory.MainImage.AltText" style="width:100%;" />
+                    if (defaultNewsStory.MainImage.Caption != null)
+                    {
+                        <figcaption>@defaultNewsStory.MainImage.Caption</figcaption>
+                    }
+
+                }
+
+                @if (defaultNewsStory.ThumbnailImage != null && defaultNewsStory.MainImage == null)
+                {
+                    <img src="@String.Format("{0}{1}",UrlHelper.GetBaseUrl(false, currentUrl),defaultNewsStory.ThumbnailImage.Asset.Uri)" alt="@defaultNewsStory.ThumbnailImage.AltText" style="width:100%;" />
+                }
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="article-content" class="col-lg-12 col-md-12 col-sm-12 zero-pad-left zero-pad-right">
+                @foreach (var content in articleContent.Items)
+                {
+                    string classname = content.ClassName;
+                    string containerType = content.ContainerType;
+
+                    <strong style="display:none">@classname</strong>
+                    <strong style="display:none">@containerType</strong>
+
+                    switch (containerType)
+                    {
+                        case "richText":
+                            <div class="rich-text pad-bot-20">@Html.Raw(String.Format("{0}", new RichTextHelper(content).RichText))</div>
+                            break;
+                        case "quote":
+                            <div class="quote-text pad-bot-20"><blockquote>@String.Format("{0}", new QuoteHelper(content).Quote.Text)</blockquote></div>
+                            break;
+                        case "image":
+                            <div class="image-block pad-bot-20">
+                                @{
+                                    Image img = new ImageHelper(content).Image;
+                                }
+                                <img src="@String.Format("{0}{1}",UrlHelper.GetBaseUrl(false, currentUrl),img.Asset.Uri)" alt="@img.AltText" />
+                            </div>
+                            break;
+                        case "multipleImage":
+                            <div class="image-block pad-bot-20">
+                                @RenderPage(String.Format("{0}{1}", RazorPath, "/Partials/subs/carousel.cshtml"), new { Model = content, PagePath = pagePath })
+                            </div>
+                            break;
+                        case "video":
+                            <div class="video-block pad-bot-20">
+                                @{
+                                    Video video = new VideoHelper(content).Video.FirstOrDefault();
+                                }
+                                <!--start of video -->
+                                <div id="video" class="editor">
+                                    <div class="iframe-wrapper" style="text-align:center; margin:auto; min-height:375px; height:375px; width:100%;">
+                                        <iframe id="iframe" src="@video.Url" title="@video.Title" frameborder="0" height="100%" width="100%"></iframe>
+                                    </div>
+                                </div>
+                                <!--end of video -->
+                            </div>
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            </div>
+        </div>
+
+
+        @if (categories != null)
+        {
+            int counter = 0;
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 zero-pad-left zero-pad-right">
+                    <h3>Related news stories</h3>
+                    <ul class="related-news">
+                        @foreach (var item in categories)
+                        {
+                            string linkNewStory = String.Format(pagePath, item.Slug, StringUtility.DateSlug(item.DatePublished));
+                            if (item.Slug != slug)
+                            {
+                                <li><a class="accessibility-tab" href="@linkNewStory">@item.Title</a></li>
+                                counter++;
+                            }
+                            if (counter >= 3)
+                            {
+                                break;
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+
+
+    </div>
+
+ <script type="text/javascript">
+
+     $(document).ready(function () {
+         var h1 = $("#landing-title").find("h1");
+         h1.html('@defaultNewsStory.Title');
+     });
+
+   
+ </script>
+}
+
+
+<style type="text/css">
+
+    div.news-container {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
+    .padding-all-20 {
+        padding: 20px;
+    }
+
+    .zero-pad-left {
+        padding-left: 0px;
+    }
+
+    .zero-pad-right {
+        padding-right: 0px;
+    }
+
+    .pad-bot-20 {
+        padding-bottom: 20px;
+    }
+
+    blockquote {
+        padding: 1.875rem 2.5rem 1.875rem 5rem;
+    }
+
+    blockquote {
+        font-size: 19.2px !important;
+        font-size: 1.5rem;
+        font-style: normal;
+        font-weight: 400;
+        background-color: #e6ebed;
+        color: #0a2d50;
+        margin-bottom: 0;
+        padding: 1.25rem;
+        position: relative;
+        line-height: 1.6em;
+    }
+
+    blockquote {
+        margin: 0 0 1rem;
+    }
+
+    *, ::after, ::before {
+        box-sizing: border-box;
+    }
+
+    ul.related-news {
+        position: relative;
+        left: -35px;
+    }
+
+    ul.related-news li {
+        line-height: .9em;
+        list-style: none;
+        background: url(/SiteElements/ChannelShift/content/images/landing-pages/bullet.svg) no-repeat 0 0.4em;
+        padding: 0 0 10px 20px;
+    }
+
+    ul.related-news li a {
+        line-height: 1.2em;
+        font-size: 19.2px;
+        font-weight: 400;
+    }
+
+    figcaption {
+        font-size: 17.5px;
+        color: #696969;
+    }
+</style>
+
+

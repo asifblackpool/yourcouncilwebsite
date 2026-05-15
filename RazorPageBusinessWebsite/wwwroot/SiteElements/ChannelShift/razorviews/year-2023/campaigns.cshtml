@@ -1,0 +1,69 @@
+﻿@{
+
+    // Emergency Box
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Require
+}
+@{
+  	   String  display = (Properties.CmapaignBox.Count  > 0 ) ? Properties.CmapaignBox[0] : "Hide";
+       String  title = Properties.TitleHeader;
+       String  message = Properties.CampaignText;
+       string  backgroundImage = (Properties.CampaignImageUrl != null) ? Properties.CampaignImageUrl.Path  : string.Empty;
+       String  infoLink = (Properties.Campaignink != null) ? Properties.Campaignink.Path : String.Empty;
+  	   String  show = (display == "Hide") ? "none;" : "block;";
+       string  style = string.Format("style=\"display:{0}\"", show);
+
+}
+
+<div id="campaign" class="row" @Html.Raw(style)>
+    <div class="campaign-image col-md-12 zero-pad-left zero-pad-right" style="background-image: url('@backgroundImage');">
+        <div id="campaign-banner">
+            <h3 class="campaign-title">@title</h3>
+            <p class="campaign-text">@Html.Raw(message)</p>
+            <a href="@infoLink" title="find out more">Find out more</a>
+        </div>
+    </div>
+</div>
+
+
+
+@*<control name="campaigns homepage" showInMenu="true" category="favourites" viewingGroup="1">
+ <properties>
+    <category name="campaigns box">
+      <instruction label="Configurable Campaign Box">
+        campaigns image box
+
+            1. Title
+            2. Text
+            3. BacgroundImage (eg. /siteElements/channelshift/content/images/placeholders/1180x300.png)
+            4. link to campaign page
+
+      </instruction>
+      
+      <instruction label="CampaignBox Details"></instruction>
+      <text name="CmapaignBox" editor="checkbox">
+    		<options>
+        		<option label="Show" value="show" />  
+    		</options>
+	  </text>
+      <text name="TitleHeader" label="Title" description="">
+        <parameters>
+          <parameter name="SingleLine" value="true"/>
+        </parameters>
+      </text>
+        <text name="CampaignText" label="Text" description="">
+        <parameters>
+          <parameter name="MultiLine" value="true"/>
+        </parameters>
+      </text>
+       <node name="CampaignImageUrl" />
+      <node name="Campaignink" label="Link">
+        <parameters>
+        <parameter name="ContentTypes" value="0"></parameter>
+        </parameters>
+      </node>
+      
+    </category>
+  </properties>
+</control>*@

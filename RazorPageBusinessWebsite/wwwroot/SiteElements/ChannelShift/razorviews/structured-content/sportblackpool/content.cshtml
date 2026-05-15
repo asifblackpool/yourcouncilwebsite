@@ -1,0 +1,294 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Template (used for sportsblackpool)
+    // License: Blackpool council
+    // Date: 22/05/2018
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+
+@{
+    bool formRender = false;
+    SportBlackPoolDTO DTO = Page.Model;
+    int ctaLinkCounter = 0;
+
+    TimeTables timeTable = TimeTables.Ignore;
+    if (DTO.CurrentItem.TimeTables.Count > 0)
+    {
+        timeTable = AttributeExtensions.GetValueFromAttribute<TimeTables, TimeTablesAttribute>(DTO.CurrentItem.TimeTables[0], a => a.Name);
+    }
+    string ttname = string.Format("/partials/{0}-timetable.cshtml", (timeTable == TimeTables.Class) ? "class" : "swim");
+    var test = DTO.Flow.GetContent;
+
+
+    bool showRightDiv = false;
+    foreach (SerialisedContent item in DTO.Flow.GetContent)
+    {
+        string cn = item.Items[0].ClassName;
+
+        switch (cn)
+        {
+            case "OpeningTimes":
+                showRightDiv = true;
+                break;
+            case "ImageGallery":
+                showRightDiv = true;
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+
+
+<div id="content-inner" class="content-space clearfix" style="margin-bottom:20px;">
+    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/printerlinks.cshtml"), new { Model = DTO })
+    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/breadcrumb.cshtml"), new { Model = DTO })
+    @if (DTO.CurrentItemPageType == (SportBlackpoolPageTypes.ThirdLevel) ||
+         DTO.CurrentItemPageType == (SportBlackpoolPageTypes.HiddenLevel) &&
+         DTO.CurrentItem.Alias.ToLower() != SportBlackpoolKeys.SEARCH.ToLower()
+        )
+    {
+        if (timeTable == TimeTables.Ignore)
+        {
+    <div class="row zero-margin-all clearfix">
+      
+            <div id="@string.Format("{0},", showRightDiv ? "content-left" : "content-full-width")" class="@string.Format("{0},", showRightDiv ? "col-md-8 zero-pad-all" : "col-md-12 col-sm-12 zero-pad-all")">
+                @{
+                    foreach (SerialisedContent item in DTO.Flow.GetContent)
+                    {
+                        string partial = string.Empty;
+                        string className = item.Items[0].ClassName;
+                        string containerType = item.Items[0].ContainerType;
+
+
+                        if (className == "CTALink")
+                        {
+                            ctaLinkCounter++;
+                        }
+
+                        <strong style="display:none">@className</strong>
+                        switch (className)
+                        {
+                            case "AccordionContent":
+                                @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/accordion.cshtml"), new { Model = DTO })
+                                break;
+                            case "ContentBox":
+                                @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/markup.cshtml"), new { Model = DTO, Markup = item.Items })
+                                break;
+                            case "CTALink":
+                                @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/cta-link.cshtml"), new { Model = DTO, CtaLinks = item.Items, CtaCounter = 0 })
+
+                                break;
+                            case "Venue":
+                                @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/map.cshtml"), new { Model = DTO })
+                                break;
+                            case "ImageBox":
+                                partial = (item.Items[0].ContainerType == ComponentKeys.IMAGE_BOX) ? "gallery" : string.Empty;
+                                break;
+                            case "Video":
+                                @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/video.cshtml"), new { Model = DTO })
+                                break;
+                            case "Form":
+                                formRender = true;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        if (partial != string.Empty)
+                        {
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, String.Format("/partials/{0}.cshtml", partial)), new { Model = DTO, Markup = item.Items })
+                        }
+
+                        if (formRender)
+                        {
+                            <h2>@DTO.CurrentItem.Title</h2>
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/form.cshtml"), new { Model = DTO })
+                            formRender = false;
+                        }
+                    }
+                }
+
+            </div>
+            @if (showRightDiv)
+            {
+                <div id="content-right" class="col-md-4 zero-pad-all">
+                    @{
+                        foreach (SerialisedContent item in DTO.Flow.GetContent)
+                        {
+                            string className = item.Items[0].ClassName;
+                            string containerType = item.Items[0].ContainerType;
+
+                            switch (className)
+                            {
+                                case "OpeningTimes":
+                                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/opening-times.cshtml"), new { Model = DTO })
+                                    break;
+                                case "ImageGallery":
+                                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/caption-gallery.cshtml"), new { Model = DTO })
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                </div>
+            }
+        </div>
+        }
+        else
+        {
+        <div class="row zero-margin-all clearfix">
+            <div id="content-full-width" class="col-md-12 col-sm-12 zero-pad-all">
+                @{
+                    ctaLinkCounter = 0;
+                    foreach (SerialisedContent item in DTO.Flow.GetContent)
+                    {
+                        string className = item.Items[0].ClassName;
+                        string containerType = item.Items[0].ContainerType;
+                        <strong style="display:none;">@className</strong>
+
+                        if (className == "CTALink")
+                        {
+                            ctaLinkCounter++;
+                        }
+
+                        switch (className)
+                        {
+                            case "ContentBox":
+                                @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/markup.cshtml"), new { Model = DTO, Markup = item.Items })
+                                break;
+                            case "CTALink":
+                                @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/cta-link.cshtml"), new { Model = DTO, CtaLinks = item.Items, CtaCounter = ctaLinkCounter });
+                                break;
+                            case "Form":
+                                formRender = true;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, ttname), new { Model = DTO })
+                <div id="load-message" class="overlay" style="width: 100%;border: solid 2px purple">
+                    <a class="closebtn" href="javascript:void(0)">&times;</a>
+                    <div class="overlay-content">
+                        <div style="position: relative; left:0%; top:-50%; min-height:300px; display:block;" id="loading-indicator">
+                            <strong><img alt="" height="44" width="44" src="/SiteElements/ChannelShift/Content/images/gif.gif" /> ... Loading</strong><br /><br />
+                            <p class="overlay-message">Loading timetable data ... please wait thank you!.</p>
+                        </div>
+
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    var closeOverlay = function () {
+                        commonsportblackpoolservices.overlay("load-message", 0, "");
+                        commonsportblackpoolservices.hide('loading-indicator');
+                    };
+                    var bindEscapeKey = function () {
+                        $(document).on('keydown', function (e) { if (e.keyCode === 27) { closeOverlay(); } });
+
+                        $(document).on('click', "a.closebtn", function (e) {
+                            e.preventDefault();
+                            closeOverlay();
+                        });
+                    };
+
+                    bindEscapeKey();
+                </script>
+
+            </div>
+        </div>
+        }
+        }
+        else
+        {
+        <div class="row zero-margin-all clearfix">
+            <div id="content-full-width" class="col-md-12 col-sm-12 zero-pad-all">
+                @foreach (SerialisedContent item in DTO.Flow.GetContent)
+                {
+                    string partial = string.Empty;
+                    string className = item.Items[0].ClassName;
+                    string containerType = item.Items[0].ContainerType;
+                    <strong style="display:none;">@className</strong>
+                    switch (item.Items[0].ClassName)
+                    {
+                        case "AccordionContent":
+                            partial = "accordion";
+                            break;
+                        case "ContentBox":
+                            partial = "markup";
+                            break;
+                        case "CTALink":
+                            partial = "cta-link";
+                            break;
+                        case "ImageBox":
+                            partial = (item.Items[0].ContainerType == ComponentKeys.IMAGE_BOX) ? "gallery" : string.Empty;
+                            partial = (item.Items[0].ContainerType == ComponentKeys.CAROUSEL) ? "carousel" : partial;
+                            break;
+                        case "Video":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/video.cshtml"), new { Model = DTO })
+                            break;
+                        case "Form":
+                            formRender = true;
+                            break;
+                        default:
+                            break;
+                    }
+                    if (partial != string.Empty)
+                    {
+                        if (partial == "cta-link")
+                        {
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, String.Format("/partials/{0}.cshtml", partial)), new { Model = DTO, CtaLinks = item.Items, CtaCounter = 0 })
+                        }
+                        else
+                        {
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, String.Format("/partials/{0}.cshtml", partial)), new { Model = DTO, Markup = item.Items, })
+                        }
+
+
+                    }
+
+                    if (formRender)
+                    {
+                        <h2>@DTO.CurrentItem.Title</h2>
+                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/form.cshtml"), new { Model = DTO })
+                        formRender = false;
+                    }
+
+                }
+
+                @if (DTO.CurrentItem.Alias.ToLower() == SportBlackpoolKeys.SEARCH.ToLower())
+                {
+                    //search results
+                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, String.Format("/partials/search-results.cshtml")), new { Model = DTO })
+
+                }
+            </div>
+        </div>
+        }
+    </div>
+
+
+

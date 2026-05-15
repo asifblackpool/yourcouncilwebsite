@@ -1,0 +1,59 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: HTML Mak up for Parks and Greenspaces
+    // License: Blackpool council
+    // Date: 11/10/2022
+}
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+    ParksAndGreenSpacesDTO DTO = Page.Model;
+    List<SerialisedItem> SerialisedMarkup = Page.Markup;
+    List<ContentBoxWithImage> HtmlMarkupWithImage = new List<ContentBoxWithImage>();
+    string currentUrl = this.Request.RawUrl.ToLower();
+
+    Config config = DTO.Config;
+
+
+    if (SerialisedMarkup != null)
+    {
+        foreach (var item in SerialisedMarkup)
+        {
+            HtmlMarkupWithImage.Add(SerializeHelper.Deseralize(item) as ContentBoxWithImage);
+        }
+    }
+
+}
+
+
+
+@if (HtmlMarkupWithImage != null && HtmlMarkupWithImage.Count > 0)
+{
+
+    foreach (var item in HtmlMarkupWithImage)
+    {
+        <div class="content-box-with-image row">
+            <div class="col-md-6">
+                @Html.Raw(String.Format("{0}", item != null ? item.Markup : string.Empty))
+            </div>
+            <div class="col-md-6">
+                @if (item.Image != null)
+                {
+                    <img src="@string.Format("{0}{1}", UrlHelper.GetBaseUrl(true, currentUrl) ,item.Image.Asset.Uri)" alt="" />
+                }
+                
+            </div>
+        </div>
+
+    }
+   
+}
+
+

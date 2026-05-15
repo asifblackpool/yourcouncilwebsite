@@ -1,0 +1,31 @@
+﻿@using RazorPageBusinessWebsite.Core.Models
+@using RazorPageBusinessWebsite.Helpers;
+
+@model List<BreadcrumbItem>
+
+@{
+    int counter = 1;
+}
+
+@if (Model != null && Model.Any())
+{
+<div class="row">
+    <div id="crumbs" class="clearfix col-md-12 col zero-pad-all">
+        <ul>
+            @foreach (var item in Model)
+            {
+            <li class="@string.Format("{0}", (counter == Model.Count) ? "last" : string.Empty)">
+                <a class="accessibility-tab" href="@string.Format("{0}", (counter == 1) ? NavigationLinkHelper.GetHomeLink() : item.Url)">@item.Title.CapitalizeFirstLetter().Replace(".aspx", string.Empty)</a>
+             </li>
+             if(counter != Model.Count)
+             {
+                <li>&gt;</li>
+             }
+             counter++;
+            }
+        </ul>
+
+    </div>
+</div>
+}
+

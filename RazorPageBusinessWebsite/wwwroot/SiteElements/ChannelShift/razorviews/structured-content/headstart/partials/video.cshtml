@@ -1,0 +1,37 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - render the general (generic) page
+    // License: Blackpool council
+    // Date: 21/02/2018
+
+}
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+
+@{
+    var video = Page.Video;
+}
+
+<div class="row equal zero-margin-all">
+    <div class="col-md-12 col-sm-12 col-xs-12 zero-pad-all clearfix" style="margin-bottom:20px; margin-left:0px; margin-right:0px;">
+        <!--start of video -->
+        <div id="video" class="editor">
+            <div class="iframe-wrapper" style="text-align:center; margin:auto; min-height:320px;">
+                <iframe id="iframe" src="@video.Url" frameborder="0"></iframe>
+            </div>
+        </div>
+        <!--end of video -->
+    </div>
+</div>
+

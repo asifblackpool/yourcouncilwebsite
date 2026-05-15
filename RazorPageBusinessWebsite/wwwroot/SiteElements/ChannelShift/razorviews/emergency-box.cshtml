@@ -1,0 +1,127 @@
+﻿@{
+
+    // Emergency Box
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Require
+}
+@{
+
+       String  messageColor = Properties.Color;
+  	   String  display = (Properties.ShowEmergencyBox.Count  > 0 ) ? Properties.ShowEmergencyBox[0] : "Hide";
+       String  title = Properties.EmergencyTextHeader;
+       String  message = Properties.EmergencyTextMessage;
+       String  infoLink = (Properties.EmergencyBoxLink != null) ? Properties.EmergencyBoxLink.Path : String.Empty;
+       String  showLink = (infoLink == "") ? "none;" : "block;";
+  	   String  showEmergencyBox = (display == "Hide") ? "none;" : "block;";
+       String  warningType = (messageColor == "#e68a00") ? "important warning" : "severe warning";
+}
+
+
+@if (display != "Hide") {
+
+ <style type="text/css">
+    p.emergency-message {
+        color:#000 !important; 
+        position:relative !important; 
+        left:28px !important; 
+        margin-right:20px !important;
+        margin-left:20px !important;
+    }
+
+        i.emergency-icon { 
+        font-size: 60px !important;
+        top:20px;
+        left: 8px;
+    }
+
+    #emergency-box {
+        border-left:15px solid @messageColor;
+
+    }
+
+    @@media screen and (max-device-width:760px) {
+
+        #emergency-box {
+            overflow-x: hidden;
+             border-left:15px solid @messageColor;
+             width:calc(100% - 5px);
+
+        }
+
+        span.emergency-title {
+            position:relative;
+            left:15px;
+        }
+
+        p.emergency-message {
+            text-align:left !important;
+        }
+
+        i.emergency-icon { 
+            font-size: 30px !important;
+            top:16px;
+        }
+ }
+
+
+</style>
+
+  <div id="emergency-box" class="row emergency-box" style="display:@showEmergencyBox; background-color:#eee;" role="contentinfo">
+      <div id="emergency-placeholder" class="col-md-12" style="color:#000;padding-bottom:20px;">
+          <span class="emergency-title"><strong>@title</strong></span>
+          <i class="fa fa-exclamation-circle emergency-icon" aria-hidden="true" style="color:@messageColor;position:absolute;"></i>
+          <p class="emergency-message">@Html.Raw(message)</p>
+          <p class="more-info" title="more information" style="color:#000; display:@showLink">
+              <input type="button" class="btn btn-info accessibility-tab" value="More information" onclick="window.location = '@infoLink'" style="font-weight:bold; height:40px;background-color:#b5bd00; border-color:#b5bd00; color:#041c2c;" />
+          </p>
+      </div>
+</div>
+}@*<control name="channel shift emergency box" showInMenu="true" category="favourites" viewingGroup="1">
+ <properties>
+    <category name="emergency box">
+      <instruction label="Configurable Emergency Box">
+        Emergency Box Details
+        
+        Example : Emergency Box Examples 
+        
+        			EmergencyTextHeader	 : "Storm Warnings , 
+        			EmergencyText        : "A storm warning has been given for 8th January 2016
+        			EmergencyBoxLink 	 : blackpool.gov.uk/link.aspx 
+        
+        Note: 1. The Page Link is optional and you can keep this empty.
+        	  2. To Hide Emergency message simply untick the checkbox.
+      </instruction>
+      
+      <instruction label="Emergency Box Details"></instruction>
+      <text name="ShowEmergencyBox" editor="checkbox">
+    		<options>
+        		<option label="Show" value="show" />  
+    		</options>
+	  </text>
+        <text name="Color" label="Please Select Color Type">
+        <options>
+          <option label="Red" value="#cc0000" />
+          <option label="Amber" value="#e68a00" />
+        </options>
+      </text>
+      <text name="EmergencyTextHeader" label="Title" description="">
+        <parameters>
+          <parameter name="SingleLine" value="true"/>
+        </parameters>
+      </text>
+        <text name="EmergencyTextMessage" label="Message" description="">
+        <parameters>
+          <parameter name="MultiLine" value="true"/>
+        </parameters>
+      </text>
+      <node name="EmergencyBoxLink" label="Page Link">
+        <parameters>
+        <parameter name="ContentTypes" value="0"></parameter>
+        </parameters>
+      </node>
+      
+    </category>
+  </properties>
+</control>
+    *@

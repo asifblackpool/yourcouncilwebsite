@@ -1,0 +1,153 @@
+﻿@{
+
+    // Death of Royal Overlay
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date 19/09/2018
+}
+
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.DeathOfARoyal;
+
+ 
+
+@{
+   DeathRoyal RoyalModel    = Page.Model;
+   String ImageUrl          = Page.ImageUrl;
+   ContentBox cb            = Page.ContentBox;
+   CTALink cta              = Page.CtaLink;
+    
+}
+<div style="height:40px; width:100%; text-align:right;"><a href="#" class="round-button">X</a></div>
+<div id="death-of-a-royal-box" class="row zero-pad-all">
+    <div class="col-md-12 zero-pad-all">
+        <h2 style="font-size:60px; margin-top:-15px; color:black;"><strong>@RoyalModel.Name</strong></h2>
+        <h3 style="display:block;color:black;padding-bottom:20px;"><strong>@String.Format("{0: d MMMM, yyyy} - {1:d MMMM, yyyy}", RoyalModel.BirthDeathDate.From, RoyalModel.BirthDeathDate.To)</strong></h3>
+    </div>
+</div>
+<div class="row zero-pad-all">
+    <div class="col-md-12 col-sm-12 zero-pad-all" style="display:block;">
+        <div id="image-container">
+            <img src="@ImageUrl" title="@RoyalModel.Name" alt="@RoyalModel.Name" style=" margin-left:10px;" class="royal-image" />
+        </div>
+
+    </div>
+    <div class="col-md-12 col-sm-12 zero-pad-all" style="text-align:center;">
+        @Html.Raw(String.Format("{0}", cb != null ? cb.Markup : string.Empty))
+    </div>
+    @if (cta != null)
+    {
+        string Url = (cta.LinkedContentPage != null) ? "not-set" : cta.ExternalURL;
+        int maxwidth = (cta.ButtonText.Length > 20) ? 330 : 210;
+        <div class="col-md-12 col-sm-12 zero-pad-all" style="margin-top:30px;">
+            <a class="cta-link-button" onclick="window.location.href='@string.Format("{0}", Url)'" style='@string.Format("text-decoration:none;max-width:{0}px;", maxwidth)'>@cta.ButtonText</a>
+        </div>
+    }
+</div>
+<br />
+<style type="text/css">
+    .royal-overlay {
+        position: absolute; 
+        width: 100%; 
+        height: 100%; 
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+        z-index: 150; 
+        cursor: pointer;
+        opacity:0.98;
+        padding:15px;
+    }
+
+    .round-button {
+        display: block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        border: 1px solid #f5f5f5;
+        border-radius: 50%;
+        color: black;
+        text-align: center;
+        text-decoration: none;
+        background: #fff;
+        box-shadow: 0 0 3px gray;
+        font-size: 20px;
+        font-weight: bold;
+        float:right;
+        position:relative;
+        top:-12px;
+        left:-7px;
+        z-index:99999;
+    }
+
+    .round-button:hover {
+            background: gray;
+            text-decoration:none;
+     }
+
+    a.cta-link-button {
+        cursor: pointer;
+        display: block;
+        border: solid 0px #830065;
+        max-width: 160px;
+        text-align: center;
+        border-radius: 5px;
+        font-weight: bold;
+        padding: 5px;
+        margin: auto;
+        font-size: 24.12px !important;
+        font-weight: 700;
+        text-transform: capitalize;
+        background-color: #B3bd00;
+        color: #041c2c;
+        height: 45px;
+    }
+
+    a.cta-link-button:hover {
+            font-weight: bold;
+            text-decoration: none;
+            color: #041c2c;
+            background-color: #e6e6e6;
+            border-color: #adadad;
+    }
+
+    div#image-container {
+        width:100%;
+        border:solid 0px red;
+        text-align:center;
+        margin:auto;
+    }
+
+    img.royal-image {
+        text-align:center;
+        margin:auto;
+        max-width: -webkit-fill-available;
+        padding-bottom: 30px;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.mobile-search-icon').hide();
+        var closeOverlay = function() {
+            $('.royal-overlay').fadeOut("2000", function () {
+                window.cookieservices.CreateCookie("overlayhome", true, 30);
+            });
+            $('.mobile-search-icon').show();
+        };
+        scrollerservice.ScrollToByClass('royal-overlay',null);
+        var showOverlay = window.cookieservices.ReadCookie('overlayhome');
+        if (showOverlay != null) {  $("div.royal-overlay").hide();  } else { $("div.royal-overlay").show(); }
+        $(document).on("click", "a.round-button", function (e) {
+            closeOverlay();
+            e.preventDefault();
+            return false;
+        });
+
+        $(document).keyup(function(e) {
+            if (e.keyCode == 27) { closeOverlay(); }   
+        });
+    });
+</script>

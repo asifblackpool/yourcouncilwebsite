@@ -1,0 +1,48 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - render the general (generic) page
+    // License: Blackpool council
+    // Date: 21/02/2018
+
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolCentral
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+ 
+    BlackpoolCentralDTO DTO = Page.Model;
+    List<SerialisedItem> SerialisedBox = Page.ImageBox;
+    ImageBox box = null;
+    String ImageUrl = DTO.NoImageUrl;
+
+
+    if (SerialisedBox != null)
+    {
+        box = SerializeHelper.Deseralize(SerialisedBox[0]) as ImageBox;
+          if (box.Image != null && box.Image.Asset != null)
+          {
+             ImageUrl = box.Image.Asset.Uri.ToString();
+          }
+    }
+}
+
+<div class="row equal zero-margin-all bottom-spacer">
+    <div class="col-md-12 col-sm-12 col-xs-12 zero-pad-all clearfix" style="margin-bottom:20px; margin-left:0px; margin-right:0px;">
+        <img src="@ZenUtilities.ImageUriToCachedImageUri(string.Format("{0}{1}", DTO.BaseImageUrl, ImageUrl), 1170, 1058)" class="img-responsive" />
+
+    </div>
+</div>

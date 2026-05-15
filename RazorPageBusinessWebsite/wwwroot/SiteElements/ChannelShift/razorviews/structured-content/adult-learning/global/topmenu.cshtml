@@ -1,0 +1,67 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Top Menu - used in Adult Learning pages
+    // License: Blackpool council
+    // Date: 09/01/2022
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolAdultLearning;
+@using Blackpool.Zengenti.CMS.Models.SiteView;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@{
+    BlackpoolAdultLearningDTO DTO = Page.Model;
+    SiteView siteView = DTO.SiteView;
+
+    int nodeCount = 1;
+
+}
+
+<nav id="navbar" role="navigation" aria-label="navigation" class="row zero-margin-all">
+    <div class="col-lg-12 col-md-12 col-sm-12 zero-pad-all">
+        <!-- desktop view -->
+        <div id="navbar-inner" class="content-space clearfix">
+            <div class="title">
+                <a alt="home page link" title="home page link" tabindex="1" href="@String.Format("{0}{1}", DTO.Config.SeoUrlList.UrlPath.ToLower(),DTO.Config.SeoUrlList.DefaultPage.ToLower())" class="accessibility-tab">
+                    <span style="float:left; position:relative;" class="accessibility-tab home-page-link">Blackpool Learning Rooms<br /><span class="skills">Adult Skills</span></span>
+                </a>
+            </div>
+            <ul id="navigation" class="top-menu desktop">
+                <li class="mobile-close"><a class="close" href="#">&times;</a></li>
+                @if (siteView.Nodes.Count > 0)
+                {
+                    foreach (var node in siteView.Nodes)
+                    {
+                        if (nodeCount > 0 && node.IncludeInMenu && nodeCount < 6)
+                        {
+                            <li><a class="yellow-text accessibility-tab" tabindex="@nodeCount" href="@String.Format("{0}{1}.aspx", DTO.Config.SeoUrlList.UrlPath.ToLower(), node.Slug.ToLower())">@node.DisplayName</a></li>
+                        }
+                        nodeCount++;
+                    }
+                }
+            </ul>
+
+            <div id="mobile-header" class="mobile tablet">
+                <a id="responsive-menu-button" title="mobile view home page link" alt="mobile view link" href="#sidr-main" style="display: inline-block;" class="accessibility-tab">
+                    <span class="hamburger">&nbsp;</span>
+                    <span class="hamburger" style="position:relative;">&nbsp;</span>
+                    <span class="hamburger" style="position:relative;">&nbsp;</span>
+                </a>
+            </div>
+        </div>
+        <!-- mobile view -->
+    </div>
+</nav>
+

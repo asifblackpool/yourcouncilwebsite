@@ -1,0 +1,124 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Gallery Image - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+@{
+    SportBlackPoolDTO DTO                   = Page.Model;
+    DTO.Config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = Blackpool.Zengenti.CMS.Constants.SeoKeys.SportBlackPoolKey }
+    };
+    List<ImageBox> gallery                  = new List<ImageBox>();
+    SportBlackpoolHelper helper             = null;
+    Config config                           = DTO.Config;
+    PagedList<SportBlackpool> list          = DTO.List;
+
+    if (DTO.Flow != null)
+    {
+        helper   = (list != null) ? new SportBlackpoolHelper(list.Items) : new SportBlackpoolHelper(null);
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            List<SerialisedItem> SerailisedList = item.Items.FindAll(x => x.ClassType == typeof(ImageBox) && x.ContainerType == ComponentKeys.IMAGE_BOX);
+            if (SerailisedList != null)
+            {
+                foreach (SerialisedItem si in SerailisedList)
+                {
+                          ImageBox temp = SerializeHelper.Deseralize(si) as ImageBox;
+                          gallery.Add(temp);
+                }
+            }
+        }
+    }
+
+    
+if (gallery.Count > 0) { 
+
+<div class="row equal gallery zero-margin-all clearfix">
+        @foreach (var item in gallery){
+            string linkedHref = "";
+            string ImageUrl = DTO.NoImageUrl;
+            string altText = "";
+            try{
+                linkedHref = (item.LinkedItem != null) ? helper.NavigationBuilder(item.LinkedItem, config.SeoUrlList.Website + config.SeoUrlList.UrlPath) : "";
+                if (item.Image != null && item.Image.Asset != null)
+                {
+                    ImageUrl = item.Image.Asset.Uri.ToString();
+                    altText = item.Image.AltText;
+                }
+
+                linkedHref = String.IsNullOrEmpty(item.ExternalURL) ? linkedHref : item.ExternalURL;
+
+            }
+            catch(Exception ex)
+            {
+                linkedHref = string.Empty;
+            }
+
+            if (linkedHref != string.Empty)
+            {
+              <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 zero-pad-all" style="display:inline-block">
+                <div class="gallery-container gallery-click" >
+                    <div class="image-gallery">
+                        <a href="@string.Format("{0}", linkedHref)" class="pseudo-link-click accessibility-tab" style="cursor:pointer; text-decoration:none;">
+                            <img src="@ZenUtilities.ImageUriToCachedImageUri(string.Format("{0}{1}", DTO.BaseImageUrl, ImageUrl), 370, 245)" class="img-responsive"  alt="@altText"/>
+                        </a>
+                        <div class="middle">
+                            <div class="text gallery-title">@item.Title</div>
+                            <div class="text">@item.Information<br/><br/>
+                                <img src="/SiteElements/ChannelShift/Content/Images/sport-blackpool/tile-arrow.png" alt="arrow" class="tile-arrow" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-gallery">&nbsp;</div>
+                    <h2 class="text-overlay" style="@String.Format("{0}", item.Title.Length > 36 ? "top:100px;": "text-decoration:none;")"> 
+                        <a href="@string.Format("{0}", linkedHref)"
+                           class="hover-white accessibility-tab"
+                           style="color:#fff; text-decoration:none;">
+                           <strong>@item.Title</strong>
+                        </a>
+                    </h2>
+                </div>
+              </div>
+            }
+        } 
+
+        <script type="text/javascript">
+  
+            $(document).on("click", "div.gallery-click", function (e) {
+            
+                var link = $(this).find("a.pseudo-link-click");
+                 var href = link. attr('href');
+                 console.log("clicked tile " + href);
+                 window.location = href;
+                e.preventDefault();
+                return false;
+            });
+        </script>
+</div>
+}
+
+}
+
+

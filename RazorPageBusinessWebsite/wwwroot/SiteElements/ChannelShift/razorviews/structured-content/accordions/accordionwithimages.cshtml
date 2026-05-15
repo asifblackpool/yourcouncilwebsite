@@ -1,0 +1,151 @@
+﻿@{
+
+// Name: Channel Shift - Accordions with Images 
+// Developer: Asif Nissar
+// License: Blackpool council
+// Date:17/10/2024
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Helpers.Connector;
+@using Blackpool.Zengenti.CMS.Models.Accordions;
+
+
+
+@functions {
+
+
+}
+
+
+@{
+
+
+    //Grab configurable data
+    String accordionTitle = Properties.Title;
+    //Create the Connector to retrieve Accordion data
+    var list = ContensisConnector<AccordionWithImages>.Entries(ContensisClientKeys.ACCORDION_WITH_IMAGES, new PageOptions(0, 1000));
+    List<AccordionContentWithImages> accordionList = new List<AccordionContentWithImages>();
+    int counter = 1;
+
+
+    string baseUrl = UrlHelper.GetBaseUrl(UrlHelper.IsLocal(Request.Url.AbsoluteUri.ToString()), Request.Url.AbsoluteUri.ToString());
+    try
+    {
+        AccordionWithImages accordion = (list != null & list.Items.Count > 0) ? list.Items.Where(x => x.AccordionName == accordionTitle).FirstOrDefault() : null;
+
+
+        if (accordion != null)
+        {
+            accordionList = accordion.GetSerialisedContent();
+        }
+    }
+    catch(Exception ex)
+    {
+        Response.Write(string.Format("{0}<br>", ex.Message));
+    }
+
+            }
+
+
+<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default-@accordionTitle">
+    @foreach (var item in accordionList)
+    {
+        <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+                <h2 class="govuk-accordion__section-heading">
+                    <span class="govuk-accordion__section-button" id="accordion-default-heading-@accordionTitle-@counter">
+                        @item.Title
+                    </span>
+                </h2>
+            </div>
+            <div id="accordion-default-content-1" class="govuk-accordion__section-content">
+                <div class="govuk-body">
+                    @Html.Raw(item.Body)
+
+                    <br />
+                    @if (item.MultipleImage != null && item.MultipleImage.Count > 0)
+                    {
+                        <div class="accordion-gallery">
+                           
+                            @foreach (var img in item.MultipleImage)
+                            {
+                                <div class="accordion-thumbnail-container accordion-counter-@counter">
+                                    <img src="@String.Format("{0}{1}",baseUrl,img.Asset.Uri)" alt="@img.AltText" class="accordion-thumbnail" />
+                                    <span>@img.Caption</span>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Lightbox Modal -->
+                        <div id="accordion-lightbox-@counter" class="accordion-lightbox">
+                            <span class="accordion-close">&times;</span>
+                            <img class="accordion-lightbox-content" id="accordion-lightbox-img-@counter" style="text-align:center; margin:auto">
+                        </div>
+
+
+
+                    }
+
+                </div>
+            </div>
+        </div>
+     
+        counter++;
+    }
+
+       <script type="text/javascript">
+            $(document).ready(function () {
+                $(".accordion-thumbnail").on("click", function (e) {
+
+                    $(".accordion-lightbox").hide();
+                    
+                    var unbindlightbox = function () {
+                        $(document).off("click", ".accordion-close");
+                    };
+
+                    var bindlightbox = function () {
+                        $(document).on('click', '.accordion-close', function () {
+                            lightbox.css({ "display": "none", "min-height": "0px" });
+                        });
+                    };
+
+                    var parent      = this.parentElement.className;
+                    var counter     = parent.split("-")[4];
+                    var lightbox    = $("#accordion-lightbox-" + counter);
+                    var lightboxImg = $('#accordion-lightbox-img-' + counter); 
+
+                    lightbox.css({ "display": "flex", "min-height": "500px" });
+                    lightboxImg.attr('src', this.src);
+
+                    unbindlightbox();
+                    bindlightbox()
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    return; 
+                });
+   
+            });
+        </script>
+</div>
+
+@*<control name="Channel Shift Accordions with images " showInMenu="true" category="Favourites" viewingGroup="2">
+     <properties>
+       <category name="Accordion Title">
+        <text name="Title" label="Pick a Title from Content types Accordions (with images)" />
+       </category>
+      </properties>
+    </control>*@

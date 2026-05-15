@@ -1,0 +1,21 @@
+﻿@using Content.Modelling.Models.Components
+@model ServiceMessage
+
+<div class="service-message" style="background-color: @Model.HexColor;">
+    <div class="message-header">
+        <h3 class="message-title" style="color: @Model.TextColor;">@Model.Title</h3>
+    </div>
+    <div class="message-body">
+        <div class="message-content">@Html.Raw(Model.BodyContent)</div>
+        @if (Model.CtaLinks != null)
+        {
+            <div class="message-cta">
+                <a href="@Model.CtaLinks.Destination"
+                   class="cta-button"
+                        @(Model.CtaLinks.Destination?.StartsWith("http") == true ? "target='_blank'" : "")>
+                    @Model.CtaLinks.ButtonText
+                </a>
+            </div>
+        }
+    </div>
+</div>

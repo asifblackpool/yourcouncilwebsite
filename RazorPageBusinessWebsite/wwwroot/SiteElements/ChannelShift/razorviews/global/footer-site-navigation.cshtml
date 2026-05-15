@@ -1,0 +1,250 @@
+﻿
+@using Contensis.Framework.Web
+@using Contensis.Framework.Web.Search
+@using System.Web;
+@using System.Collections;
+@using System.Collections.ObjectModel;
+
+@{
+    //-----------------------------------------------------------------------------------------------------------------
+    // Name: Channel Shift - footer site navigation (landing pages - resident, business, your council)
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date: 24/06/2017
+    //----------------------------------------------------------------------------------------------------------------
+}
+
+@functions{
+    public enum landingtype { resident = 0, business = 1, yourcouncil = 2 };
+
+
+    public class FooterLinkComparer : IComparer<footerLink>
+    {
+        private readonly bool _sortAscending;
+        private readonly string _columnToSortOn;
+
+        public FooterLinkComparer(bool sortAscending, string columnToSortOn)
+        {
+            _sortAscending = sortAscending;
+            _columnToSortOn = columnToSortOn;
+        }
+
+        public int Compare(footerLink x, footerLink y)
+        {
+            if (x == null && y == null) return 0;
+            if (x == null) return ApplySortDirection(-1);
+            if (y == null) return ApplySortDirection(1);
+
+            switch (_columnToSortOn)
+            {
+                case "Name":
+                    return ApplySortDirection(SortByName(x, y));
+            
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        string.Format("Can't sort on column {0}",
+                        _columnToSortOn));
+            }
+        }
+
+        private int SortByName(footerLink x, footerLink y)
+        {
+            var result = x.Name.CompareTo(y.Name);
+            if (result != 0)
+                return result;
+            return 0;
+        }
+
+        private int ApplySortDirection(int result)
+        {
+            return _sortAscending ? result : (result * -1);
+        }
+    }
+    
+    
+    public class footerLink {
+        private string _url = string.Empty;
+        private string _name = string.Empty;   
+        public footerLink (string name, string url) {
+            _url = url;
+            _name = name;
+	    }
+        
+        public string Url { get { return _url;} }
+        public string Name {get { return _name;}}
+    }
+
+    public class footerSiteMap
+    {
+
+        private List<footerLink> _residents = new List<footerLink>();
+        private List<footerLink> _business = new List<footerLink>();
+        private List<footerLink> _yourCouncil = new List<footerLink>();
+        
+        private void Sort(ref List<footerLink> flinks,bool asc, string column){
+                flinks.Sort(new FooterLinkComparer(asc, column));
+        }
+
+        public List<footerLink> Residents { get { Sort(ref _residents, true, "Name"); return _residents; } }
+        public List<footerLink> Business { get { Sort(ref _business, true, "Name"); return _business; } }
+        public List<footerLink> YourCouncil { get { Sort(ref _yourCouncil, true, "Name"); return _yourCouncil; } }
+
+        public void AddFooterLink(footerLink fl, landingtype landing)
+        {
+            switch (landing)
+            {
+                case landingtype.resident:
+                    _residents.Add(fl);
+                    break;
+                case landingtype.business:
+                    _business.Add(fl);
+                    break;
+                case landingtype.yourcouncil:
+                    _yourCouncil.Add(fl);
+                    break;
+                default:
+                    break;
+            }
+        }
+    } // end of footerSiteMap
+}
+
+@{
+
+    // node queries
+    ReadOnlyCollection<FolderNode> children = null;
+    Contensis.Framework.Web.FolderNode parent = null;
+
+    ReadOnlyCollection<ContentNode> residents       = Properties.QueryResidents;
+    ReadOnlyCollection<ContentNode> business        = Properties.QueryBusiness;
+    ReadOnlyCollection<ContentNode> yourcouncil     = Properties.QueryYourCouncil;
+
+
+    footerSiteMap sitemap = new footerSiteMap();
+
+    if (residents != null && residents.Count > 0)
+    {
+        parent = residents[0].Parent;
+        parent.AncestorAtDepth(2);
+        children = parent.Children<FolderNode>();
+        parent = null;
+
+        foreach (var item in children){
+            sitemap.AddFooterLink(new footerLink(item.Name, item.Uri.AbsolutePath), landingtype.resident);
+        }
+    }
+
+
+    if (business != null && business.Count > 0)
+    {
+        parent = business[0].Parent;
+        parent.AncestorAtDepth(2);
+        children = parent.Children<FolderNode>();
+        parent = null;
+        foreach (var item in children){
+            sitemap.AddFooterLink(new footerLink(item.Name, item.Uri.AbsolutePath), landingtype.business);
+        }
+    }
+
+    if (yourcouncil != null && yourcouncil.Count > 0)
+    {
+        parent = yourcouncil[0].Parent;
+        parent.AncestorAtDepth(2);
+        children = parent.Children<FolderNode>();
+
+        //filter out all folders which do not contain a homepage
+        var filtered = children.Where(f => f.HomePage != null);
+        foreach (var item in filtered)
+        {
+            sitemap.AddFooterLink(new footerLink(item.Name, item.Uri.AbsolutePath), landingtype.yourcouncil);
+        }
+
+    }
+
+    //  var subFolder = parent.Children<FolderNode>().Where(f => f.Title == "SubFolder").First();
+    //var allContentQuery = Query.Where("Property_Path").Contains("Business/").And("isHomePage").IsEqualTo("1");
+    //var allContent = new NodeFinder().Find(allContentQuery);
+
+ }
+<footer id="blackpool-footer" style="margin-top:0px" class="noprint">
+  <div id="footer-top-outer-container" class="homepage-outer-container clearfix">
+        <div class="row footer-top homepage-max-width">
+            <div class="col-md-12" style="margin-top:25px;">
+                <a class="accessibility-tab" href="https://twitter.com/bpoolcouncil"><img src="/SiteElements/ChannelShift/content/images/footer/twitter.svg" alt="twitter" /></a>
+                <a class="accessibility-tab" href="https://www.facebook.com/bpoolcouncil"><img src="/SiteElements/ChannelShift/content/images/footer/facebook.svg" alt="facebook" /></a>
+                <a class="accessibility-tab" href="https://www.youtube.com/user/BlackpoolCouncil"><img src="/SiteElements/ChannelShift/content/images/footer/youtube.svg" alt="youtube" /></a>
+                <a class="accessibility-tab" href="https://www.instagram.com/bpoolcouncil/"><img src="/SiteElements/ChannelShift/content/images/footer/instagram.svg" alt="instagram" /></a>
+                <a class="accessibility-tab" href=" https://www.accessibility-services.co.uk/certificates/blackpool-council/"><img src="/SiteElements/ChannelShift/content/images/footer/shawtrust-accessible.jpg" alt="shaw trust accessible" style="width:auto;float:right;" /></a>
+            </div>
+        </div>
+  </div>
+ <div id="footer-bottom-outer-container" class="homepage-outer-container clearfix">
+    <div class="row footer-bottom homepage-max-width" style="margin-bottom:25px;">
+        <div class="col-sm-4 col-md-4  zero-pad-all">
+            <strong class="footer-header">Residents<span class="pull-right"><i title="Open or close" class="icon-footer-arrow-down"></i></span></strong>
+            <ul class="footer-site-links">
+                @foreach (footerLink item in sitemap.Residents)
+                {
+                   <li style="list-style-type:none;"><a class="accessibility-tab" href="@item.Url">@item.Name</a></li>
+                }
+            </ul>
+        </div>
+        <div class="col-sm-4 col-md-4 zero-pad-all">
+            <strong class="footer-header">Business<span class="pull-right"><i title="Open or close" class="icon-footer-arrow-down"></i></span></strong>
+            <ul class="footer-site-links">
+                @foreach (footerLink item in sitemap.Business)
+                {
+                    <li style="list-style-type:none;"><a class="accessibility-tab" href="@item.Url">@item.Name</a></li>
+                }
+            </ul>
+        </div>
+        <div class="col-sm-4 col-md-4 zero-pad-all">
+            <strong class="footer-header">Your Council<span class="pull-right"><i title="Open or close" class="icon-footer-arrow-down"></i></span></strong>
+            <ul class="footer-site-links">
+                @foreach (footerLink item in sitemap.YourCouncil)
+                {
+                    <li style="list-style-type:none;"><a class="accessibility-tab" href="@item.Url">@item.Name</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="row footer-bottom homepage-max-width">
+        <div class="col-md-12">
+            <p class="footer-links">
+                <span class="text" style="color:#fff;">Blackpool Council &copy;  &nbsp;&nbsp;</span>
+                <span class="links">
+                    <span class="divider first">|</span>
+                    <a class="sys_16 accessibility-tab" href="/Privacy-policy-and-cookies.aspx">Privacy</a>
+                    <span class="divider">|</span>
+                    <a class="sys_16 accessibility-tab" href="/Disclaimer.aspx">Disclaimer</a>
+                    <span class="divider">|</span>
+                    <a class="sys_16 accessibility-tab" href="/Contact-us.aspx">Contact us</a>
+                    <span class="divider">|</span>
+                    <a class="sys_16 accessibility-tab" href="/Help.aspx">Help</a>
+                </span>
+            </p>
+        </div>
+    </div>
+ </div>
+</footer>@*<control name="footer sitemap navigation list">
+	<properties>
+		<nodeQuery name="QueryResidents" selectCount="10">
+			<where property="Title" operator="IsEqualTo" value="Residents" />
+			<and property="IsWebPage" operator="IsEqualTo" value="true" />
+			<and property="IsHomePage" operator="IsEqualTo" value="true" />
+			<and property="Type" operator="IsEqualTo" value="landing-page-content" />
+		</nodeQuery>
+		<nodeQuery name="QueryBusiness" selectCount="10">
+			<where property="Title" operator="IsEqualTo" value="Business" />
+			<and property="IsWebPage" operator="IsEqualTo" value="true" />
+			<and property="IsHomePage" operator="IsEqualTo" value="true" />
+			<and property="Type" operator="IsEqualTo" value="landing-page-content" />
+		</nodeQuery>
+		<nodeQuery name="QueryYourCouncil" selectCount="10">
+			<where property="Title" operator="IsEqualTo" value="Your Council" />
+			<and property="IsWebPage" operator="IsEqualTo" value="true" />
+			<and property="IsHomePage" operator="IsEqualTo" value="true" />
+			<and property="Type" operator="IsEqualTo" value="landing-page-content" />
+		</nodeQuery>
+	</properties>
+</control>*@

@@ -1,0 +1,88 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Carousel Image - used in Adult Learning Pages
+    // License: Blackpool council
+    // Date: 14/11/2021
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+@functions{
+
+    public class HappyLearners
+    {
+        public string Title { get; set; }
+        public string Review { get; set; }
+    }
+
+}
+
+
+@{
+
+    List<HappyLearners> carousel = new List<HappyLearners>();
+    for (int i = 0; i < 8; i++)
+    {
+        carousel.Add(new HappyLearners()
+        {
+            Title = "Excepteur sint.",
+            Review = "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim."
+        });
+    }
+
+}
+
+@if (carousel != null && carousel.Count > 0)
+{
+    <div class="carousel-container">
+        <span class="carousel-title"><strong>Happy Learners</strong></span>
+        <div class="row zero-margin-all clearfix">
+            <div class="col-md-12 zero-pad-all" >
+                <div class="carousel-slider">
+                    <section class="center slider">
+                        @foreach (var item in carousel)
+                        {
+                            <div>
+                                <div class="review-box-container">
+                                    <div class="review-title"><strong>@item.Title</strong></div>
+                                    <div class="review-text">@item.Review</div>
+                                </div>
+                            </div>
+                        }
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("section.center").slick({
+                dots: true,
+                centerMode: true,
+                centerPadding: '0px',
+                slidesToShow: 5,
+                slidesToScroll: 5
+            });
+        });
+    </script>
+}
+
+
+
+

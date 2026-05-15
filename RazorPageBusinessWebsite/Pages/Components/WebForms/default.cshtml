@@ -1,0 +1,30 @@
+﻿@using Content.Modelling.Models.Forms;
+
+@model WebForms 
+
+
+@{
+    string? formId = string.Empty;
+    try
+    {
+        formId = Model?.Value?.ContentType?.Id;
+    }
+    catch
+    {
+        formId = string.Empty;
+    }
+}
+
+<div data-contensis-form-project-id='lgwebsite' data-contensis-form-id='@formId'></div>
+
+<script type="module" crossorigin="anonymous" src="https://cms-blackpool.cloud.contensis.com/app/ui/forms/forms.js"></script>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        // Pass the form ID to the init function
+        const formId = '@formId';
+        if (formId) {
+            formservices.init(formId);
+        }
+    });
+</script>

@@ -1,0 +1,81 @@
+﻿
+@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - render the events page
+    // License: Blackpool council
+    // Date: 21/02/2018
+
+}
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+
+@{
+    HeadStartContent model = Page.Content.PageContent[0]; //Passed Model
+    String path = Page.RazorPath;
+}
+<div class="intro-text">@Html.Raw(model.BodyContent)</div>
+
+@if (model.Video != null && model.Video.SelectedPosition == "top")
+{
+    RenderPage(String.Format("{0}{1}", path, "partials/video.cshtml"), new { Video = model.Video });
+}
+
+<div class="row equal clearfix">
+    @if (model.Events.Count > 0)
+    {
+
+        <div class="col-lg-12 col-md-12 col-sm-12 zero-pad-all">
+            <table class="tbl-responsive standard-text-size-18px;">
+                <tbody>
+                    <tr>
+                        <th class="standard-text-size-18px">Upcoming Event&nbsp;</th>
+                        <th class="standard-text-size-18px">Where</th>
+                        <th class="standard-text-size-18px">Date&nbsp;</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    @{    int loopCounter = 1;  }
+                    @foreach (var evt in model.Events)
+                    {
+                        <tr>
+                            <td class="@string.Format("standard-text-size-18px {0}", loopCounter % 2 == 0 ? "alternate" : "none")"><span class="mobile-title"><strong>Upcoming Event:</strong></span><a class="event-link" href="#">@evt.EventName</a></td>
+                            <td class="@string.Format("standard-text-size-18px {0}", loopCounter % 2 == 0 ? "alternate" : "none")"><span class="mobile-title"><strong>Where:</strong></span>@Html.Raw(evt.Venue.FormattedAddress)</td>
+                            <td class="@string.Format("standard-text-size-18px {0}", loopCounter % 2 == 0 ? "alternate" : "none")"><span class="mobile-title"><strong>Date</strong></span>@evt.DateFromTo</td>
+                            <td class="@string.Format("standard-text-size-18px {0}", loopCounter % 2 == 0 ? "alternate" : "none")"><span class="mobile-title"><strong>&nbsp;</strong></span><input type="button" class="headstart-button" onclick="location.href='@evt.BookingLink';" value="Book" /></td>
+                        </tr>
+                        <tr id="event-desc-@loopCounter" class="@string.Format("event-details{0}", loopCounter %2 == 0 ? "-alternate": "")" style="border-left:2px">
+                            <td colspan="4">
+                                <div id="content-@loopCounter" style="display:none;">@Html.Raw(evt.Description);</div>
+                            </td>
+                        </tr>
+                        loopCounter++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <strong>There are no current events at this moment. Please try again later.</strong>
+    }
+</div>
+
+@if (model.Video != null && model.Video.SelectedPosition == "bottom")
+{
+    RenderPage(String.Format("{0}{1}", path, "partials/video.cshtml"), new { Video = model.Video });
+}
+<style type="text/css">
+    #dynamic-html-content {
+        max-width: 773px;
+    }
+</style>@*<control name="headstart events" showInMenu="true" category="Favourites" viewingGroup="2" />*@@*<control name="headstart events" showInMenu="true" category="Favourites" viewingGroup="2" />*@

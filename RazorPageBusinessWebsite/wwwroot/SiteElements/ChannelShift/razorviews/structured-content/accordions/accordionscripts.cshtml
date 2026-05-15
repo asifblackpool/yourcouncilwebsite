@@ -1,0 +1,37 @@
+﻿@using Blackpool.Zengenti.CMS.Helpers;
+@{
+
+    string baseUrl = UrlHelper.GetBaseAddressUrl(Request.Url.ToString());
+
+    if (!UrlHelper.IsLocal(baseUrl))
+    {
+        baseUrl = baseUrl.Replace("http", "https");
+    }
+}
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        tableservices.tablename("div.govuk-body table");
+        tableservices.init();
+
+        // Initialize service with container selector
+        privacyservices.init('@baseUrl', 'privacy-list-container');
+        // Render the list inside the container
+        privacyservices.renderList();
+
+
+    });
+</script>
+
+<link rel="stylesheet" media="all" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/tables.css" />
+<link rel="stylesheet" media="all" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/accordion.css" />
+<link rel="stylesheet" media="all" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/accordion-gallery.css" />
+<link rel="stylesheet" media="all" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/overrides.css" />
+<script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+<script type="text/javascript" src="~/SiteElements/ChannelShift/scripts/thirdparty/govuk/accordion.js"></script>
+<script type="text/javascript" src="~/SiteElements/ChannelShift/scripts/services/privacy/privacyservices.js"></script>
+
+
+
+@*<control name="Channel Shift Accordions scripts" showInMenu="true" category="Favourites" viewingGroup="2"></control>*@

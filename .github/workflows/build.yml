@@ -1,0 +1,73 @@
+name: Docker - Build and push latest
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/${{ github.repository }}
+  CONTENSIS_CLIENT_ID: aafd27eb-75b2-4b5b-8371-c5489082c710
+  CONTENSIS_SHARED_SECRET: 9dc71260e4de430f956162a67345cc53-147c9d2fed75415788f9fdd321d255b1-2b734d1c6f3d471cb0d62157ac681f85
+
+jobs:
+  build-latest:
+    name: Build Block
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # Updated to v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3  # Updated to v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} \
+            -t ${{ env.IMAGE_NAME }}:latest \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
+          docker push ${{ env.IMAGE_NAME }}:latest
+
+  deploy:
+    name: Push block to Contensis
+    runs-on: ubuntu-latest
+    needs: build-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      # Add step to update Docker before pushing to Contensis
+      - name: Update Docker client
+        run: |
+          # Update Docker to latest version
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
+          # Verify Docker version
+          docker version --format '{{.Client.Version}}'
+          
+      - name: Push block to Contensis
+        uses: contensis/block-push@v1
+        env:
+          DOCKER_API_VERSION: 1.44  # Set specific API version
+        with:
+          block-id: business-website
+          alias: blackpool
+          project-id: lgWebsite
+          client-id: ${{ env.CONTENSIS_CLIENT_ID }}
+          shared-secret: ${{ env.CONTENSIS_SHARED_SECRET }}
+          image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}

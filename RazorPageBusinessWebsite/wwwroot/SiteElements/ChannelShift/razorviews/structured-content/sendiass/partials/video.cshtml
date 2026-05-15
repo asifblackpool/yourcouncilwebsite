@@ -1,0 +1,61 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - render the general (generic) page
+    // License: Blackpool council
+    // Date: 21/07/2019
+
+}
+
+@using System;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSENDIASS;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+
+@{
+    ContentDTO<BlackpoolSENDIASS> DTO = Page.Model;
+    SerialisedItem serialisedItem = null;
+    Blackpool.Zengenti.CMS.Models.Components.Video video = null;
+    IConfiguration config = DTO.Config;
+    String path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+
+
+   
+    string Url = "#";
+    if (DTO.Flow != null)
+    {
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            var list = item.Items.FindAll(x => x.ClassType == typeof(Blackpool.Zengenti.CMS.Models.Components.Video));
+            if (list != null && list.Count > 0)
+            {
+                serialisedItem = list[0];
+                video = SerializeHelper.Deseralize(serialisedItem) as Blackpool.Zengenti.CMS.Models.Components.Video; 
+            }
+        }
+    }
+
+
+}
+
+@if (video != null)
+{
+
+<div class="row equal zero-margin-all">
+    <div class="col-md-12 col-sm-12 col-xs-12 zero-pad-all clearfix" style="margin-bottom:20px; margin-left:0px; margin-right:0px;">
+        <!--start of video -->
+        <div id="video" class="editor">
+            <div class="iframe-wrapper" style="text-align:center; margin:auto; min-height:375px; height:375px; width:96%;">
+                <iframe id="iframe" src="@video.Url" frameborder="0" height="100%" width="100%"></iframe>
+            </div>
+        </div>
+        <!--end of video -->
+    </div>
+</div>
+}
+

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="68.957" height="54.254" viewBox="0 0 68.957 54.254">
+  <g id="Group_1888" data-name="Group 1888" transform="translate(2.5 2.5)">
+    <g id="Group_1886" data-name="Group 1886" transform="translate(12.299 13.599)">
+      <rect id="Rectangle_1277" data-name="Rectangle 1277" width="23.369" height="0.025" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+      <rect id="Rectangle_1278" data-name="Rectangle 1278" width="15.528" height="0.025" transform="translate(0 7.38)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+      <rect id="Rectangle_1279" data-name="Rectangle 1279" width="13.53" height="0.025" transform="translate(0 14.76)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+    </g>
+    <g id="Group_1887" data-name="Group 1887" transform="translate(31.843 0)">
+      <rect id="Rectangle_1280" data-name="Rectangle 1280" width="26.04" height="9.839" transform="translate(2.547 22.608) rotate(-44.999)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+      <path id="Path_451" data-name="Path 451" d="M93.28,395.966l3.479-3.478a2.466,2.466,0,0,1,3.478,0l3.479,3.478a2.467,2.467,0,0,1,0,3.479l-3.479,3.478Z" transform="translate(-72.32 -391.77)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+      <path id="Path_452" data-name="Path 452" d="M76.894,418.949l9.5-2.547-6.958-6.958Z" transform="translate(-76.894 -386.836)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+    </g>
+    <path id="Path_453" data-name="Path 453" d="M83.843,423.883l2.547-9.5,18.067-18.066a10.061,10.061,0,0,0-8.391-4.542H62.053A10.081,10.081,0,0,0,52,401.821V423.7a10.082,10.082,0,0,0,10.053,10.053v5.2a2.01,2.01,0,0,0,3.432,1.421l9.079-6.62h21.5A10.082,10.082,0,0,0,106.116,423.7V408.566l-12.77,12.77Z" transform="translate(-52 -391.77)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+  </g>
+</svg>

@@ -1,0 +1,227 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// Name: Gallery Image - used in sports blackpool pages
+// License: Blackpool council
+// Date: 11/03/2022
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolAdultLearning;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+
+    BlackpoolAdultLearningDTO DTO = Page.Model;
+    Config config = DTO.Config;
+}
+
+
+<div class="row form">
+    <input id="search-text" type="text" placeholder="Search.." name="search">
+    <button id="search-courses" type="button"><i class="fa fa-search"></i></button>
+</div>
+<div id="display-results" class="row" style="display:none;">
+    <div class="col-md-12">
+        <h2 class="purple"><strong>Search results</strong></h2>
+        <strong>You are searching for the following search term <span id="term"></span></strong><br />
+        <div id="loading-indicator" class="gif-loader" style="display:none;">
+            <strong><img src="/SiteElements/ChannelShift/Content/images/gif.gif" />  ... Loading</strong>
+        </div>
+        <div class="top-placeholder"></div>
+        <div id="search-content"></div>
+        <div class="bottom-placeholder"></div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var searchSettings = {
+            configPath      : '@config.SeoUrlList.UrlPath',
+            homepage        : '@config.SeoUrlList.DefaultPage',
+            contentTypeId   : 'blackpoolAdultLearning',
+            defaultEntryId  : 'e2f75992-f084-4e28-ac39-1c812cd2c617',
+            siteViewPath    :  '@SiteViewKeys.ADULT_LEARNING_PATH',
+            depth           : 3,
+            searchTerm      : ''
+        };
+
+        $("#search-courses").click(function (e) {
+
+            function replaceAll(str, find, replace) {
+                return str.replace(new RegExp(find, 'g'), replace);
+            }
+
+            var txt = $("#search-text").val();
+            if (txt !== '') {
+                searchSettings.searchTerm = txt;
+                searchSettings.configPath = replaceAll(searchSettings.configPath,'/', '_');
+                searchSettings.siteViewPath = replaceAll(searchSettings.siteViewPath,'/', '_');
+                searchservices.init(searchSettings, window.pagingservices);
+                $('#term').html(txt);
+                $('#display-results').show();
+            }
+            return false;
+        });
+
+    });
+</script>
+
+<script id="search-template" type="text/x-handlebars-template">
+{{#if apidata.length}}
+   <div class="sys_itemslist">
+        {{#each apidata}}
+        <div class="sys_subitem">
+            <h3 class="sys_subitem-heading sys_search-subheading">
+                <a title="{{ Title }}" href="{{ Href }}" style="color: #830065; font-weight:bold;">{{ Alias }}</a>
+            </h3>
+            <div class="sys_subitem-summary sys_search-summary">
+                <dl>
+                    <dt class="sys_search-description" style="display:none;">Description</dt>
+                    <dd class="sys_search-description">{{ Content }}</dd>
+                    <dt class="sys_search-url" style="display:none">Url</dt>
+                    <dd class="sys_search-url">{{ Href }}</dd>
+                </dl>
+            </div>
+
+        </div>
+        {{/each}}
+   </div>
+{{else}}
+    <br />
+{{/if}}
+</script>
+<style type="text/css">
+
+    /* Style the search field */
+    div.form > input[type=text] {
+        padding: 10px;
+        font-size: 17px;
+        border: 1px solid grey;
+        float: left;
+        width: 80%;
+        background: #f1f1f1;
+    }
+
+    /* Style the submit button */
+    div.form > button {
+        float: left;
+        width: 20%;
+        padding: 10px;
+        background: #2196F3;
+        color: white;
+        font-size: 17px;
+        border: 1px solid grey;
+        border-left: none; /* Prevent double borders */
+        cursor: pointer;
+    }
+
+    div.form > button:hover {
+       background: #0b7dda;
+    }
+
+    /* Clear floats */
+    div.form::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+    .sys_subitem-heading {
+        margin: -1px 0 0px 10px;
+        background-color:#f7f7f7;
+        z-index:99;
+        border: 0 none;
+        display:block;
+    }
+
+     .sys_subitem-heading  > a {
+         position:relative;
+         top:-13px;
+         left:3px;
+     }
+             
+     .sys_subitem {
+            border: 1px solid #ccc;
+            background: #f7f7f7;
+            margin: 1.8em 0 10px 0;
+            padding: 0;
+            position: relative;
+            z-index: 1;
+            min-height: 1em;
+            zoom: 1;
+            clear: both;
+        }
+
+    .sys_search-summary {
+        margin-left:10px;
+        margin-right:10px;
+    }
+
+    .sys_search-url {
+        color: #000;
+        margin-top: 1.5em;
+        font-style: italic;
+    }
+
+    /*pagingation */
+    ul.pagination > li > a.page-link,
+    ul.pagination > li > a.left-link,
+    ul.pagination > li > a.right-link {
+        text-decoration: none;
+        color: gray;
+        font-weight: bold;
+        display: inline;
+    }
+
+    ul.pagination > li > a.active {
+        background-color: #000;
+        color: #fff !important;
+    }
+
+    ul li.dots-left,
+    ul li.dots-right {
+        position: relative;
+        float: left;
+        margin: 5px 10px 0px 10px;
+    }
+
+    /* gif loader */
+
+    div.gif-loader {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        background-color: black;
+        z-index: 99999;
+        opacity: 0.6;
+        height: 100%;
+    }
+
+    div.gif-loader > strong {
+        position: relative;
+        top: 50%;
+        left: 50%;
+    }
+
+
+
+
+</style>
+
+     

@@ -1,0 +1,101 @@
+﻿/* Hide the caption */
+.data-table caption {
+    display: none;
+}
+
+/* Base table styles (already yours, slightly scoped) */
+.data-table {
+    margin: 0 auto 15px;
+    width: 100%;
+    border: none;
+}
+
+.data-table th, .data-table tbody td {
+    border: 1px solid #fff;
+    background: #830065;
+    color: #fff;
+    padding: .8rem;
+}
+
+.data-table tbody td {
+    color: #041c2c;
+}
+
+.data-table tbody td {
+    background: #e3e4e6;
+    border: 1px solid #fff;
+    font-weight:400;
+}
+
+.data-table td {
+    font-weight: bold;
+}
+
+/* Mobile responsive styles - scoped to .data-table */
+@media screen and (max-width: 640px) {
+    .data-table thead,
+    .data-table th { 
+        display: none;
+    }
+
+    .data-table tbody td {
+        display: block;
+        padding: .6rem 20px .6rem .6rem;
+        text-align: right;
+    }
+
+    .data-table tbody tr td:first-child,
+    .data-table tbody tr td:first-child > p {
+        background: #830065;
+        color: #fff;
+    }
+
+    .data-table tbody tr td.background-gray {
+        background: #e3e4e6;
+        color: #000;
+    }
+
+    /* Using data-th attribute */
+    .data-table tbody td:before {
+        content: attr(data-th);
+        font-weight: 700;
+        display: inline-block;
+        min-width: 1rem;
+        float: left;
+    }
+
+    /* Alternative using data-title attribute */
+    .data-table tbody td[data-title]:before {
+        content: attr(data-title);
+        float: left;
+        font-size: .8em;
+        color: #041c2c;
+        padding-right: 6px;
+        min-width: 100px;
+        display: inline-block;
+        text-align: left;
+    }
+
+    .data-table tbody td[data-title].text-white:before {
+        color: #fff !important;
+    }
+
+    .data-table tbody td.width-full {
+        display: block;
+        padding: 5px;
+        text-align: left;
+    }
+
+    /* Note: .tbl-responsive may be a separate container – if it wraps the table, include it */
+    .tbl-responsive .data-table tbody td.width-full:before {
+        content: attr(data-th);
+        font-weight: 700;
+        display: inline-block;
+        width: 100%;
+        float: left;
+        text-align: left;
+        background-color: #830065;
+        color: #fff;
+        padding: 10px 5px;
+    }
+}

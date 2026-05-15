@@ -1,0 +1,10 @@
+﻿@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+
+
+#search-button > input {
+  border:solid 0px red;
+  left: 10px;
+}
+
+
+}

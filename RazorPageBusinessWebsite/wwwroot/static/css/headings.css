@@ -1,0 +1,131 @@
+﻿
+:root {
+    /* Main brand colors */
+    --header-text-color: #830065;
+    --header-print-color: #000;
+}
+
+/* GOV.UK Heading Styles - Desktop First */
+/* Base styles for desktop (screens wider than 640px) */
+
+/* Shared heading properties */
+.heading-level-1,
+.heading-level-2,
+.heading-level-3,
+.heading-level-4,
+.heading-level-5,
+.heading-level-6,
+h1, h2, h3, h4, h5, h6 {
+    color: var(--header-text-color);
+    font-weight: 700; /* Bold */
+    margin-top: 0;
+    margin-bottom: 30px; /* Desktop spacing */
+}
+
+/* Heading Level 1 - 48px */
+.heading-level-1,
+h1 {
+    font-size: 48px;
+    line-height: 50px;
+}
+
+/* Heading Level 2 - 36px */
+.heading-level-2,
+h2 {
+    font-size: 36px;
+    line-height: 40px;
+}
+
+/* Heading Level 3 - 24px */
+.heading-level-3,
+h3 {
+    font-size: 24px;
+    line-height: 30px;
+}
+
+/* Heading Level 4, 5, 6 - 19px (small heading) */
+.heading-level-4,
+.heading-level-5,
+.heading-level-6,
+h4, h5, h6 {
+    font-size: 19px;
+    line-height: 25px;
+}
+
+/* Mobile styles: max-width 640px */
+@media screen and (max-width: 640px) {
+    .heading-level-1,
+    .heading-level-2,
+    .heading-level-3,
+    .heading-level-4,
+    .heading-level-5,
+    .heading-level-6,
+    h1, h2, h3, h4, h5, h6 {
+        margin-bottom: 20px; /* Mobile spacing */
+    }
+
+    /* H1 mobile: 32px */
+    .heading-level-1,
+    h1 {
+        font-size: 32px;
+        line-height: 35px;
+    }
+
+    /* H2 mobile: 27px */
+    .heading-level-2,
+    h2 {
+        font-size: 27px;
+        line-height: 30px;
+    }
+
+    /* H3 mobile: 21px */
+    .heading-level-3,
+    h3 {
+        font-size: 21px;
+        line-height: 25px;
+    }
+
+    /* H4-H6 remain 19px (same as desktop) */
+    .heading-level-4,
+    .heading-level-5,
+    .heading-level-6,
+    h4, h5, h6 {
+        font-size: 19px;
+        line-height: 25px;
+    }
+}
+
+/* Optional print styles */
+@media print {
+    .heading-level-1,
+    .heading-level-2,
+    .heading-level-3,
+    .heading-level-4,
+    .heading-level-5,
+    .heading-level-6,
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--header-text-color);
+        margin-bottom: 20px;
+    }
+
+    .heading-level-1, h1 {
+        font-size: 28pt;
+        line-height: 1.2;
+    }
+
+    .heading-level-2, h2 {
+        font-size: 22pt;
+        line-height: 1.2;
+    }
+
+    .heading-level-3, h3 {
+        font-size: 16pt;
+        line-height: 1.2;
+    }
+
+    .heading-level-4, .heading-level-5, .heading-level-6,
+    h4, h5, h6 {
+        font-size: 14.5pt;
+        line-height: 1.2;
+    }
+}

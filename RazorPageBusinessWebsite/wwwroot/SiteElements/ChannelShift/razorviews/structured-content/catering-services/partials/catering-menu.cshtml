@@ -1,0 +1,115 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: headerbox Image - used in catering pages
+    // License: Blackpool council
+    // Date: 02/12/2023
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Catering;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+@functions {
+
+    public static class BooleanHelper
+    {
+        public static bool MeatOption(dynamic value)
+        {
+            if (value == null)
+            {
+                return false;
+            }
+            return value;
+        }
+    }
+}
+
+@{
+    CateringDTO DTO                     = Page.Model;
+    ContensisClient Client              = Page.Client;
+    List<CateringWeeks> cateringWeeks   = new List<CateringWeeks>();
+    string slugPath                     = string.Empty;
+    string urlLink                      = string.Empty;
+    int days_to_add                     = 21;
+    int weekNumber                      = (Request.QueryString["Week"]  != null) 
+                                              ? StringUtility.ConvertToSimpleIntegerWithRange(Request.QueryString["Week"].ToString(), 1, 3) 
+                                              : 1;
+
+    if (DTO.Flow != null)
+    {
+        CateringHelper helper = new CateringHelper(DTO.Flow.GetContent);
+        cateringWeeks = helper.CateringWeekList;
+    }
+
+    //if menus fonund we need to make the assoicated catering menu objects
+}
+
+
+@foreach (var cateringWeek in cateringWeeks)
+{
+    var enumValue = EnumExtensions.Parse<Catering_Week>(weekNumber, Catering_Week.Week_1);
+    if (cateringWeek.EnumWeekNumber == enumValue)
+    {
+        int menuCount = 1;
+        <div class="row menu-row">
+            <div class="col-md-2">
+                <h2>@cateringWeek.Day</h2>
+                <ul>
+                    <li>@StringUtility.DateTextFullNoYear(cateringWeek.startDate)</li>
+                    <li>@StringUtility.DateTextFullNoYear(cateringWeek.startDate.AddDays(1 * days_to_add))</li>
+                    <li>@StringUtility.DateTextFullNoYear(cateringWeek.startDate.AddDays(2 * days_to_add))</li>
+                    <li>@StringUtility.DateTextFullNoYear(cateringWeek.startDate.AddDays(3 * days_to_add))</li>
+                    <li>@StringUtility.DateTextFullNoYear(cateringWeek.startDate.AddDays(4 * days_to_add))</li>
+                    <li>@StringUtility.DateTextFullNoYear(cateringWeek.startDate.AddDays(5 * days_to_add))</li>
+                    <li>@StringUtility.DateTextFullNoYear(cateringWeek.startDate.AddDays(6 * days_to_add))</li>
+                </ul>
+            </div>
+            @foreach (CateringMenu menu in cateringWeek.Menus)
+            { 
+                var imageBoxHelper = new ImageBoxHelper(menu.SerializedImageBox, typeofImage.Imagebox, DTO.BaseImageUrl, DTO.NoImageUrl);
+                <div class="col-md-5 menu-box" >
+                    <h3>@string.Format("{0}", (BooleanHelper.MeatOption(menu.IsMeatOption)) ? "Meat option" : "Meat-free option")</h3>
+                    <dl>
+                        <dt>Main course</dt>
+
+                        <dd>@Html.Raw(string.IsNullOrWhiteSpace(menu.MainCourse) ? "&nbsp;" : menu.MainCourse)</dd>
+                        <dt>On the side</dt>
+                        <dd>@Html.Raw(string.IsNullOrWhiteSpace(menu.OnTheSide) ? "&nbsp;" : menu.OnTheSide)</dd>
+                        <dt>To finish</dt>
+                        <dd>@Html.Raw(string.IsNullOrWhiteSpace(menu.ToFinish) ? "&nbsp;" : menu.ToFinish)</dd>
+                    </dl>
+                    <div class="image-box">
+                        <img src="@imageBoxHelper.ImageBoxUrl" alt="@imageBoxHelper.AltText" style="width:100%;" />
+                    </div>
+                </div>
+                menuCount++;
+                if (menuCount > 2) { break; }
+
+              
+            }
+        </div><br/><br/>
+    }
+}
+
+
+
+
+
+
+
+

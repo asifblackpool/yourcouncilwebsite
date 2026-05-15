@@ -1,0 +1,228 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: form - used in SENDIASS pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSENDIASS;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+    ContentDTO<BlackpoolSENDIASS> DTO = Page.Model;
+    Form form = null;
+
+
+    SerialisedItem serialisedItem = null;
+    if (DTO.Flow != null)
+    {
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            var list = item.Items.FindAll(x => x.ClassType == typeof(Form));
+            if (list != null && list.Count > 0)
+            {
+                serialisedItem = list[0];
+                form = SerializeHelper.Deseralize(serialisedItem) as Form;
+
+            }
+        }
+    }
+
+    //44816,44592
+}
+@if (form != null)
+{
+    @RenderPage("/SiteElements/ChannelShift/razorviews/global/formrenderer.cshtml", new { formContentId = form.FormId })
+}
+
+
+<style type="text/css">
+
+    .sys_cms-form-control ul {
+        display: block;
+        font-family: 'Lato', sans-serif;
+    }
+
+    ul.sys_cms-form-body > li::before {
+            content: "";
+            color: transparent;
+            font-weight: bold;
+            display: inline-block;
+            margin-left:0px;
+            width:0px;
+            left:0px;
+            position:relative;
+    }
+
+    .sys_cms-form-body li input,
+    .sys_cms-form-body li select,
+    .sys_cms-form-body li textarea,
+    .sys_cms-form-body li label,
+    .sys_cms-form-body li .sys_legend,
+    .sys_cms-form-body li .sys_fieldlabel,
+    .sys_cms-form-body li .sys_fieldlabel ul {
+        font-size: 20px;
+    }
+
+    .sys_cms-form-body .sys_checkbox label, 
+    .sys_cms-form-body .sys_radio label {
+        font-size:20px;
+    }
+
+    .sys_cms-form-body li div label {
+        font-size: 20px;
+    }
+
+    .sys_cms-form-body .sys_sectionbreak-header {
+        font-family: 'Lato', sans-serif;
+        font-size: 32px;
+        color: #21828A;
+        font-weight: bold;
+    }
+
+    ul.sys_cms-form-validationsummary {
+        display: none;
+    }
+
+    .sys_cms-form-body input.sys_medium,
+    .sys_cms-form-body select.sys_medium
+    .sys_cms-form-body .sys_namesubelement input {
+        width: 46%;
+    }
+
+    .sys_cms-form-body li input {
+        width: 96%;
+        border-radius: 10px;
+        height: 52px;
+        border: solid 1px #21828A;
+        background-color: #f7f3f3;
+        font-family: 'Lato', sans-serif;
+        padding-left: 5px;
+    }
+
+    div.sys_fieldcontent textarea {
+        border-radius: 10px;
+        border: solid 1px #21828A;
+        background-color: #f7f3f3;
+        font-family: 'Lato', sans-serif;
+        padding-left: 5px;
+    }
+
+    .sys_cms-form-body .sys_radio input {
+        margin: 9px 14px 0 0;
+        width:16px;
+        height:16px;
+    }
+
+    .sys_cms-form-body li input:focus {
+        outline: none;
+    }
+
+    .sys_cms-form-body .sys_sidebyside input {
+        float: none;
+        display: inline;
+        vertical-align: unset;
+    }
+
+    .sys_legend--simple {
+        padding-bottom: 20px;
+    }
+
+    .sys_cms-form-body .sys_sidebyside span label {
+        margin-left: 10px;
+        margin-right: 30px;
+    }
+
+    .sys_cms-form-body .sys_sidebyside span {
+        display: inline-block;
+        margin-top: 5px;
+    }
+
+    .sys_cms-form-body select.sys_medium {
+         /* styling */
+          background-color: white;
+          border: thin solid blue;
+          border-radius: 4px;
+          display: inline-block;
+          font: inherit;
+          line-height: 1.5em;
+          padding: 0.5em 3.5em 0.5em 1em;
+
+         /* reset */
+          margin: 0;      
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+    }
+
+    .sys_cms-form-body select.sys_medium {
+        font-family: 'Lato', sans-serif;
+        color: grey;
+        width: 46%;
+        border-radius: 10px;
+        font-size: 20px;
+        border: solid 1px #21828A;
+        background-color: #f7f3f3;
+        background-image:linear-gradient(45deg, transparent 50%, #21828A 50%),linear-gradient(135deg, #21828A 50%, transparent 50%),linear-gradient(to right, #ccc, #ccc);
+        background-position:calc(100% - 20px) calc(1em + 2px),calc(100% - 15px) calc(1em + 2px),calc(100% - 2.5em) 0.5em;
+        background-size:5px 5px,5px 5px, 1px 1.5em;
+        background-repeat: no-repeat;
+    }
+
+     .sys_cms-form-body select.sys_medium:focus {
+       background-image:linear-gradient(45deg, #21828A 50%, transparent 50%),linear-gradient(135deg, transparent 50%, #21828A 50%),linear-gradient(to right, #ccc, #ccc);
+       background-position:calc(100% - 15px) 1em, calc(100% - 20px) 1em, calc(100% - 2.5em) 0.5em;
+       background-size:5px 5px,5px 5px,1px 1.5em;
+       background-repeat: no-repeat;
+       border-color: #21828A;
+       outline: 0;
+    }
+
+     .sys_cms-form-body select.sys_medium:-moz-focusring {
+        color: transparent;
+        text-shadow: 0 0 0 #000;
+    }
+
+
+    .sys_cms-form-body .sys_cms-form-item > div > button {
+        color: #fff;
+        background-color: #21828A;
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 20px 20px;
+        margin-top: 5px;
+        outline: none;
+        width: 200px;
+        border: solid;
+    }
+
+    .sys_cms-form-body .sys_checkbox input, .sys_cms-form-body .sys_radio input {
+        position:relative;
+        top:8px;
+        margin: 4px 16px 0px 0px;
+    }
+
+    .sys_cms-form-body textarea.sys_medium {
+         border: solid 1px #21828A;
+         background-color: #f7f3f3;
+     }
+
+    .sys_form-submit {
+        color: #fff;
+        background-color: #21828A;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 20px 20px;
+        margin-top: 20px;
+        outline: none;
+    }
+</style>

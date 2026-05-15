@@ -1,0 +1,332 @@
+﻿
+/*
+    ====================== web font third party styles - calibri ==============================================
+    
+   <div style="font-family:'Calibri W01 Regular_904604';"> Calibri® W01 Regular </div>
+   <div style="font-family:'Calibri W01 Bold_904607';"> Calibri® W01 Bold </div>
+   <div style="font-family:'Calibri W01 Bold Italic_904610';"> Calibri® W01 Bold Italic </div>
+   <div style="font-family:'Calibri W01 Italic_904613';"> Calibri® W01 Italic </div>
+   <div style="font-family:'Calibri W01 Light';"> Calibri® W01 Light </div>
+   <div style="font-family:'Calibri W01 Light Italic';"> Calibri® W01 Light Italic </div>
+    
+   =============================================================================================================
+*/
+/* third party webfonts from webfont.com */
+
+.calibri-regular {
+    font-family: 'Calibri W01 Regular_904604';
+}
+.calibri-bold {
+    font-family: 'Calibri W01 Bold_904607';
+}
+.calibri-bold-italic {
+    font-family: 'Calibri W01 Bold Italic_904610';
+}
+.calibri-italic {
+    font-family: 'Calibri W01 Italic_904613';
+}
+.calibri-light {
+    font-family: 'Calibri W01 Light';
+}
+.calibri-light-italic {
+    font-family: 'Calibri W01 Light Italic';
+}
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+.clearfix {
+    display: inline-block;
+}
+
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.visually-hidden {
+    display:none !important;
+}
+
+/* start commented backslash hack \*/
+* html .clearfix {
+    height: 1%;
+}
+.clearfix {
+    display: block;
+}
+body {
+    padding-left: 0%;
+    padding-right: 0%;
+    background-color: #fff;
+    font-family: 'Calibri W01 Light', Calibri, Arial;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+div,
+ul,
+ol,
+span,
+label,
+form,
+a {
+    font-family: 'Calibri W01 Light', Calibri, Arial;
+}
+strong {
+    font-family: 'Calibri W01 Regular_904604', Calibri, Arial;
+}
+.slide-image {
+    width: 100%;
+}
+.carousel-holder {
+    margin-bottom: 30px;
+}
+.carousel-control,
+.item {
+    border-radius: 4px;
+}
+.caption {
+    height: 130px;
+    overflow: hidden;
+}
+.caption h4, .caption h3 {
+    white-space: nowrap;
+}
+.thumbnail img {
+    width: 100%;
+}
+.ratings {
+    padding-right: 10px;
+    padding-left: 10px;
+    color: #d17581;
+}
+.thumbnail {
+    padding: 0;
+}
+.thumbnail .caption-full {
+    padding: 9px;
+    color: #333;
+}
+footer {
+    margin: 0px 0;
+}
+
+
+a:not([href]) {
+    text-decoration:none;
+}
+a:not([href]):hover {
+   text-decoration:none;
+}
+
+/*search box images */
+#home-show-hide-services { cursor:pointer;}
+
+.mobile-close-icon {
+    background-image: url('/SiteElements/ChannelShift/content/images/mobile/cross-white.svg');
+    background-size: inherit;
+    background-repeat: no-repeat;
+    height: 23px;
+    width: 30px;
+    z-index: 999;
+    display: block;
+    top: 0px;
+    position: relative;
+}
+.mobile-nav-icon {
+    background-image: url('/SiteElements/ChannelShift/content/images/mobile/navicon.svg');
+    background-size: inherit;
+    background-repeat: no-repeat;
+    height: 26px;
+    width: 30px;
+    z-index: 999;
+    display: block;
+}
+.mobile-search-icon {
+    background-image: url('/SiteElements/ChannelShift/content/images/mobile/mag-glass-white.svg');
+    background-size: inherit;
+    background-repeat: no-repeat;
+    position: relative;
+    top: -3px;
+    display: block;
+    height: 27px;
+    width: 30px;
+    z-index: 999;
+}
+
+
+/* remove box shadow from from control*/
+input.form-control,
+input.form-control:focus {
+    border: none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -moz-transition: none;
+    -webkit-transition: none;
+ 
+}
+
+/* pop up css*/
+.transparent1 {
+    /* Required for IE 5, 6, 7 */
+    /* ...or something to trigger hasLayout, like zoom: 1; */
+    
+    width: 100%;
+    /* Theoretically for IE 8 & 9 (more valid) */
+    /* ...but not required as filter works too */
+    /* should come BEFORE filter */
+    
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    /* This works in IE 8 & 9 too */
+    /* ... but also 5, 6, 7 */
+    
+    filter: alpha(opacity=70);
+    /* Older than Firefox 0.9 */
+    
+    -moz-opacity: 0.7;
+    /* Safari 1.x (pre WebKit!) */
+    
+    -khtml-opacity: 0.7;
+    /* Modern!
+	        /* Firefox 0.9+, Safari 2?, Chrome any?
+	        /* Opera 9+, IE 9+ */
+    
+    opacity: 0.7;
+}
+div.ie-fader {
+    background: #000;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+.container-popup {
+    position: relative;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1001;
+}
+.popup {
+    width: 100%;
+    height: 200px;
+    background: #ed8b00;
+    color: #041c2c;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    padding: 20px;
+}
+.popup #title {
+    max-width: 700px;
+    margin: auto;
+    text-align: center;
+}
+.popup #content {
+    max-width: 980px;
+    margin: auto;
+    text-align: center;
+    min-width: 300px;
+}
+.popup #title span {
+    display: inline-block;
+    float: left;
+    padding: 0px 0px 0px 0px;
+}
+.popup #title span a {
+    color: #041c2c;
+    font-size: 24px;
+    padding: 5px;
+    border: solid 2px #041c2c;
+}
+.popup #title span a {
+    text-decoration: none;
+}
+.popup h2 strong {
+    display: inline-block;
+    float: left;
+    font-size: 28px;
+}
+.popup p {
+    font-size: 20px;
+    padding-top: 15px;
+}
+.popup a .close-btn {
+    width: 30px;
+    height: 30px;
+    cursor: none;
+}
+.lbl-accessability {
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    display: none;
+}
+
+
+/*=============== WebCast Videos =============== */
+ div.iframe-wrapper {
+        position: relative;
+        padding-bottom: 56.25%;
+        padding-top: 30px;
+        height: 0;
+        overflow: hidden;
+    }
+
+ div.iframe-wrapper iframe, .video-container object, .video-container embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+}
+
+ div.iframe-wrapper iframe 
+{
+        max-width: 100%;
+ }
+
+
+
+@media screen and (max-width: 480px) {
+
+   div#webcast-video-placeholder  span a {
+       width:90%;
+       word-wrap:break-word;
+   }
+}
+
+
+
+/* ============ media print formatting =============*/
+@media print {
+    .noprint {
+        display: none !important;
+    }
+    a:link:after,
+    a:visited:after {
+        display: none;
+        content: "";
+    }
+}

@@ -1,0 +1,50 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// Name: breadcrumb - catering  pages
+// License: Blackpool council
+// Date: 06/02/2024
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+
+
+@{
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.CateringKey }
+    };
+
+    CateringDTO DTO = Page.Model;
+    ContensisClient client = Page.Client;
+
+    DTO.Config = config;
+
+    BreadCrumbBuilder builder = new BreadCrumbBuilder(client, DTO.SiteView.HomeNodePath, DTO.SiteView.DefaultSlugName, 4);
+    builder.BuildBreadCrumbs(DTO.SiteView.DefaultNodePath, DTO.CurrentItem.Slug);
+
+    var breadCrumbs = builder.BreadCurmbs;
+}
+
+
+<div class="breadcrumb-container">
+
+    <ul class="breadcrumb">
+        @foreach (var item in breadCrumbs)
+        {
+            <li><a title="@item.Name.ToTitleCase()" href="@String.Format("{0}{1}",DTO.Config.SeoUrlList.UrlPath,item.Href)" class="accessibility-tab">@item.Name.ToTitleCase()</a></li>
+        }
+    </ul>
+</div>

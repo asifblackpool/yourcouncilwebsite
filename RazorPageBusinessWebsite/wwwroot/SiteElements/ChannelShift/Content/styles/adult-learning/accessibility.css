@@ -1,0 +1,12 @@
+﻿
+.yellow-text:focus {
+    color:yellow !important;
+}
+
+.white-text:focus {
+    color: white;
+}
+
+:focus.orange-text {
+    color: orange;
+}

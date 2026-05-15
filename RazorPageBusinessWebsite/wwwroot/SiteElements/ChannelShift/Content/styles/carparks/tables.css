@@ -1,0 +1,116 @@
+﻿/* table styling  */
+table {
+    margin: 0 auto;
+    width: 100%;
+    margin-bottom: 15px;
+    border: none;
+    width:100% !important;
+}
+
+table thead th,
+table tr th,
+thead th,
+tr th {
+    border: solid 1px #fff;
+    background: #830065;
+    color: #fff;
+}
+
+table thead th,
+table tr th,
+table td,
+thead th,
+tr th,
+tbody td {
+    padding: .8rem;
+}
+
+table tbody td,
+div.govuk-body table tbody td,
+.tbl-responsive tbody td {
+    background: #e3e4e6;
+    border: solid 1px #fff;
+}
+
+table caption {
+    display:none;
+}
+
+@media screen and (max-width: 640px) {
+
+
+    table thead,
+    table tr th,
+    thead,
+    tr th {
+        display: none;
+    }
+
+
+    table tbody td {
+        display: block;
+        padding: .6rem;
+        text-align: right;
+        padding-right: 20px;
+        width:100% !important;
+    }
+
+    table tbody tr td:first-child
+    {
+        background: #830065;
+        color: #fff;
+    }
+
+    table tbody tr td.background-gray
+    {
+        background: #e3e4e6;
+        color: #000;
+    }
+
+    tbody td:before
+     {
+        content: attr(data-th);
+        font-weight: bold;
+        display: inline-block;
+        width: 1rem;
+        float: left;
+    }
+
+    table tbody td[data-title]:before
+    {
+        content: attr(data-title);
+        float: left;
+        font-size: .8em;
+        color: #041c2c;
+        padding-right: 6px;
+        min-width: 100px;
+        display: inline-block;
+        text-align: left;
+    }
+
+    table tbody td[data-title].text-white:before
+    {
+        color: #fff !important;
+    }
+
+    table tbody td.width-full
+    {
+        display: block;
+        padding: 5px;
+        text-align: left;
+    }
+
+    table td.width-full:before
+    {
+        content: attr(data-th);
+        font-weight: 700;
+        display: inline-block;
+        width: 100%;
+        float: left;
+        text-align: left;
+        background-color: #830065;
+        color: #fff;
+        padding: 10px 5px;
+    }
+
+}

@@ -1,0 +1,50 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// Name: Gallery Image - used in Catering
+// License: Blackpool council
+// Date: 10/12/2023
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+    CateringDTO DTO = Page.Model;
+    Form form = null;
+    Config config = DTO.Config;
+    String path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+
+
+    SerialisedItem serialisedItem = null;
+    if (DTO.Flow != null)
+    {
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            var list = item.Items.FindAll(x => x.ClassType == typeof(Form));
+            if (list != null && list.Count > 0)
+            {
+                serialisedItem = list[0];
+                form = SerializeHelper.Deseralize(serialisedItem) as Form;
+
+            }
+        }
+    }
+}
+    @if (form != null) {
+       @RenderPage("/SiteElements/ChannelShift/razorviews/global/formrenderer.cshtml", new { formContentId = form.FormId })
+    }
+    
+

@@ -1,0 +1,63 @@
+﻿@charset "utf-8";
+
+ .dcc-documents-cpt h2, .dcc-documents-cpt h3 {
+	 clear: both;
+}
+ .dcc-documents-cpt-nav {
+	 margin-bottom: 2rem;
+}
+ .dcc-documents-cpt-nav h2 {
+	 font-size: 1.2rem;
+	 color: #000 !important;
+}
+ .dcc-documents-cpt-nav ul {
+	 list-style-type: none;
+	 margin: 0;
+	 padding: 0;
+}
+ .dcc-documents-cpt-nav ul li {
+	 padding: 0 !important;
+}
+ .dcc-documents-cpt-nav ul li:before {
+	 content: none !important;
+}
+ .dcc-documents-cpt-nav ul li a {
+	 padding: 0.75rem 0 0;
+	 display: inline-block;
+}
+ .dcc-documents-cpt-nav ul li ul {
+	 margin-left: 1rem;
+}
+ .dcc-documents-cpt-content #section-guidance .signpost {
+	 background: #ddd;
+	 padding: 2rem;
+	 margin: 1rem 0;
+	 color: #000;
+	 font-size: 1.2rem;
+}
+ .dcc-documents-cpt-content #section-guidance .signpost-mobile, .dcc-documents-cpt-content #section-guidance .signpost-desktop {
+	 display: none;
+}
+ @media only screen and (max-width: 63.9375em) {
+	 .dcc-documents-cpt-content #section-guidance .signpost-mobile {
+		 display: block;
+	}
+}
+ @media only screen and (min-width: 48em) {
+	 .dcc-documents-cpt-content #section-guidance .signpost-desktop {
+		 display: block;
+	}
+}
+ @media print {
+	 .dcc-documents-cpt .hide-for-print {
+		 display: none;
+	}
+}
+ .dcc-documents-cpt .dccdocs-sticky {
+	 position: fixed;
+	 bottom: 30px;
+}
+ .dcc-documents-cpt .dccdocs-hidden {
+	 visibility: hidden;
+}
+ 

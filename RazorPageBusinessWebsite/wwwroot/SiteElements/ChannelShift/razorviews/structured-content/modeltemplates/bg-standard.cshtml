@@ -1,0 +1,176 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: BG Standar Content - This is an Example showing how to use model templates
+    // License: Blackpool council
+    // Date: 12/11/2024
+}
+
+
+
+@using System;
+@using System.Text;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Templates;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Data
+
+@using Blackpool.Zengenti.CMS.Helpers.Connector;
+
+
+
+@{
+
+    //Create the Connector to retrieve Accordion data
+    var list = ContensisConnector<Blackpool.Zengenti.CMS.Models.Templates.BGStandard>.Entries(ContensisClientKeys.BG_STANDARD, new PageOptions(0, 1000));
+    //Grab configurable data
+
+    SerialisedContent canvas = null;
+    List<StandardList> standardList = null;
+    FormContent form = null;
+    String paragraph = string.Empty;
+    StringBuilder sb = new StringBuilder();
+
+    if (list != null)
+    {
+        try
+        {
+
+            var item = list.Items.Where(x => x.PageTitle == "Contact us form").FirstOrDefault();
+            canvas = item.GetSerialisedCanvas();
+
+            //get the form
+            foreach (var canvasItem in canvas.Items)
+            {
+
+            }
+        }
+        catch (Exception ex)
+        {
+            string x = ex.Message;
+        }
+
+
+
+    }
+
+
+}
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/contensis/common/forms/styles-2024.css" />
+<script type="module" crossorigin src="https://cms-blackpool.cloud.contensis.com/app/ui/forms/forms.js"></script>
+<h1>Model Templates Example BG Standard</h1>
+
+@foreach (var canvasItem in canvas.Items)
+{
+
+    if (canvasItem.ContainerType == CanvasKeys.PARAGRAPH)
+    {
+        paragraph = canvasItem.Content.ToString();
+        List<FragmemtParagraph> spItems = new List<FragmemtParagraph>();
+
+        if (canvasItem.ClassType == typeof(FragmemtParagraph))
+        {
+            spItems = SerializeHelper.JsonParser<FragmemtParagraph>(paragraph);
+        }
+        else
+        {
+            //spItems.Add(new FragmemtParagraph() { Value = paragraph });
+        }
+        <br />
+        <h2>Paragraph And Framgments Example</h2>
+        <p>
+            @foreach (var s in spItems)
+            {
+
+                foreach(Values item in s.Value)
+                {
+                    if (item.Properties!= null && item.Properties.Link != null)
+                    {
+                        sb.Append(string.Format("<a href='{0}'>{1}</a> ", item.Properties.Link.Sys.Uri, item.Value));
+                    }
+                    else
+                    {
+                        sb.Append(string.Format("{0} ",item.Value));
+                    }
+                }
+
+            }
+            @Html.Raw(sb.ToString())
+        </p>
+    }
+    if (canvasItem.ContainerType == CanvasKeys.FORM)
+    {
+        form = SerializeHelper.Deseralize(canvasItem);
+        <br />
+        <h3>Form Example</h3>
+        <div data-contensis-form-project-id="lgWebsite" data-contensis-form-id="@form.contentType.id"></div>
+    }
+    if (canvasItem.ContainerType == CanvasKeys.LIST && canvasItem.ClassType == typeof(StandardListLink))
+    {
+        standardList = JsonConvert.DeserializeObject<List<StandardList>>(canvasItem.Content.ToString());
+        <br />
+        <div style="width:100%; min-height:100px;">
+            <div class="col-md-4 col-lg-4 add-border" style="padding-left:0px;">
+                <h2 style="margin-top:10px;">List Information</h2>
+                <form name="carpark-form">
+                    <div class="form-group">
+                        <label for="list-select" style="display:none;">Choose a list item</label>
+                        <select id="list-select" name="list-select" class="form-control">
+                            <option value="-1">-- Please select a car park --</option>
+                            @foreach (StandardList item in standardList)
+                            {
+                                <option value="@item.value[0].properties.link.sys.uri">@item.value[0].value</option>
+                            }
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#list-select').change(function () {
+                    var urlTemplate = this.value;
+                    //sanity check
+                    if (this.value != "-1") {
+                        window.location.href = urlTemplate;
+                    }
+                })
+            });
+        </script>
+
+        <br />
+        <ul>
+            @foreach (StandardList item in standardList)
+            {
+                <li><a href="@item.value[0].properties.link.sys.uri">@item.value[0].value</a></li>
+            }
+        </ul>
+
+    }
+
+    if (canvasItem.ContainerType == CanvasKeys.LIST && canvasItem.ClassType == typeof(StandardList))
+    {
+        standardList = JsonConvert.DeserializeObject<List<StandardList>>(canvasItem.Content.ToString());
+        <br />
+
+        foreach (StandardList item in standardList)
+        {
+            <p>@item.value</p>
+        }
+    }
+
+
+
+
+}
+

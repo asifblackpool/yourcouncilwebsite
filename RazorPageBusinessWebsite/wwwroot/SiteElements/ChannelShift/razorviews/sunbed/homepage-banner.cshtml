@@ -1,0 +1,66 @@
+﻿@using Contensis.Framework.Web;
+@using Contensis.Framework.Web.Search;
+@using System.Web;
+@using System.Collections;
+@using System.Collections.ObjectModel;
+
+@{
+   //-----------------------------------------------------------------------------------------------------------------
+    // Name: Channel Shift - homepage banner
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date: 07/07/2017
+    //----------------------------------------------------------------------------------------------------------------
+}
+@functions{
+    List<String> _links = new List<String>();
+}
+
+@{
+
+    ReadOnlyCollection<ContentNode> contentNodes = CurrentNode.Siblings(true);
+    foreach (var item in contentNodes){
+        if ((item.IsWebPage) && (!item.IsHomePage))
+        {
+            _links.Add(item.Path);
+        } 
+    }   
+}
+
+@if (_links.Count > 3)
+{
+    <div class="row" style="cursor: pointer;" onclick="window.location = '@_links[0]'">
+        <div class="col-md-12 col-sm-12 zero-pad-all full-image the-truth base-text full-text border">
+            <h2><strong>SUNBEDS:</strong> THE TRUTH</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-6 col-xs-12 zero-pad-all half-image base-text half-text faketan-home border" style="cursor: pointer;" onclick="window.location = '@_links[1]'">
+            <h2><strong>FAKE TANNING TIPS</strong></h2>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-12 zero-pad-all half-image base-text half-text casestudies-home border" style="cursor: pointer;" onclick="window.location = '@_links[2]'">
+            <h2><strong>CASE STUDIES</strong></h2>
+        </div>
+    </div>
+    <div class="row zero-pad-bottom" style="cursor:pointer" onclick="window.location = '@_links[3]'">
+        <div class="col-md-12 col-sm-12 zero-pad-all base-text full-text border clearfix">
+            <div id="competiton-row-container" class="row">
+                <div id="competition-text-holder" class="col-md-6 col-sm-6 zero-pad-all competition-text">
+                    <h2 class="win-header-text"><strong>WIN!</strong></h2>
+                    <span class="competition-mobile-view">A year’s supply of St Moriz!</span>
+                </div>
+                <div id="competiton-image-holder" class="col-md-6 col-sm-12 terms pull-right zero-pad-all competition">
+                    <p class="competition-desktop-view"><a href="@_links[3]" title="terms and conditions">terms and conditions apply</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+  <div class="row zero-pad-all competition-facebook clearfix">
+    <div class="col-md-12 col-sm-12 zero-pad-all base-text full-text">
+        <p class="competition-desktop-view">A year's supply of St Moriz!&nbsp;&nbsp;</p>
+        <p class="facebook"><a href="https://www.facebook.com/bpoolcouncil" title="blackpool council facebook">Visit us on Facebook&nbsp;<img src="/siteElements/ChannelShift/content/images/sunbeds/Facebook.svg" alt="facebook sunbeds blackpool council" /></a></p>
+    </div>
+</div> 
+}
+@*<control name="sunbed homepage image banners" />*@

@@ -1,0 +1,58 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// Name: HTML Mak up for Catering pages
+// License: Blackpool council
+// Date: 11/10/2023
+}
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+    CateringDTO DTO = Page.Model;
+    List<SerialisedItem> SerialisedMarkup = Page.Markup;
+    List<ContentBoxWithImage> HtmlMarkupWithImage = new List<ContentBoxWithImage>();
+    string currentUrl = this.Request.RawUrl.ToLower();
+
+    Config config = DTO.Config;
+
+
+    if (SerialisedMarkup != null)
+    {
+        foreach (var item in SerialisedMarkup)
+        {
+            HtmlMarkupWithImage.Add(SerializeHelper.Deseralize(item) as ContentBoxWithImage);
+        }
+    }
+
+}
+
+
+
+@if (HtmlMarkupWithImage != null && HtmlMarkupWithImage.Count > 0)
+{
+
+    foreach (var item in HtmlMarkupWithImage)
+    {
+        <div class="content-box-with-image row zero-pad-left zero-pad-right">
+            <div class="col-md-6 col-sm-12 zero-pad-left"> 
+                @Html.Raw(String.Format("{0}", item != null ? item.Markup.Replace("/catering/", DTO.Config.SeoUrlList.UrlPath) : string.Empty))
+            </div>
+            <div class="col-md-6 col-sm-12 zero-pad-left zero-pad-right img-container">
+                @if (item.Image != null)
+                {
+                    <img src="@string.Format("{0}{1}", UrlHelper.GetBaseUrl(true, currentUrl) ,item.Image.Asset.Uri)" alt="" />
+                }
+                
+            </div>
+        </div>
+    }
+}
+
+
+

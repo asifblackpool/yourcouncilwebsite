@@ -1,0 +1,80 @@
+﻿@{
+
+    // Name: Channel Shift - Accordions
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date:26/02/2024
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.DeathOfARoyal;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Helpers.Connector;
+@using Blackpool.Zengenti.CMS.Models.Accordions;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+
+
+@functions {
+
+
+}
+
+
+@{
+
+    //Create the Connector to retrieve Accordion data
+    var list = ContensisConnector<Accordion>.Entries(ContensisClientKeys.ACCORDION, new PageOptions(0, 1000));
+    //Grab configurable data
+    String accordionTitle = Properties.Title;
+
+    Accordion accordion = (list != null & list.Items.Count > 0) ? list.Items.Where(x => x.AccordionName == accordionTitle).FirstOrDefault() : null;
+    List<AccordionContent> accordionList = new List<AccordionContent>();
+
+    if (accordion != null)
+    {
+        accordionList = accordion.GetSerialisedContent();
+    }
+
+    int counter = 1;
+
+}
+
+
+
+<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default-@accordionTitle">
+    @foreach (var item in accordionList)
+    {
+        <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+                <h2 class="govuk-accordion__section-heading">
+                    <span class="govuk-accordion__section-button" id="accordion-default-heading-@accordionTitle-@counter">
+                        @item.Title
+                    </span>
+                </h2>
+            </div>
+            <div id="accordion-default-content-1" class="govuk-accordion__section-content">
+                <div class="govuk-body">@Html.Raw(item.Body)</div>
+            </div>
+        </div>
+        counter++;
+    }
+
+</div>
+
+@*<control name="Channel Shift Accordions" showInMenu="true" category="Favourites" viewingGroup="2">
+ <properties>
+   <category name="Accordion Title">
+    <text name="Title" label="Pick a Title form Content types Accordions" />
+   </category>
+  </properties>
+</control>*@

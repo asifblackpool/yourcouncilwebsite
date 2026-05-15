@@ -1,0 +1,72 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Load Google Map - used in Adult Learning Pages
+    // License: Blackpool council
+    // Date: 11/09/2021
+}
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+@using Blackpool.Zengenti.CMS.Models.NewsAndEvents;
+@using Zengenti.Contensis.Delivery;
+
+
+@{
+    BlackpoolAdultLearningDTO DTO = Page.Model;
+    List<SerialisedContent> sc = new List<SerialisedContent>();
+    List<SerialisedContent> content = (DTO.Flow.GetContent != null & DTO.Flow.GetContent.Count > 0) ? DTO.Flow.GetContent : null;
+    ImageBoxHelper imgBoxHelper = null;
+    List<CTALink> ctaLinks = new List<CTALink>();
+    ContentBoxHelper cBoxHelper = null;
+
+    NewsAndEventsArticles article = null;
+    var NewsAndEvents = content[0].Items.FindAll(x => x.ClassType == typeof(NewsAndEventsArticles));
+
+    if (NewsAndEvents != null && NewsAndEvents.Count > 0)
+    {
+        var item = NewsAndEvents[0];
+        article = SerializeHelper.Deseralize(item, item.Content) as NewsAndEventsArticles;
+        var itemContent = article.GetSerialisedContent();
+        var img = itemContent.Items.FindAll(x => x.ClassType == typeof(Image)).First();
+        var contentBox = itemContent.Items.FindAll(x => x.ClassType == typeof(ContentBox)).First();
+        var ctalinkTemp = itemContent.Items.FindAll(x => x.ClassType == typeof(CTALink)).First();
+        imgBoxHelper = (img != null) ? imgBoxHelper = new ImageBoxHelper(img, typeofImage.Image, DTO.BaseImageUrl, DTO.NoImageUrl) : null;
+        cBoxHelper = (contentBox != null) ? cBoxHelper = new ContentBoxHelper(contentBox, 60) : null;
+        CTALink ctaLink = (ctalinkTemp != null) ? new CtaLinkHelper(ctalinkTemp).CTALink : null;
+
+
+        ctaLinks.Add(ctaLink);
+    }
+}
+
+
+<div class="row marg-bot-10 zero-pad-all clearfix">
+    <div class="col-md-6">
+        <span class="date-published">@StringUtility.DateTextFull(article.DateOfPost)</span>
+        @if (cBoxHelper != null)
+        {
+            @Html.Raw(String.Format("{0} ...", cBoxHelper != null ? cBoxHelper.HTMLText : string.Empty))
+        }
+    </div>
+    <div class="col-md-6 zero-pad-all clearfix">
+        @if (imgBoxHelper != null)
+        {
+            <img src="@imgBoxHelper.ImageBoxUrl" alt="@imgBoxHelper.AltText" style="width:100%;" />
+        }
+    </div>
+</div>
+<div class="row marg-bot-10 zero-pad-all clearfix">
+    @if (ctaLinks != null)
+    {
+        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/cta-link.cshtml"), new { Model = DTO, CtaLinks = ctaLinks, CtaCounter = 0, Serialised = false })
+    }
+</div>

@@ -1,0 +1,99 @@
+﻿@{
+
+    // Name: Channel Shift - Car Parks - dropdown list
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date:28/05/2024
+}
+
+@using System;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Helpers.Connector;
+@using Blackpool.Zengenti.CMS.Models.CarParks
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+
+
+@functions {
+
+
+}
+
+
+@{
+
+    //Create the Connector to retrieve Accordion data
+    PagedList<CarParks> list = null;
+    String dropdownListUrl = string.Empty;
+
+    try
+    {
+        list = ContensisConnector<CarParks>.Entries(ContensisClientKeys.CARPARKS, new PageOptions(0, 1000));
+        Config config = new Config()
+        {
+            SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.CarParksKey }
+        };
+
+        dropdownListUrl = config.SeoUrlList.Website + config.SeoUrlList.UrlPath;
+    }
+    catch (Exception ex)
+    {
+        Response.Write(ex.Message);
+    }
+
+
+
+}
+
+@if (list != null && list.TotalCount > 0)
+{
+  
+    <div style="width:100%; min-height:100px;">
+        <div class="col-md-4 col-lg-4 add-border" style="padding-left:0px;">
+            <h2 style="margin-top:10px;">Car park information</h2>
+            <form name="carpark-form">
+                <div class="form-group">
+                    <label for="carpark-select" style="display:none;">Choose a car park</label>
+                    <select id="carpark-select" name="carppark-select" class="form-control">
+                        <option value="-1">-- Please select a car park --</option>
+                        @foreach (CarParks item in list.Items)
+                        {
+                            <option value="@item.CarParkName.Replace(" ", "-").ToString()">@item.CarParkName</option>
+                        }
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#carpark-select').change(function () {
+                var urlTemplate         = "{0}{1}.aspx";
+                urlTemplate             = urlTemplate.replace("{0}", '@dropdownListUrl');
+                urlTemplate             = urlTemplate.replace("{1}", this.value);
+
+                //sanity check
+
+                if (this.value != "-1") {
+                    console.log(window.location.protocol);
+                    console.log(urlTemplate);
+                    window.location.href = window.location.protocol + "//" + urlTemplate;
+
+                }
+
+            })
+        });
+    </script>
+}
+
+
+
+
+
+@*<control name="car parks dropdown list" showInMenu="true" category="favourites" viewingGroup="1">
+    </control>*@

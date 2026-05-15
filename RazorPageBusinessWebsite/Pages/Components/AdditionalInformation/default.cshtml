@@ -1,0 +1,207 @@
+﻿@using RazorPageBusinessWebsite.Core.Models
+@using RazorPageBusinessWebsite.Core.Models.ViewModels;
+@using RazorPageBusinessWebsite.Helpers;
+@using Content.Modelling.Models.Assets
+@using Content.Modelling.Models.Components.Data
+@using Content.Modelling.Models.AssetGallery
+@using System.Text.RegularExpressions
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+
+@model AdditionalInformationViewModel
+
+
+
+@if (Model.DataNavigationLinks.Any() || Model.Assets.Any() || Model.LinkedEntries.Any())
+{
+    <aside class="additional-information-sidebar">
+        <h4 class="sidebar-title">Additional information</h4>
+        
+        <!-- Data Navigation Links -->
+        @if (Model.DataNavigationLinks.Any())
+        {
+            <div class="sidebar-section data-navigation-links">
+                <h3 class="section-title">Related links</h3>
+                <ul class="nav-links-list">
+                    @foreach (var link in Model.DataNavigationLinks)
+                    {
+                        if (!string.IsNullOrEmpty(link.URL) && !string.IsNullOrEmpty(link.LinkText))
+                        {
+                            <li class="nav-link-item">
+                                <a href="@link.URL" 
+                                   class="nav-link @(IsExternalUrl(link.URL) ? "external-link" : "")"
+                                   target="@(IsExternalUrl(link.URL) ? "_blank" : "_self")"
+                                   title="@link.LinkText">
+                                    <span>@link.LinkText</span>
+                                    @if (IsExternalUrl(link.URL))
+                                    {
+                                        <span class="external-icon">↗</span>
+                                    }
+                                </a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        }
+        
+        <!-- Assets Section -->
+        @if (Model.Assets.Any())
+        {
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+            <div class="sidebar-section assets-section">
+                <h4 class="section-title">Documents & resources</h4>
+                <ul class="assets-list">
+                    @foreach (var asset in Model.Assets)
+                    {
+                        if (!string.IsNullOrEmpty(asset.Uri) && !string.IsNullOrEmpty(asset.Title))
+                        {
+                            <li class="asset-item">
+                                <a href="@asset.Uri" class="asset-link" target="_blank" title="Download @asset.Title" download>
+                                    <span class="file-title">@asset.Title</span>
+                                    <span class="asset-meta">
+                                        @if (asset.FileSize > 0)
+                                        {
+                                            <span class="file-size">@asset.FileSizeFormatted</span>
+                                        }
+                                        <span class="file-icon">
+                                            <i class="@GetFileIconClass(asset.FileExtension)"></i>
+                                        </span>
+                                        <span class="file-download-icon">
+                                            <i class="fas fa-download ms-2"></i>
+                                        </span>
+                                    </span>
+                                </a>
+                                @if (!string.IsNullOrEmpty(asset.Description))
+                                {
+                                    <p class="asset-description">@asset.Description</p>
+                                }
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+
+        }
+        
+        <!-- Entries Section -->
+        @if (Model.LinkedEntries.Any())
+        {
+            <div class="sidebar-section entries-section">
+                <h4 class="section-title">Related content</h4>
+                <div class="entries-list">
+                    @foreach (var entry in Model.LinkedEntries)
+                    {
+                        <div class="entry-item">
+                            @{
+                                // Handle dynamic entry - adjust based on your actual entry structure
+                                var entryTitle = GetEntryTitle(entry);
+                                var entryDescription = GetEntryDescription(entry);
+                                var entryUrl = GetEntryUrl(entry);
+                            }
+                            @if (!string.IsNullOrEmpty(entryUrl) && !string.IsNullOrEmpty(entryTitle))
+                            {
+                                <a href="@entryUrl" class="entry-link">
+                                    <h5 class="entry-title">@entryTitle</h5>
+                                    @if (!string.IsNullOrEmpty(entryDescription))
+                                    {
+                                        <p class="entry-description">@entryDescription</p>
+                                    }
+                                </a>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </aside>
+}
+
+@functions {
+
+    private string GetFileIconClass(string fileExtension)
+    {
+        var extension = fileExtension?.ToLower().TrimStart('.');
+
+        return extension switch
+        {
+            "pdf" => "fas fa-file-pdf text-danger",
+            "doc" or "docx" => "fas fa-file-word text-primary",
+            "xls" or "xlsx" => "fas fa-file-excel text-success",
+            "ppt" or "pptx" => "fas fa-file-powerpoint text-warning",
+            "jpg" or "jpeg" or "png" or "gif" or "bmp" or "svg" => "fas fa-file-image text-info",
+            "zip" or "rar" or "7z" => "fas fa-file-archive text-secondary",
+            "mp3" or "wav" or "ogg" => "fas fa-file-audio text-purple",
+            "mp4" or "avi" or "mov" => "fas fa-file-video text-danger",
+            "txt" or "rtf" => "fas fa-file-alt text-muted",
+            _ => "fas fa-file text-muted"
+        };
+    }
+    private bool IsExternalUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+            return false;
+            
+        // Check if URL is absolute (starts with http:// or https://)
+        return url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+               url.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
+    }
+    
+    private string GetFileIcon(string fileExtension)
+    {
+        var extension = fileExtension?.ToLower().TrimStart('.');
+        
+        return extension switch
+        {
+            "pdf" => "📄",
+            "doc" or "docx" => "📝",
+            "xls" or "xlsx" => "📊",
+            "ppt" or "pptx" => "📽️",
+            "jpg" or "jpeg" or "png" or "gif" or "bmp" or "svg" => "🖼️",
+            "zip" or "rar" or "7z" => "📦",
+            "mp3" or "wav" or "ogg" => "🎵",
+            "mp4" or "avi" or "mov" => "🎬",
+            _ => "📎"
+        };
+    }
+    
+    private string GetEntryTitle(dynamic entry)
+    {
+        try
+        {
+            // Try different possible property names for title
+            return entry.PageTitle ?? entry.Name ?? entry.Title ?? entry.DisplayName ?? "Untitled";
+        }
+        catch
+        {
+            return "Untitled";
+        }
+    }
+    
+    private string GetEntryDescription(dynamic entry)
+    {
+        try
+        {
+            // Try different possible property names for description
+            return entry.Description ?? entry.Summary ?? entry.EntryDescription ?? "";
+        }
+        catch
+        {
+            return "";
+        }
+    }
+    
+    private string GetEntryUrl(dynamic entry)
+    {
+        try
+        {
+            // Try different possible property names for URL
+            return entry.Sys?.Uri.ToString() ?? "#";
+        }
+        catch
+        {
+            return "#";
+        }
+    }
+}

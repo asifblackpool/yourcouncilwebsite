@@ -1,0 +1,96 @@
+﻿/* Image Text Component - Top Aligned */
+.image-text-component {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    align-items: flex-start; /* Changed from center to flex-start */
+}
+
+.image-text-component .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+    box-sizing: border-box;
+}
+
+.image-text-component .image-aligned {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 0px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+}
+
+.image-text-component .text {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Changed from center to flex-start */
+    height: auto; /* Changed from 100% to auto */
+}
+
+.image-text-component .text p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.image-text-component .text p:last-child {
+    margin-bottom: 0;
+}
+
+/* Right Aligned - image on right side */
+.image-text-component.right-align {
+    flex-direction: row;
+}
+
+.image-text-component.right-align .text {
+    padding: 20px 30px 20px 0;
+}
+
+.image-text-component.right-align .col-md-6:has(.image-aligned) {
+    padding: 20px 0 20px 30px;
+}
+
+/* Left Aligned - image on left side */
+.image-text-component.left-align {
+    flex-direction: row;
+}
+
+.image-text-component.left-align .col-md-6:has(.image-aligned) {
+    padding: 20px 30px 20px 0;
+}
+
+.image-text-component.left-align .text {
+    padding: 20px 0 20px 30px;
+}
+
+/* Responsive Styles */
+@media (max-width: 767.98px) {
+    .image-text-component {
+        flex-direction: column !important;
+    }
+
+    .image-text-component .col-md-6 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        padding: 10px 0 !important;
+    }
+
+    .image-text-component.right-align .text,
+    .image-text-component.left-align .text,
+    .image-text-component.right-align .col-md-6:has(.image-aligned),
+    .image-text-component.left-align .col-md-6:has(.image-aligned) {
+        padding: 10px 0 !important;
+    }
+
+    .image-aligned {
+        max-height: 300px;
+        object-fit: cover;
+    }
+}
+
+/* Optional: Add hover effect to images */
+.image-aligned:hover {
+    transform: scale(1.02);
+    transition: transform 0.3s ease;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}

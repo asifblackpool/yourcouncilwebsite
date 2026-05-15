@@ -1,0 +1,144 @@
+﻿ @{
+
+    // Name: Channel Shift - Post Code Search Control
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Requires the following scripts 
+    //
+    // 1. include file handlebars.min.js 
+    // 2. include file utilites.js - used for post code validation.
+}
+ <div id="postcode-search-container">
+     <div style="margin-bottom:25px;">
+
+      <div class="input-group" id="postcode-search">
+         <label class="visually-hidden" for="postcode-input">postcode input</label>
+          <input id="postcode-input" class="form-control" type="text" maxlength="8" placeholder="FY1 1NA" size="18" name="postcode-input" aria-labelledby="postcode-button" alt="poscode searcher" >
+          <span class="input-group-btn"> 
+              <button id="postcode-button" class="btn btn-default"  aria-label="go button" type="button">GO</button>
+           </span>
+    </div>
+      <span id="postcode_error" class="error"></span>
+    </div>
+    <div id="loading-indicator" style="position: relative; left: 40%; top: 50%; margin-top: 10px; display: none;">
+        <strong><img src="/SiteElements/ChannelShift/Content/images/gif.gif" alt="loading image" />  ... Loading</strong>
+    </div>
+    <div class="bin-placeholder" style="margin:auto; text-align:center;"></div>
+</div>
+<style type="text/css">
+  span.input-group-btn {
+        border: 2px solid #830065;
+        background-color: #830065;
+        left: 0;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+
+    #postcode-search {
+        border: 2px solid #830065;
+        font-size:24px;
+        height:36px;
+    } 
+
+    #postcode-button {
+        color: #fff;
+        background-color: #830065;
+        border-width: 0;    
+    }
+
+</style>
+
+<script type="text/javascript">
+       $(document).ready(function () {
+
+        var getCurrentLocation = function () {
+            var savedCookieValue = window.cookieservices.ReadCookie('myareapostcode');
+            if (savedCookieValue !== null) {
+                $("#postcode-input").val(savedCookieValue);
+                return savedCookieValue;
+            }
+            savedCookieValue="FY1 1NA"
+            return savedCookieValue;
+        };
+
+        var getBinCollectionData = function (postcode) {
+            var pc = $("#postcode-input").val().trim();
+            var errorMessage = window.utilities.validateUKPostCode(pc);
+            $("#postcode_error").html(errorMessage);
+            if (errorMessage === "") {
+
+                $.ajax({
+                    url: window.commonservices.Config().pollingStationUrl + 'ValidatePostCode?postcode=' + pc,
+                    type: 'GET',
+                    success: function (data) {
+
+                        if (data.indexOf("OK") > -1) {
+                            window.cookieservices.CreateCookie("myareapostcode", pc, 30);
+                            bartecservices.init(pc);
+                            
+                        }
+                        else {
+                            $("#postcode_error").html('This post code is not valid for blackpool council');
+                        }
+                    }
+                }).fail(function (jqXHR, textStatus, error) {
+                    $("#postcode_error").html('Oops an error occured validating the post code');
+                });
+            }
+        };
+
+        var yourPostCodeClick = function () {
+            var pc = getCurrentLocation();
+        
+            $('#postcode-button').click(function (e) {
+                getBinCollectionData(pc);
+                e.preventDefault();
+            });
+        };
+     
+        console.log('start page services');
+        logger.disableLogger();
+ 
+        yourPostCodeClick();
+    
+    });
+
+</script>
+<script type="text/javascript" src="/SiteElements/ChannelShift/Scripts/services/bartec/bartecservices.js"></script>
+<script id="bartec-bin-collection-template" type="text/x-handlebars-template">
+
+    {{#if this.apidata}}
+    <div class="row" style="margin-bottom:15px">
+        <p><strong>To get bin collection dates please select an address below.</strong><br></p>
+        <label class="visually-hidden" for="barte-ddl">&nbsp;</label>
+        <select class="selectpicker" id="bartec-ddl" name="bartec-ddl" style="display:block !important;text-align:center; margin:auto;">
+            <option value="-1">-- Please select Address below --</option>
+            {{#each apidata }}
+            <option value="{{ uprn }}">{{ addressLine }}</option>
+            {{/each}}
+        </select>
+        <style type="text/css">
+            select.selectpicker {
+                display: block !important;
+                text-align: center;
+                margin: auto;
+            }
+        </style>
+    </div>
+    <div id="bartec-bin-date-placeholder">&nbsp;</div>
+    {{else}}
+    <div class="row" style="margin-bottom:15px"><strong>Bin collection address not found for the post code entered.</strong></div>
+    {{/if}}
+</script>
+<script id="bartec-bin-dates-template" type="text/x-handlebars-template">
+{{#if apidata}}
+    {{#each apidata }}
+    <p><strong>{{ description }}</strong><br> Your next collection day is on {{ date }}</p>
+    {{/each}}
+{{else}}
+    <div class="row" style="margin-bottom:15px"><strong>Bin collection dates not found for the post code entered.</strong></div><br/>
+{{/if}}
+  
+</script>@*<control name="bin collection Control" showInMenu="true" category="Favourites" viewingGroup="2">
+
+</control>*@

@@ -1,0 +1,182 @@
+﻿@{
+
+    // Name: Channel Shift - New Top tasks
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Require
+}
+
+@functions {
+
+
+    //Icon object to hold Icon Information
+    public class Icon
+    {
+        public string Name { get; set; }
+        public string ImageName { get; set; }
+        public string Url { get; set; }
+        public string CssName
+        {
+
+            get
+            {
+                string temp = string.Empty;
+                if (!string.IsNullOrEmpty(ImageName))
+                {
+                    int last = ImageName.LastIndexOf('.');
+                    int first = ImageName.LastIndexOf('/') + 1;
+                    int length = last - first;
+                    if (last > 0 && first > 0 && last > first && length > 0)
+                    {
+                        temp = ImageName.Substring(first, length);
+                    }
+
+                }
+
+                return temp;
+            }
+
+        }
+    }
+
+
+    //Icons object to hold a list of Icons
+    public class Icons
+    {
+        private List<Icon> _iconList = null;
+
+        public Icons() { _iconList = new List<Icon>(); }
+
+
+        public void AddIcons(Icon icon)
+        {
+            if (icon == null)
+                return;
+
+            _iconList.Add(icon);
+        }
+
+        public List<Icon> GetIcons
+        {
+            get { return _iconList; }
+        }
+    }
+}
+
+@{
+
+    //Declare icons object to hold your information and populate the icons
+    var icons = new Icons();
+
+    var items = Properties.Icons;
+    foreach (var item in items)
+    {
+        icons.AddIcons(new Icon() { Name = item.Title, ImageName = item.ProxyImageUrl, Url = (item.Url != null) ? item.Url.Path : "#" });
+    }
+    
+    var counter = 1;
+    var jscounter = 1;
+    string lastSix = "mobile-hidden";
+    string firstSix = "";
+    string javascriptCall = "";
+  
+}
+<h1 style="display:none;">Blackpoool Council homepage</h1>
+
+<div id="top-tasks-outer-container" class="row">
+    <div id="top-tasks-container"  class="col-md-12 zero-pad-left zero-pad-right">
+        <div id="mainbar"  class="home-icon row">
+            @foreach (var item in icons.GetIcons)
+            {
+                if (counter == 6)
+                {
+                    firstSix = "last";
+                }
+
+                if (counter > 11)
+                {
+                    lastSix = "mobile-hidden last";
+                }
+
+                <div class="@string.Format("col-xs-4 col-sm-3 col-md-2 zero-pad-left zero-pad-right {0}", (counter > 6) ? lastSix :firstSix )">
+                    <figure class="figure-wrapper">
+                        <div class="icon-wrapper">
+                            <a href="@item.Url"  title="@item.Name" class="button-task" aria-label="@item.Name" >
+                                <object id="top-task-icon-@counter" title="@item.Name" data="@item.ImageName"  tabindex="-1" class="@string.Format("top-tasks top-tasks-{0}", item.CssName)" type="image/svg+xml"></object>
+                            </a>
+                        </div>
+                        <figcaption style="position:relative; top:-2px;">
+                            <strong onMouseOver="this.style.textDecoration='underline;'" tabindex="-1">@item.Name</strong>
+                        </figcaption>
+                    </figure>
+                </div>
+                counter++;
+            }
+        </div>      
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    //--------------------------------------------------------------------------------------------------
+    //Function Name : clickSVG
+    //Parameters    : html object Id, Page Url
+    //Description   : add on click event to svg tag embedded within the object - enabling page redirect
+    //
+    //-------------------------------------------------------------------------------------------------
+    var clickSVG = function (objectId, url) {
+        var o = document.getElementById(objectId,url);
+        o.addEventListener("load", function () {
+            var svgRoot = o.contentDocument;
+            svgRoot.onclick = function () {
+                window.parent.location = url;
+            };
+        }, false);
+    };
+
+    @foreach (var item in icons.GetIcons)
+    {
+        @Html.Raw(string.Format("clickSVG('top-task-icon-{0}','{1}');\n", jscounter,item.Url));
+        jscounter++;
+    }
+
+
+</script>
+@*<control name="channel shift Homepage Top tasks" showInMenu="true" category="favourites" viewingGroup="1">
+ <properties>
+    <category name="Top Tasks">
+      <instruction label="Configurable Top Tasks">
+        Add the name of the top tasks you wish to view and the image name of the item to be added
+        please note the following:
+        
+        			1. Images must be svg format and 
+                    2. location of images are channelshift/content/images/toptasks/icons
+        
+        Example 	: Benefits 
+        
+        			title	  : Benefits, 
+                    image url : /content/images/toptasks/benefits.svg
+        			page link : /Residents/Benefits/Benefits.aspx
+        
+        Note we have a bug in this control once you have populated the Image Url please paste this link 
+        in the text box below (proxy image Url)
+      </instruction>
+     
+      <repeater name="Icons" min="1" max="12">  
+        <text name="Title" />
+        <node name="Url"  >
+          	<parameters>
+              <parameter name="ContentTypes" value="0"></parameter>
+          </parameters>
+        </node>
+        <node name="ImageUrl" />
+        <text name="ProxyImageUrl" />
+      </repeater>
+    </category>
+  </properties>
+</control>
+    
+
+
+*@

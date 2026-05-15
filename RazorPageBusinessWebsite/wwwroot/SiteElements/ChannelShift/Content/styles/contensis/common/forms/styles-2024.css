@@ -1,0 +1,416 @@
+﻿:root {
+    --color-base-white: #FFF;
+    --color-base-black: #000;
+    --color-midnight-lightest: #8FAAC7;
+    --color-midnight-lighter: #6583A4;
+    --color-midnight-light: #31577D;
+    --color-midnight-dark: #002033;
+    --color-midnight-darker: #06151E;
+    --color-dark-grey-lighter: #757575;
+    --color-dark-grey-lightest: #595959;
+    --color-dark-grey-light: #444444;
+    --color-dark-grey-dark: #333333;
+    --color-dark-grey-darker: #262626;
+    --color-dark-grey-darkest: #1F1F1F;
+    --color-light-grey-lighter: #FDFDFD;
+    --color-light-grey-lightest: #FAFAFA;
+    --color-light-grey-light: #F0F0F0;
+    --color-light-grey-dark: #DBDBDB;
+    --color-light-grey-darker: #CCCCCC;
+    --color-light-grey-darkest: #949494;
+    --color-yellow-lightest: #FFF3D6;
+    --color-yellow-lighter: #FFE7AF;
+    --color-yellow-light: #FFD980;
+    --color-yellow-dark: #FEBC25;
+    --color-yellow-darker: #FFB21A;
+    --color-yellow-darkest: #FFB21A;
+    --color-orange-lightest: #FEE6D2;
+    --color-orange-lighter: #FFD8B7;
+    --color-orange-light: #FFAF6B;
+    --color-orange-dark: #FF7E14;
+    --color-orange-darker: #F06C00;
+    --color-orange-darkest: #F06C00;
+    --color-pink-lightest: #F9D7EC;
+    --color-pink-lighter: #FAA6D8;
+    --color-pink-light: #F88BCC;
+    --color-pink-dark: #B6026D;
+    --color-pink-darker: #97025B;
+    --color-pink-darkest: #97025B;
+    --color-green-lightest: #D5FCE9;
+    --color-green-lighter: #A3F2CD;
+    --color-green-light: #74D8A8;
+    --color-green-dark: #008A48;
+    --color-green-darker: #008545;
+    --color-green-darkest: #008545;
+    --color-blue-lightest: #F1F6FD;
+    --color-blue-lighter: #BDD4F5;
+    --color-blue-light: #1D5FC2;
+    --color-blue-dark: #1D5C90;
+    --color-blue-darker: #1B5483;
+    --color-blue-darkest: #1B5483;
+    --color-cobalt-lightest: #CDF5FE;
+    --color-cobalt-lighter: #96E1F3;
+    --color-cobalt-light: #12B4D9;
+    --color-cobalt-dark: #006C85;
+    --color-cobalt-darker: #006075;
+    --color-cobalt-darkest: #006075;
+    --color-teal-lightest: #EFFEFC;
+    --color-teal-lighter: #ADF9EB;
+    --color-teal-light: #37BFA7;
+    --color-teal-dark: #00857E;
+    --color-teal-darker: #006C67;
+    --color-teal-darkest: #006C67;
+    --color-violet-lightest: #E0D7F9;
+    --color-violet-lighter: #D0C1F7;
+    --color-violet-light: #A687FE;
+    --color-violet-dark: #6941D8;
+    --color-red-lightest: #F9D7D7;
+    --color-red-lighter: #F4B5B5;
+    --color-red-light: #F67979;
+    --color-red-dark: #CA2121;
+    --color-red-darker: #B71A1A;
+    --color-red-darkest: #B71A1A;
+}
+
+.contensis-form h3 {
+    font-size: 2.2rem !important;
+    margin-bottom: 15px !important;
+}
+
+.contensis-form h4 {
+    font-size: 2.0rem !important;
+    margin-bottom: 15px !important;
+}
+
+.contensis-form {
+    --semantic-btn-action-background: #FFDD00;
+    --semantic-btn-action-border: #FFDD00;
+    --semantic-btn-action-hover: #00304d;
+    --semantic-btn-action-color: #cc1d4;
+    --required: #D42D2D;
+    --semantic-background-primary: #fff;
+    --semantic-background-secondary: #f1f6fd;
+    --semantic-input-background-primary: #fff;
+    --semantic-type-primary: #333;
+    --semantic-link-primary: #1853ac;
+    --semantic-checkbox-primary: url(data:image/svg+xml,%3Csvg width='20' height='14' viewBox='0 0 11 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3.5L4 6.5L9.5 1' stroke='%231D70B8' stroke-width='2'/%3E%3C/svg%3E%0A);
+    padding: 0px 1rem;
+    margin: 0px auto;
+    max-width: 48.25rem;
+    width: 100%;
+}
+
+.contensis-form {
+    max-width: 100%;
+    width: 100%;
+    margin: 0px;
+}
+
+.contensis-form .form-fields-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.contensis-form .form-field-legend,
+.contensis-form .form-field-label,
+.contensis-form .form-radio-label,
+.contensis-form .form-checkbox-label,
+.contensis-form .form-checkbox-field-label {
+    font-size: 1.3rem;
+    line-height: 1.3rem;
+    font-weight: 700 !important;
+    margin: 0px;
+    display: block;
+    color: var(--semantic-type-primary);
+    margin-bottom: 15px;
+}
+
+.contensis-form .form-radio-label,
+.contensis-form .form-checkbox-label,
+.contensis-form .form-checkbox-field-label {
+    display:inline-block;
+    margin-bottom:10px;
+    margin-left:10px;
+}
+
+.contensis-form .form-field {
+    max-width: 48.25rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.contensis-form .form-field-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.contensis-form .form-select-input,
+.contensis-form .form-text-input,
+.contensis-form .form-tel-input,
+.contensis-form .form-email-input,
+.contensis-form .form-multiline-input {
+    padding: 0.5rem 0.5rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid var(--semantic-type-primary);
+    background: var(--semantic-input-background-primary);
+    color: var(--semantic-type-primary);
+    font-size: 1.3rem;
+    line-height: 1.3rem;
+    font-weight: 400;
+    margin: 0px;
+}
+
+.contensis-form .form-footer {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+    gap: 0.5rem;
+}
+
+.contensis-form .form-footer-page {
+    font-size: 1.875rem;
+    line-height: 1.5rem;
+    font-weight: 400;
+    margin: 0px;
+}
+
+.contensis-form .form-actions {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.contensis-form .form-button--primary, .contensis-form .form-button--next, .contensis-form .form-button--previous {
+    border-radius: 4px;
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.5rem;
+    margin: 0px;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 5px;
+    cursor: pointer;
+    padding: 0.8rem 0.8rem;
+    transition: 200ms ease-in;
+    background-color: var(--semantic-btn-action-background);
+    border: 1px solid var(--semantic-btn-action-border);
+    color: var(--semantic-btn-action-color);
+}
+
+.contensis-form .form-field-label-required, .contensis-form .form-field-legend-required {
+    color: var(--required);
+    text-decoration: none;
+    border-bottom: none;
+}
+
+div.form-date-items {
+
+    height: auto;
+    display: table;
+    width: 100%;
+}
+
+div.form-date-items > div.form-date-item
+{
+    float:left; 
+    width:65px;
+}
+
+div.form-date-items > div.form-date-item:last-child {
+    float: left;
+    width: 75px;
+}
+
+div.form-date-item > label {
+    position:relative;
+    left:6px;
+    top:-3px;
+    font-size:1.2rem;
+}
+
+div.form-date-items div.form-date-separator {
+    width: 15px;
+    float: left;
+    font-size:1.2rem;
+    color:#fff;
+}
+
+div.form-date-items > div.form-date-item > input.form-date-day-input,
+div.form-date-items > div.form-date-item > input.form-date-month-input
+{
+    width:60px;
+    margin-left:5px;
+    font-size:1.5rem;
+}
+
+div.form-date-items > div.form-date-item > input.form-date-year-input {
+    width:85px;
+    margin-left:5px;
+    font-size:1.5rem
+}
+
+.form-progress-label {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.form-validation-summary-title  {
+    font-size: 1.8rem;
+    color: #e20032;
+    font-weight: bold;
+}
+
+ul.form-validation-summary-list {
+    margin-bottom:15px;
+}
+
+ul.form-validation-summary-list > li > a {
+    font-size: 1.2rem;
+    color: #e20032;
+    text-decoration: none !important;
+    margin-bottom: 5px;
+    display: inline-block;
+    font-weight: 600;
+}
+
+div.form-field-error {
+    font-size: 1.2rem;
+    color: #e20032;
+}
+
+div.form-confirmation-message {
+    padding:30px;
+}
+
+div.form-confirmation-message > p {
+    font-size: 1.5rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+@media only screen and (min-width: 768px) {
+    .contensis-form .form-button--primary, 
+    .contensis-form .form-button--next, 
+    .contensis-form .form-button--previous {
+        margin-left: auto;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .contensis-form .form-actions {
+        width: 100%;
+        -webkit-box-pack: end;
+        justify-content: flex-end;
+        -webkit-box-align: center;
+        align-items: center;
+    }
+}
+
+
+@media only screen and (max-width:480px) {
+
+
+    .contensis-form h3 {
+        font-size: 1.9rem !important;
+        margin-bottom: 10px !important;
+    }
+
+    .contensis-form h4 {
+        font-size: 1.7rem !important;
+        margin-bottom: 10px !important;
+    }
+
+    .contensis-form .form-field-legend,
+    .contensis-form .form-field-label,
+    .contensis-form .form-radio-label,
+    .contensis-form .form-checkbox-label,
+    .contensis-form .form-checkbox-field-label {
+        font-size: 1rem;
+        line-height: 1rem;
+    }
+
+    .contensis-form .form-select-input,
+    .contensis-form .form-text-input,
+    .contensis-form .form-tel-input,
+    .contensis-form .form-email-input,
+    .contensis-form .form-multiline-input {
+
+        font-size: 1rem;
+        line-height: 1rem;
+    }
+
+
+
+    .contensis-form .form-button--primary, 
+    .contensis-form .form-button--next, 
+    .contensis-form .form-button--previous {
+        font-size: 1rem;
+        line-height: 1rem;
+    }
+
+    div.form-date-item > label {
+        position: relative;
+        left: 6px;
+        top: -3px;
+        font-size: 1rem;
+    }
+
+    div.form-date-items div.form-date-separator {
+        font-size: 1rem;
+    }
+
+    div.form-date-items > div.form-date-item > input.form-date-day-input,
+    div.form-date-items > div.form-date-item > input.form-date-month-input {
+
+        font-size: 1rem;
+    }
+
+    div.form-date-items > div.form-date-item > input.form-date-year-input {
+
+        font-size: 1rem
+    }
+
+    .form-progress-label {
+        font-size: 15px;
+    }
+
+    .form-validation-summary-title {
+        font-size: 1.2rem;
+        color: #e20032;
+        font-weight: bold;
+    }
+
+
+    ul.form-validation-summary-list > li > a {
+        font-size: 1rem;
+
+    }
+
+    div.form-field-error {
+        font-size: 1rem;
+        color: #e20032;
+    }
+
+    div.form-confirmation-message {
+        padding: 30px;
+    }
+
+    div.form-confirmation-message > p {
+        font-size: 1.1rem;
+
+    }
+}

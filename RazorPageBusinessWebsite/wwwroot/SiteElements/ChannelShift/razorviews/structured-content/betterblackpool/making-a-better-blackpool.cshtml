@@ -1,0 +1,203 @@
+﻿
+@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date: 23/11/2017
+}
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BetterBlackpool;
+
+@{
+    var client = Zengenti.Contensis.Delivery
+       .ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID,
+                               ContensisClientKeys.CMS_URL,
+                               ContensisClientKeys.CLIENT_ID,
+                               ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+    // Get all entries with specified paging options
+    var betterBlackpoolModel = client
+        .Entries
+        .List<BetterBlackpool>(new EntryListOptions { ContentTypeId = ContensisClientKeys.BETTER_BLACKPOOL_CONTENTTYPE, LinkDepth = 1 }).Items.First();
+    var components = betterBlackpoolModel.Components;
+    var footer = betterBlackpoolModel.FooterText.Replace("[!FormPlaceholder]", "<div id='form-placeholder' style='padding: 0px 0px 0px 20px;'></div>");
+
+    string title = AppContext.Current.Page.Title.UpperCaseFirstCharacter();
+    
+   }
+<div class="making-blackpool-better">
+<div class="row zero-pad-left zero-pad-right clearfix">
+    <div class="col-md-12 col-sm-12 zero-pad-left zero-pad-right clearfix">
+        <img src="@betterBlackpoolModel.HeaderGraphicUrl" class="header-image" alt="@betterBlackpoolModel.HeaderGraphic.Caption" />
+    </div>
+</div>
+<div class="col-md-12 zero-pad-all ">
+    <h1><strong>@title.Replace("-", " ")</strong></h1>
+</div>
+<div class="row zero-pad-left zero-pad-right clearfix">
+    <div class="col-md-12 col-sm-12 zero-pad-left zero-pad-right clearfix">@Html.Raw(betterBlackpoolModel.IntroText)</div>
+</div>
+
+@foreach (var item in components) {
+    if (item.Active) { 
+        <div class="row component-container zero-pad-left zero-pad-right clearfix" >
+            <div class="col-md-6 col-sm-12 col-xs-12 zero-pad-left zero-pad-right clearfix intro-text-container">
+                <h2 class="section-title">@item.Title</h2>
+                @Html.Raw(item.Introduction)
+                @if (item.CallToActionLink != null) { 
+                  <a class="section-button"  href='@item.CallToActionLink' style="text-align:center; display:block; text-decoration:none;">More</a>
+                }
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12 zero-pad-left zero-pad-right clearfix">
+                <img src="@item.SectionIcon.Asset.Uri" class="section-image" alt="@item.SectionIcon.Caption" />
+            </div>
+        </div>  
+    } 
+}
+
+
+
+<div class="row row-section zero-pad-left zero-pad-right clearfix">
+    <div class="col-md-12 col-sm-12 zero-pad-left zero-pad-right clearfix">
+        <iframe src="https://ebtk.co.uk/sub/17704/348" style="border: none; overflow:hidden;" width="1170" height="357" scrolling="no" seamless="true"></iframe>
+    </div>
+</div>
+<div class="row row-section zero-pad-left zero-pad-right clearfix">
+<br/>
+<img src="/Images/Better-Blackpool/Lancashire-Enterprise-Partnership.png" alt="lancashire enterprise partnership" class="funding-image"  style="display:block;text-align:center; margin:auto;"/>
+</div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var betterblackpoolform = function () {
+            var _contentPlaceHolder     = 'form-placeholder';
+            var _templateId             = 'better-blackpool-signup-form-template';
+            var _template = null;
+
+            var removeCMSform = function () {
+                var pageForm = $('#form1');
+                document.getElementsByTagName('body')[0].innerHTML = pageForm.html();
+            };
+
+            var submitForm = function () {
+            
+                    $.ajax({
+                        url: '/custom/api/betterblackpool/subscribe',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: $('#betterblackpoolform').serialize(),
+                        success: function (data, textStatus, xhr) {
+                            $('#email-sent').html("Thank you for your request. We'll keep you updated with details of the Blackpool town centre improvement works.");
+                            return false;
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            $('#email-sent').html("There was a problem with your request");
+                            return false;
+                        }
+                    });
+                    return false;
+            };
+
+            var validateForm = function () {
+
+                $('#betterblackpoolform').bootstrapValidator({
+                    container: '#messages',
+                    feedbackIcons: {
+                        valid: 'glyphicon glyphicon-ok',
+                        invalid: 'glyphicon glyphicon-remove',
+                        validating: 'glyphicon glyphicon-refresh'
+                    },
+                    fields: {
+                        email: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'The email address is required and cannot be empty.'
+                                },
+                                emailAddress: {
+                                    message: 'The email address is not valid.'
+                                }
+                            }
+                        },
+                        'optin': {
+                            validators: {
+                                notEmpty: {
+                                    message: 'The checkbox needs to be checked.'
+                                }
+                            }
+                        },
+                    },
+                    submitHandler: function (validator, form, submitButton) { submitForm(); },
+                destroy: function () { console.log('destroy');}
+                });
+
+            };
+
+            var getBetterBlackpoolTemplate = function () {
+                return commonservices.returnHandlebarTemplate(Handlebars, _templateId);
+            };
+
+            var populateTemplate = function () {
+                $("#" + _contentPlaceHolder).html(_template({ apidata: null }));
+            };
+
+        
+
+            _template = getBetterBlackpoolTemplate();
+
+            removeCMSform();
+            populateTemplate();
+            validateForm();
+            //submitForm();
+          
+            $('#email-sent').html('');
+        };
+
+        //betterblackpoolform();
+       
+    });
+</script>
+<script id="better-blackpool-signup-form-template" type="text/x-handlebars-template">
+    <form id="betterblackpoolform" method="post"  class="form-horizontal">
+        <div class="form-group">
+            <input class="form-control email-input" id="email" name="email" placeholder="Email Address" type="email" value="" style="border: solid 1px #830065;" maxlength="60" />
+         <button id="better-blackpool-submit" type="submit" class="btn btn-default">OK</button>
+        </div>
+        <div class="checkbox" style="margin-left:0px">
+            <label style="padding-left:3px;">
+            <input type="checkbox" class="better-blackpool-checkbox" name="optin" id="optin">&nbsp;&nbsp;Please send me updates by email on the Blackpool town centre improvement works</label>
+        </div>
+        <div id="messages"></div>
+    </form>
+<div id="email-sent" style="font-weight:bold; color:red;"></div>
+
+</script>
+<link href="/SiteElements/ChannelShift/content/styles/better-blackpool/index.css" rel="stylesheet" />
+@{
+
+ AppContext.Current.Page.Scripts.Add("/SiteElements/ChannelShift/scripts/jquery/bootstrap.validator.js", ScriptLocation.BodyEnd);
+ 
+}
+<script type="text/javascript">
+$(document).ready(function () {
+    window.homeservices.init();
+    $('#crumbs').parent().parent().css('margin-top', '30px;');
+});
+</script>
+<style type="text/css">
+
+
+</style>
+
+
+
+@*<control name="making a better blackpool" showInMenu="true" category="Favourites" viewingGroup="2" />*@

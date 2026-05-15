@@ -1,0 +1,133 @@
+﻿#root-container a:hover {
+    color: #7d0063;
+    text-decoration: underline;
+}
+#root-container a:hover .st0 {
+    fill: #830065;
+}
+#root-container a {
+    color: #830065;
+}
+div#top-tasks-outer-container {
+    padding-bottom: 10px;
+}
+.figure-wrapper:hover a {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.home-outline {
+    border: dashed gray 0px;
+    margin-top: 20px;
+    padding: 0px 15px 0px 15px;
+}
+.home-h3 {
+    color: #830065;
+    font-weight: bold;
+    
+}
+.home-cursor {
+    cursor: pointer;
+}
+.top-tasks {
+    display: block;
+    height: 170px;
+    margin: auto;
+    text-align: center;
+    text-indent: -9999px;
+    width: 140px;
+}
+}
+.home-icon > h4 {} figcaption a {
+    color: #7d0063;
+    font-weight: bold;
+}
+.top-tasks-counciltax {
+    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/counciltax.svg");
+}
+.top-tasks-jobs {
+    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/jobs.svg");
+}
+.top-tasks-benefits {
+    background: url("/SiteElements/ChannelShift/content/images/test/benefits.svg");
+}
+.top-tasks-bulkywaste {
+    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/bulkywaste.svg");
+}
+.top-tasks-flytipping {
+    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/fly-tipping.svg");
+}
+.top-tasks-parking {
+    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/parking.svg");
+}
+.top-tasks-bin-collection {
+    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/bincollections.svg");
+}
+.top-tasks-planning {
+    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/planning.svg");
+}
+.top-tasks-pay-it {
+    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/payit.svg");
+}
+.top-tasks-support-help {
+    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/supportandhelp.svg");
+}
+.top-tasks-social-care {
+    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/socialcare.svg");
+}
+.top-tasks-library {
+    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/library.svg");
+}
+.top-tasks-school-admissions {
+    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/schooladmissions.svg");
+}
+@media only screen and (max-width: 580px) {
+    .top-tasks {
+        height: 150px;
+        width: 150px;
+    }
+    .col-xs-4 {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    figcaption a {} div.icon-wrapper {
+        height: 135px;
+    }
+    .home-icon .figure-wrapper {
+        height: 180px;
+        min-height: 140px;
+    }
+}
+@media only screen and (min-width: 100px) and (max-width: 480px) {
+    .top-tasks {
+        height: 96px;
+        width: 96px;
+    }
+    .col-xs-4 {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    div#root-container > div.row {
+        border: solid 0px red;
+    }
+    .mobile-view2 div.col-md-12 {} .home-icon div:nth-child(7),
+    .home-icon div:nth-child(8),
+    .home-icon div:nth-child(9) {
+        margin-top: 15px;
+    }
+    .home-icon .figure-wrapper figcaption h4 {
+        padding-left: 5px;
+        padding-top:10px;
+    }
+    .home-icon .col-xs-4 {} .home-icon figcaption {
+        position: relative;
+        top: -30px;
+    }
+    .home-icon figcaption a {} div.icon-wrapper {
+        height: 100px;
+    }
+    .home-icon .figure-wrapper {
+        height: 120px;
+        min-height: 120px;
+        width: 100%;
+    }
+}

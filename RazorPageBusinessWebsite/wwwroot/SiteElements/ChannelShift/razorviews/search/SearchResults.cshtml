@@ -1,0 +1,205 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// Name: Search Results
+// License: Blackpool council
+// Date: 11/07/2019 - Originally Written (Modified 26/01/2020)
+}
+
+@using System;
+@using System.Collections.Generic;
+@using Zengenti.Data;
+@using System.Configuration;
+@using Contensis.Core.Utilities.DataAccess;
+@using System.Data;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolAdultLearning
+@using Blackpool.Zengenti.CMS.Models.ParksAndGreenSpaces;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Zengenti.Search;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolCentral;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Models.Search;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Zengenti.Contensis.Delivery;
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+
+
+<link href="/SiteElements/ChannelShift/Content/styles/bundles/base.min.css" rel="stylesheet" type="text/css" />
+<link href="/aspnet_client/ContensisThemes/simple/Common/styles.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="/aspnet_client/ContensisThemes/simple/search/styles.css" rel="stylesheet" type="text/css" media="screen" />
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/bundles/newsarticles.min.css" />
+
+
+@{
+
+    List<SearchResultItem> all  = new List<SearchResultItem>();
+    List<string> returnTerms    = new List<string>();
+    int currentPage             = (!String.IsNullOrEmpty(Request.QueryString["page"])) ? Convert.ToInt32(Request.QueryString["page"]) : 1;
+    int TotalCount              = 0;
+    int pageSize                = 5;
+    string absUrl               = String.Format("{0}?search_keywords={1}&page=",Request.Url.AbsolutePath.ToString(),(!String.IsNullOrEmpty(Request.QueryString["search_keywords"])) ? Request.QueryString["search_keywords"] : String.Empty);
+    string searchTerm           = (!String.IsNullOrEmpty(Request.QueryString["search_keywords"])) ? Request.QueryString["search_keywords"].Replace("%20", " ") : "";
+    Boolean isError             = false;
+    String errorMessage         = string.Empty;
+    try
+    {
+        ContentTypesSearchHelper<BlackpoolAdultLearning> ctsh = new ContentTypesSearchHelper<BlackpoolAdultLearning>(ContensisClientKeys.ADULT_LEARNING_CONTENTTYPE);
+
+        var list = ctsh.returnQueryResults(searchTerm, ContensisClientKeys.ADULT_LEARNING_CONTENTTYPE);
+        var temp = ctsh.DisplaySearchResults(list.Items, (new Config() { SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.BlackpoolAdultLearningKey } }).SeoUrlList.UrlPath);
+
+        if (temp != null && temp.Items.Count > 0)
+        {
+            all.AddRange(temp.Items);
+        }
+
+        ContentTypesSearchHelper<ParksAndGreenSpaces> ctsh1 = new ContentTypesSearchHelper<ParksAndGreenSpaces>(ContensisClientKeys.PARKS_AND_GREENSPACES_CONTENTTYPE);
+        var list1 = ctsh.returnQueryResults(searchTerm, ContensisClientKeys.PARKS_AND_GREENSPACES_CONTENTTYPE);
+        var temp1 = ctsh.DisplaySearchResults(list1.Items, (new Config() { SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.ParksAndGreenspaceKey } }).SeoUrlList.UrlPath);
+
+        if (temp1 != null && temp1.Items.Count > 0)
+        {
+            all.AddRange(temp1.Items);
+        }
+
+        ContentTypesSearchHelper<ParksAndGreenSpaces> ctsh2 = new ContentTypesSearchHelper<ParksAndGreenSpaces>(ContensisClientKeys.CATERING);
+        var list2 = ctsh.returnQueryResults(searchTerm, ContensisClientKeys.CATERING);
+        var temp2 = ctsh.DisplaySearchResults(list2.Items, (new Config() { SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.CateringKey } }).SeoUrlList.UrlPath);
+
+        if (temp2 != null && temp2.Items.Count > 0)
+        {
+            all.AddRange(temp2.Items);
+        }
+
+
+    }
+    catch (Exception ex)
+    {
+        errorMessage = String.Format("{0}<br/><span style='display:none;'>{1}</span>", ex.Message,ex.StackTrace);
+        isError = true;
+    }
+
+
+    TotalCount          = all.Count;
+    int maxRecord       = (TotalCount > pageSize) ? (pageSize * currentPage) : TotalCount;
+    int startRecord     = (maxRecord <= pageSize) ? 1 : maxRecord - pageSize;
+    int totalLinks      = (TotalCount < pageSize) ? 0 : ((TotalCount - (TotalCount % pageSize)) / pageSize) + 1;
+    bool isFirstPage    = (currentPage == 1);
+    bool isLastPage     = (currentPage * pageSize) >= TotalCount;
+    var PageResults     = all.Skip(pageSize * (currentPage - 1)).Take(pageSize).ToList();
+    var pager           = new Pager(totalItems: TotalCount, currentPage: currentPage, pageSize: pageSize, maxPages: 5);
+    List<int> pageLinks = pager.Pages.ToList();
+
+    foreach (var tempItem in PageResults.ToList())
+    {
+        if (!String.IsNullOrEmpty(tempItem.Content))
+        {
+            if (tempItem.Content.Length < 4)
+            {
+                PageResults.Remove(tempItem);
+            }
+        }
+        else
+        {
+            PageResults.Remove(tempItem);
+        }
+    }
+}
+
+<div id="search-container" style="padding:50px">
+    @if (PageResults.Count > 0)
+    {
+        <div class="sys_theme-simple sys_searchresults-themed" style="max-width: 960px; margin-left: 10px;">
+            <div id="SearchResults_wrapper" class="sys_search-control">
+                <h2 class="sys_search-title sys_standardlist-title">Search Results</h2><div id="SearchResults_List" class="sys_datarepeatercontrol">
+                    <div class="sys_itemslist">
+                        @foreach (var item in PageResults)
+                        {
+
+                            <div class="sys_subitem">
+                                <div>
+                                    <h3 class="sys_subitem-heading sys_search-subheading">
+                                        <a id="SearchResults_List_SearchResults_List_0_SearchResults_Item_0_TitleLink" title="Blackpool Central" href="@item.Href">@item.Tag</a>
+                                    </h3>
+                                    <div id="SearchResults_List_SearchResults_List_0_SearchResults_Item_0_Image_0"></div>
+                                    <div class="sys_subitem-summary sys_search-summary">
+                                        <dl>
+                                            <dt class="sys_search-description">Description</dt>
+                                            <dd class="sys_search-description">@Html.Raw(StringUtility.KeyWordWrapper(returnTerms, HTMLParser.cleanHtml(item.Content), "<strong>"));</dd>
+                                            <dt class="sys_search-url">Url</dt>
+                                            <dd class="sys_search-url">@item.Href</dd>
+                                        </dl>
+                                    </div><div class="sys_clear"></div>
+                                </div>
+                            </div>
+                        }
+
+
+                    </div><div class="sys_flickrpager">
+                        <div class="sys_paginginfo">
+                            <span class="sys_paginginfo-custom">
+                                <span class="sys_paginginfocurrentrecord">@startRecord&nbsp;</span>
+                                <span class="sys_paginginforecordcountdescription">to&nbsp;;</span><span class="sys_paginginfomaxrecord">@maxRecord</span>
+                                <span class="sys_paginginforecordcountdescription">of</span> <span class="sys_paginginforecordcount">@TotalCount</span>
+                            </span>
+                        </div>
+                        <div class="sys_navigation">
+                            @if (isFirstPage)
+                            {
+                                <span class="sys_navigationprevious sys_disabled"><span>Previous</span></span>
+                            }
+                            else
+                            {
+                                <span class="sys_ellipsis">…</span>
+                                <span class="sys_navigationnext"><a title="Go to the next page of the Search Results" href="@String.Format("{0}{1}", absUrl, currentPage-1)">Previous</a></span>
+                            }
+
+                            @foreach (var digit in pageLinks)
+                            {
+                                if (digit == currentPage)
+                                {
+                                    <span class="sys_page sys_selected"><span>@digit</span></span>
+                                }
+                                else
+                                {
+
+                                    <span class="sys_page"><a title="@String.Format("Go to page {0} of the Search Results", digit)" href="@String.Format("{0}{1}", absUrl, digit)">@digit</a></span>
+
+                                }
+                            }
+
+                            @if (isLastPage)
+                            {
+                                <span class="sys_navigationprevious sys_disabled"><span>Previous</span></span>
+                            }
+                            else
+                            {
+                                <span class="sys_ellipsis">…</span>
+                                <span class="sys_navigationnext"><a title="Go to the next page of the Search Results" href="@String.Format("{0}{1}", absUrl, currentPage+1)">Next</a></span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (isError)
+    {
+        string show = (!String.IsNullOrEmpty(Request.QueryString["showError"])) ? Request.QueryString["showError"].Replace("%20", " ") : "no";
+        <h3><strong>Oops there was a problem with the search. Please try again</strong></h3>
+        <strong>@Html.Raw(errorMessage)</strong>
+        if (show == "yes")
+        {
+            <strong>@Html.Raw(errorMessage)</strong>
+        }
+    }
+</div>
+
+
+

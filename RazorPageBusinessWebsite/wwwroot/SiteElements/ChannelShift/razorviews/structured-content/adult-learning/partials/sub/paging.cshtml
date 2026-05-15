@@ -1,0 +1,58 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Gallery Image - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Models.Paging;
+
+
+
+@{
+    List<String> Slugs      = Page.Model;
+    List<String> PageLinks  = new List<String>();
+    string currentUrl          = Page.PageUrl;
+    int counter             = 1;
+
+    foreach(string s in Slugs)
+    {
+        PageLinks.Add(String.Format("{0}?page={1}", currentUrl, counter++));
+    }
+
+    PaginationModel<string> paging = new PaginationModel<string>(PageLinks);
+    paging.CurrentPage = (!String.IsNullOrEmpty(Request.QueryString["page"])) ? Convert.ToInt32(Request.QueryString["page"]) : 1;
+    paging.PageSize = PagingKeys.DEFAULT_PAGE_SIZE;
+
+}
+<div class="row">
+<div class="col-md-12">
+    <ul class="pagination">
+        @if (paging.ShowPrevious)
+        {
+            <li class="page-item prev">
+                <a href="@paging.GetPaginatedResult(paging.CurrentPage - 1)" class="page-link">Previous</a>
+            </li>
+        }
+        @for (var i = 1; i <= paging.TotalPages; i++)
+        {
+            <li class="page-item @(i == paging.CurrentPage ? "active" : "")">
+               <a href="@paging.GetPaginatedResult(i)"  class="page-link">@i</a>
+            </li>
+        }
+        @if (paging.ShowNext)
+        {
+            <li class="page-item next">
+                <a href="@paging.GetPaginatedResult(paging.CurrentPage + 1)" class="page-link">Next</a>
+            </li>
+        }
+    </ul>
+</div>
+</div>
+
+

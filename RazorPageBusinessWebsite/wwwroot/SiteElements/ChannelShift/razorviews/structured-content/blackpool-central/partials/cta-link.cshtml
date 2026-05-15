@@ -1,0 +1,56 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - render the general (generic) page
+    // License: Blackpool council
+    // Date: 21/02/2018
+
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolCentral
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+
+@{
+    BlackpoolCentralDTO DTO = Page.Model;
+    List<SerialisedItem> list = Page.CTA;
+    List<CTALink> ctaLinks = new List<CTALink>();
+    int maxwidth = 160;
+    
+    CTALink ctaLink = null;
+    string Url = "#";
+
+    if (list != null)
+    {
+        foreach (var item in list)
+        {
+            ctaLink = SerializeHelper.Deseralize(item) as CTALink;
+            Url = (ctaLink.LinkedContentPage != null) ? "not-set" :  ctaLink.ExternalURL;
+        }
+
+        maxwidth = (ctaLink.ButtonText.Length > 20) ? 330 : 210;
+    }
+}
+
+@if (ctaLink != null)
+{
+<div class="row" style="padding-top:15px;">
+    <div class="col-md-12 col-sm-12">
+        <a class="cta-link-button" onclick="window.location.href='@string.Format("{0}", Url)'" style='@string.Format("text-decoration:none;max-width:{0}px;", maxwidth)'>@ctaLink.ButtonText</a>
+    </div>
+</div>
+ 
+}
+

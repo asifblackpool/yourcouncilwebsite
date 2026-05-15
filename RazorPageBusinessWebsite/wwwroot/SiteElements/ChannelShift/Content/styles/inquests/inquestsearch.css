@@ -1,0 +1,182 @@
+﻿
+
+  .search-box {
+      background-color:#b5bd00;
+      padding:10px;
+  }
+
+  div.inquest-filter > label { color: #041c2c;}
+
+  button#inquest-search-button {
+    background: url(/SiteElements/ChannelShift/content/images/header-menu/magglass.svg) no-repeat;
+    background-size: 20px 34px;
+    background-position-x:4px;
+    background-position-y:0px;
+    background-color:#fff;
+    width:30px;
+    border:solid 1px #fff;
+  }
+
+.btn-default, .btn-default:focus {
+    color: #041c2c;
+    background-color: #fff !important;
+    border-color: #8c8c8c;
+}
+
+.filter-option, .dropdown-menu > li > a {
+    color: #041c2c !important;
+    font-weight: bold;
+}
+
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+    color: #041c2c !important;
+    font-weight: bold;
+}
+
+.bootstrap-select.btn-group .dropdown-menu li a span.text {
+    display: inline-block;
+    color: #041c2c !important;
+    font-weight: bold;
+}
+
+  @media screen and (min-width:0\0) {  
+    /* IE9 and IE10 rule sets go here */ 
+    button#inquest-search-button {
+        height:31px;
+        background-position-y:-2px;
+    } 
+}
+
+  .biginput { border: solid 1px #fff;}
+
+  .form-control {
+      height:auto;
+  }
+
+  input.form-control, input.form-control:focus {
+      border: 1px solid #fff;
+  }
+
+  span.error-message {
+      color:red; 
+      font-weight:bold; 
+      font-size:14px; 
+  }
+
+
+  /*pagingation */
+ul.pagination > li > a.page-link,
+ul.pagination > li > a.left-link,
+ul.pagination > li > a.right-link {
+    text-decoration: none;
+    color: #041c2c;
+    font-weight: bold;
+    display: inline;
+}
+
+    ul.pagination > li > a.active {
+        background-color: #000;
+        color:#fff;
+    }
+
+    ul li.dots-left,
+    ul li.dots-right {
+        position: relative;
+        float: left;
+        margin: 5px 10px 0px 10px;
+    }
+
+    .inquest-search {
+        float:left;
+        width:58%;
+    }
+
+    .inquest-reset {
+        width: 100px;
+        float:left;
+    }
+
+    .inquest-filter {
+        float:right;
+        width:30%;
+    }
+
+    div.autocomplete-suggestion {
+        background-color: gray;
+    }
+
+    span.inquest-label {
+        display: inline-block;
+        max-width: 100%;
+        margin-bottom: 5px;
+        font-weight: 700;
+        color:#000;
+        
+   }
+    
+
+    @media screen and  (max-width: 992px) {
+        
+        .inquest-search {
+            width:50%;
+        }
+
+        .inquest-reset {
+            width:70px;
+        }
+
+        .inquest-filter {
+            width:40%;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+
+        .inquest-search {
+            width: 38%;
+        }
+
+        .inquest-reset {
+            width: 65px;
+        }
+
+        .inquest-filter {
+            width: 45%;
+        }
+    }
+
+    @media screen and (max-width: 662px) {
+
+        .inquest-search {
+            width: 85%;
+        }
+
+       
+        .inquest-filter {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .inquest-filter > label {
+            width: 60px;
+        }
+
+    }
+
+
+    @media screen and (max-width: 480px) {
+        h1, h2, h3, h4 h5 {
+            margin: 8px;
+        }
+
+        col-xs-10 {
+            width: 75%;
+        }
+    }
+
+
+
+
+
+
+

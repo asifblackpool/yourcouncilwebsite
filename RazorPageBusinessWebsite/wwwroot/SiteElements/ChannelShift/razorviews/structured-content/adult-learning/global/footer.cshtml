@@ -1,0 +1,109 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// Name: footer - used in Adult Learning pages 
+// License: Blackpool council
+// Date: 10/03/2022
+}
+
+
+@using System;
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolAdultLearning;
+@using Blackpool.Zengenti.CMS.Models.SiteView;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+
+@{
+
+    BlackpoolAdultLearningDTO DTO = Page.Model;
+    SiteView siteView = DTO.SiteView;
+    List<Zengenti.Contensis.Delivery.Node> temp = new List<Zengenti.Contensis.Delivery.Node>();
+    Zengenti.Contensis.Delivery.Node footerNode = null;
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.BlackpoolAdultLearningKey }
+    };
+
+    DTO.Config = config;
+
+
+
+}
+
+
+    @foreach (var node in siteView.Nodes)
+    {
+        if (!node.IncludeInMenu && node.Slug == "footer")
+        {
+            footerNode = node;
+        }
+    }
+
+    @if (footerNode != null)
+    {
+        foreach (var node in footerNode.Children())
+        {
+            temp.Add(node);
+        }
+    }
+
+
+
+
+<footer class="clearfix">
+    <div id="footer-banner-container" class="row zero-margin-all clearfix" style="background-color: #117994; margin-top:25px;">
+        <div class="footer-logo-links box-percentage-padding-container">
+            <div class="logo-links-container">
+                <div class="desktop-logo-1">&nbsp;</div>
+                <div class="desktop-logo-2">&nbsp;</div>
+                <div class="desktop-logo-3">&nbsp;</div>
+            </div>
+        </div>
+        <div id="images" class="box-percentage-padding-container" style="display:none;" >
+            <div class="desktop-image-1">&nbsp;</div>
+            <div class="desktop-image-2">&nbsp;</div>
+            <div class="desktop-image-3">&nbsp;</div>
+        </div>
+        <div id="social-media" >
+            <div class="social-content box-percentage-padding-container">
+                <ul class="social">
+                    <li><a href="https://www.facebook.com/BPLACFL" title="facebook link page" class="accessibility-tab"><span class="icon fa fa-facebook"></span></a></li>
+                    <li><a href="#" title="twiiter page link" class="accessibility-tab"><span class="icon fa fa-twitter"></span></a></li>
+                    <li><a href="#" title="telephone number for blackpool adult learning" class="accessibility-tab"><span class="icon fa fa-phone"></span></a></li>
+                    <li><span class="social-text">01253 478131 / 01253 478032</span></li>
+                    <li><span class="social-text">Are you interested in upskilling etc..</span>
+                        <span class="social-btn-container"><a href=" https://courses.blackpoolglobal.net/AvailableCoursesList.asp" title="enrol now link page" class="orange-button accessibility-tab">Enrol Now</a></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="footer-links-container" class="row zero-margin-all clearfix" style="width:100%;">
+        <div class="col-md-12 col-sm-12 zero-pad-all align-left copy-height box-percentage-padding-container">
+            <ul class="footer-links ">
+                @foreach (var node in temp)
+                {
+                    <li><a class="calibri-link accessibility-tab" href="@String.Format("{0}{1}.aspx", DTO.Config.SeoUrlList.UrlPath, node.Slug)">@node.DisplayName</a></li>
+                }
+                <li><a class="calibri-link accessibility-tab" title="contact us page link" href="@String.Format("{0}{1}.aspx", DTO.Config.SeoUrlList.UrlPath, "contact-us")">Contact us</a></li>
+                <li><span class="footer-links-text">Blackpool Council&nbsp;&nbsp;&copy;</span></li>
+                <li><a class="calibri-link accessibility-tab" title="privacy policy link" href="https://www.blackpool.gov.uk/Privacy-policy-and-cookies.aspx">Privacy Policy</a></li>
+                <li><a class="calibri-link accessibility-tab" title="disclaimer page link" href="https://www.blackpool.gov.uk/Disclaimer.aspx">Disclaimer</a></li>
+                <li><a class="calibri-link accessibility-tab" title="help page link" href="https://www.blackpool.gov.uk/Help.aspx">Help</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+

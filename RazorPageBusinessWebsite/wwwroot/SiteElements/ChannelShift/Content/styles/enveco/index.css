@@ -1,0 +1,20 @@
+﻿
+div#box-links-container {
+    margin-top: 30px;
+}
+
+footer#blackpool-footer {
+
+  width: 100%;
+ 
+}
+
+.footer-bottom, #footer-bottom-outer-container {
+    background-color: #7FBA27;
+}
+
+p.enveco-footer-text {
+    margin: 30px;
+    text-align: left;
+    color: #041c2c;
+}

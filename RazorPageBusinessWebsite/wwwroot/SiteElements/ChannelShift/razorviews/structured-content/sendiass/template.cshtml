@@ -1,0 +1,150 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Template (used for Sendiass)
+    // License: Blackpool council
+    // Date: 14/07/2019
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSENDIASS;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+
+
+
+@{
+
+    string alias = string.Empty;
+    Zengenti.Data.PageOptions options = new PageOptions(0, 100);
+    Boolean isError = false;
+    ContentDTO<BlackpoolSENDIASS> DTO = null;
+    ContentHelper helper = null;
+    String RazorViewSendiassPath = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/Sendiass";
+    String RazorViewDeathOfaRoyalPath = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/death-of-a-royal";
+  
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.BlackpoolSendiasKey }
+    };
+
+    string currentUrl = Request.RawUrl.ToLower();
+
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                           ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+    try
+    {
+        Zengenti.Data.PagedList<BlackpoolSENDIASS> list = client.Entries.List<BlackpoolSENDIASS>(new EntryListOptions
+        {
+            ContentTypeId = ContensisClientKeys.SENDIASS_BLACKPOOL,
+            LinkDepth = 1,
+            PageOptions = options
+
+        });
+
+        list.Items = list.Items.FindAll(x => x.IsActive == true);
+
+        alias = (!String.IsNullOrEmpty(Request.QueryString["alias"])) ? Request.QueryString["alias"].Replace("-", " ") : "";
+        BlackpoolSENDIASS currentItem = null;
+        currentItem = list.Items.Find(x => x.PageType == PageTypeKeys.TOP_LEVEL);
+        if (list != null && alias != string.Empty)
+        {
+
+            if (list.Items.Find(x => x.Alias.ToLower().Trim() == alias.ToLower().Trim()) != null)
+            {
+                currentItem = list.Items.Find(x => x.Alias.Trim().ToLower() == alias.Trim().ToLower() && x.IsActive == true);
+            }
+        }
+
+
+        DTO = new ContentDTO<BlackpoolSENDIASS>()
+        {
+            Config = config,
+            List = list,
+            CurrentItem = currentItem,
+            BaseImageUrl = Request.Url.AbsoluteUri.Contains("localhost") ? "http://preview.blackpool.gov.uk" : string.Empty,
+            RazorViewPath = RazorViewSendiassPath
+        };
+
+        SerialisedContent RawContent = currentItem.GetSerialisedContent();
+        ContentSorter sorter = new ContentSorter();
+        DTO.Flow = sorter.sortByGroup(RawContent);
+        DTO.NoImageUrl = "/SiteElements/ChannelShift/Content/Images/sport-blackpool/no-imagebox.png";
+        CurrentContext.Page.Title = currentItem.Alias;
+        helper = new ContentHelper(list.Items.Cast<Blackpool.Zengenti.CMS.Models.Interfaces.IListable>().ToList());
+
+    }
+    catch
+    {
+        isError = true;
+    }
+
+}
+<div id="container" class="gutter clearfix" style="max-width:100%; border: solid 0px pink; margin: auto;">
+    <a class="blackpooluk-skip-link" href="#mainbar">Skip to main content</a>
+    @if (!isError)
+    {
+
+        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/topmenu.cshtml"), new { Model = DTO, Alias = alias })
+        @RenderPage(String.Format("{0}{1}", RazorViewDeathOfaRoyalPath, "/banner.cshtml"), new { });
+        <div class="homepage-root-outer-container move clearfix content" style="margin: 0px; padding: 0px; width:100%;">
+            <div id="root-container" class="homepage-max-width clearfix" style="margin-top: 0px; background-color: #fff;">
+                @if (DTO.CurrentItem.PageType == PageTypeKeys.TOP_LEVEL)
+                {
+                    <div id="content-headerbox">
+                        <div id="content-headerbox-inner" class="content-space clearfix" style="margin-bottom:20px;">
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/image-headerbox.cshtml"), new { Model = DTO })
+                        </div>
+                    </div>
+                }
+                <div id="dynamic-html-content" class="center-block zero-pad-left zero-pad-right clearfix zero-margin-all">
+                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/content.cshtml"), new { Model = DTO })
+                </div>
+            </div>
+        </div>
+        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/footer.cshtml"), new { Model = DTO })
+    }
+    else
+    {
+        Response.Redirect("/Errors/404-Error.aspx?error=sb");
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(function () {
+            var $body = $(document);
+            $body.bind('scroll', function () {
+                // "Disable" the horizontal scroll.
+                if ($body.scrollLeft() !== 0) {
+                    $body.scrollLeft(0);
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+
+  
+
+
+

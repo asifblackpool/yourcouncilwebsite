@@ -1,0 +1,31 @@
+﻿
+/* Tablet and desktop styles */
+.lead-paragraph {
+    font-size: 24px !important;
+    font-size: 1.5rem;
+    line-height: 1.25; /* Line height for 24px text */
+    margin-bottom: 30px !important;
+    margin-bottom: 1.875rem;
+}
+
+
+@media screen and (max-width: 640px) {
+    .lead-paragraph {
+        font-size: 19px !important;
+        font-size: 1.1875rem;
+        line-height: 1.3157894737;
+        margin-top: 0;
+        margin-bottom: 20px !important;
+        margin-bottom: 1.25rem;
+        font-weight: 400;
+    }
+}
+
+/* Print styles */
+@media print {
+    .lead-paragraph {
+        color: #000000; /* Pure black for print */
+        font-size: 18pt; /* Fixed print size */
+        line-height: 1.15;
+    }
+}

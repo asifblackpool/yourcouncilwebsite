@@ -1,0 +1,144 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Gallery Image - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+
+@{
+    SportBlackPoolDTO DTO = Page.Model;
+    List<ImageGallery> captionGallery = new List<ImageGallery>();
+    SportBlackpoolHelper helper = null;
+    Config config = DTO.Config;
+    PagedList<SportBlackpool> list = DTO.List;
+    int counter = 0;
+    if (DTO.Flow != null)
+    {
+        helper = (list != null) ? new SportBlackpoolHelper(list.Items) : new SportBlackpoolHelper(null);
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            List<SerialisedItem> SerailisedList = item.Items.FindAll(x => x.ClassType == typeof(ImageGallery) && x.ContainerType == ComponentKeys.IMAGE_GALLERY);
+            if (SerailisedList != null)
+            {
+                foreach (SerialisedItem si in SerailisedList)
+                {
+                    ImageGallery temp = SerializeHelper.Deseralize(si) as ImageGallery;
+                    captionGallery.Add(temp);
+                    counter++;
+                }
+            }
+        }
+    }
+}
+
+
+@if (captionGallery.Count > 0) { 
+<h4 style="padding-top:10px;" class="purple"><strong>Image gallery</strong></h4>
+<div class="row equal zero-margin-all zero-pad-all clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 zero-pad-all">
+            @foreach (var item in captionGallery)
+                    {
+                        string ImageUrl = DTO.NoImageUrl;
+                        string altText = string.Empty;
+                        if (item != null)
+                        {
+                            if (item.Image != null && item.Image.Asset != null)
+                            {
+                                ImageUrl = item.Image.Asset.Uri.ToString();
+                                altText = item.Image.AltText;
+                            }
+                        }
+             <div class="gallery-container-mini zero-pad-all">
+                <div class="image-gallery">
+                    <a class="open-modal" data-toggle="modal" data-target="#myModal" href="#">
+                        <img id="@string.Format("gallery-{0}", counter)" src="@string.Format("{0}{1}", DTO.BaseImageUrl, ImageUrl)" class="img-responsive-mini" alt="@altText"  />
+                    </a>
+                </div>
+            </div>
+             counter++;
+            }
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content modal-content-gallery">
+          <div class="modal-header background-purple">
+              <button type="button" class="close" data-dismiss="modal" style="outline:none;">&times;</button>
+              <h3 class="modal-title">Image Gallery</h3>
+          </div>
+        <div class="modal-body background-purple">
+            <section class="center-modal">
+                    @foreach (ImageGallery item in captionGallery)
+                    {
+                      <div>
+                          @if (item != null) { 
+                          <img src="@string.Format("{0}{1}", DTO.BaseImageUrl, item.Url)" alt="@item.Image.AltText">
+                          }
+                      </div>
+                    }
+            </section>
+        </div>
+      
+      </div>
+    </div>   
+</div> 
+<script type="text/javascript">
+
+    $(document).ready(function () {
+            
+        function initialiseSlider(sliderId) {
+            try {
+                $("section.center-modal").slick({
+                    dots: true,
+                    centerMode: true,
+                    initialSlide: sliderId,
+                    centerPadding: '0px',
+                    useTransform:false
+                });
+            }catch (e) { }
+        }
+        $(document).on("click", "a.open-modal", function (e) {
+            var sliderIndex = parseInt(((e.target.id).split("-"))[1]);
+      
+         
+            setTimeout(function () {
+                initialiseSlider(sliderIndex);
+                //document.getElementById('gallery-' + sliderIndex).opacity = "1.0";
+            
+                document.getElementById('gallery-' + sliderIndex).style.transform = "none";
+                if (sliderIndex < 2) 
+                {
+                       $("div.slick-track").css({"left": "0px"});
+                }
+             
+
+            }, 200);
+            e.preventDefault();
+        });
+    });
+</script>
+    
+}
+    
+    
+    
+

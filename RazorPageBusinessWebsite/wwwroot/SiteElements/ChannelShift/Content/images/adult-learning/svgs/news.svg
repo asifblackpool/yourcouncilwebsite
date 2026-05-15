@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="76.04" height="64.182" viewBox="0 0 76.04 64.182">
+  <g id="Group_1890" data-name="Group 1890" transform="translate(2.519 3.247)">
+    <g id="Group_1889" data-name="Group 1889" transform="translate(0 0.314)">
+      <path id="Path_454" data-name="Path 454" d="M289.921,623.927l-7.751-11.051-5.432-14.924L264.7,602.335a3.915,3.915,0,0,0-2.332,5l2.764,7.595a3.915,3.915,0,0,0,5,2.33l4.885-1.778,8.871,12.671a3.685,3.685,0,0,0,6.038-4.225Z" transform="translate(-262.129 -571.612)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+      <path id="Path_455" data-name="Path 455" d="M372.072,486.2a5.586,5.586,0,0,0-6.572-3.518l-5.881-16.157a3.108,3.108,0,0,0-5.975.492c-2.16,10.977-9.035,20.73-17.487,23.806l5.431,14.921c8.452-3.076,19.986-.025,28.7,6.995a3.109,3.109,0,0,0,4.893-3.465l-5.88-16.156A5.585,5.585,0,0,0,372.072,486.2Z" transform="translate(-321.548 -464.484)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+    </g>
+    <line id="Line_70" data-name="Line 70" y1="12.667" x2="5.037" transform="translate(52.25 0)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+    <line id="Line_71" data-name="Line 71" y1="4.613" x2="12.675" transform="translate(57.606 14.841)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+    <line id="Line_72" data-name="Line 72" x2="12.334" y2="5.751" transform="translate(57.866 28.096)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+  </g>
+</svg>

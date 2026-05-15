@@ -1,0 +1,297 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Right Column Block - used in Adult Learning pages
+    // License: Blackpool council
+    // Date: 11/03/2022
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+
+@{
+    BlackpoolAdultLearningDTO DTO   = Page.Model;
+    Advert advert                   = null;
+    Config config                   = DTO.Config;
+    String path                     = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+    string AdvertImageUrl           = DTO.NoImageUrl;
+
+
+    try
+    {
+        SerialisedItem serialisedItem = null;
+        SerialisedContent RawContent = DTO.DefaultItem.GetSerialisedContent();
+        ContentSorter sorter = new ContentSorter();
+        var flow = sorter.sortByGroup(RawContent);
+
+        if (flow != null)
+        {
+            foreach (var item in flow.GetContent)
+            {
+                var list = item.Items.FindAll(x => x.ClassType == typeof(Advert));
+                if (list != null && list.Count > 0)
+                {
+                    serialisedItem = list[0];
+                    advert = SerializeHelper.Deseralize(serialisedItem) as Advert;
+                    break;
+                }
+            }
+        }
+
+
+
+
+    }
+    catch
+    {
+        advert = null;
+    }
+
+    AdvertImageUrl = (advert != null && advert.Image != null && advert.Image.Asset != null) ? String.Format("{0}{1}", DTO.BaseImageUrl, advert.Image.Asset.Uri) : AdvertImageUrl;
+}
+
+<div class="right-col-block clearfix">
+<div class="link-outer-container clearfix" >
+    <div class="row zero-margin-all pad-bot-40 clearfix block-link-container">
+        <!-- Explore Course-->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 zero-pad-all" style="display:inline-block;line-height:0;">
+            <a class="courses-block-link block-link" title="explore our courses" href="https://courses.blackpoolglobal.net/AvailableCoursesList.asp">
+                <span><strong>Explore our Courses</strong></span>
+                <span class="arrow">&nbsp;</span>
+                <img src="/SiteElements/ChannelShift/Content/images/adult-learning/arrow-back-1.png" alt="arrow" />
+            </a>
+        </div>
+</div>
+    <div class="row zero-margin-all pad-bot-40 clearfix block-link-container">
+        <!-- Venues -->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 zero-pad-all" style="display:inline-block;line-height:0;">
+            <a class="venue-block-link block-link" title="find a venue" href="@string.Format("{0}Venues.aspx",@DTO.Config.SeoUrlList.UrlPath)">
+                <span><strong>Find a venue</strong></span>
+                <span class="arrow">&nbsp;</span>
+                <img src="/SiteElements/ChannelShift/Content/images/adult-learning/arrow-back-1.png" alt="arrow" />
+            </a>
+        </div>
+    </div>
+</div>
+
+
+@if (advert != null)
+{
+<div class="advert-outer-container clearfix">
+<div class="row zero-margin-all pad-bot-40 clearfix block-link-container">
+    <!-- Adverts to go here -->
+    <div id="advert-item-container" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 zero-pad-all" style="display:none;">
+        <div class="image-gallery">
+            <a href="@advert.AdvertLink">
+                <img src="@AdvertImageUrl" class="advert-image" alt="@advert.Image.AltText" style="max-height:305px;" />
+            </a>
+        </div>
+    </div>
+</div>
+</div>
+
+}
+
+</div>
+
+
+
+<style type="text/css">
+
+  
+
+
+
+    a.block-link {
+        display: inline-block;
+        width:100%;
+        height: 100px;
+        font-weight: bold;
+        font-size: 18px;
+        text-decoration:none;
+    }
+
+    a.block-link > span {
+        position: relative;
+        left: 0px;
+        top: 0%;
+        display: inline-block;
+        width: 80%;
+        vertical-align: middle;
+        line-height: 95px;
+        font-family: calibri;
+        font-size: 20px;
+        float:left;
+    }
+
+    a.block-link > span > strong {
+        display: inline-block;
+        margin: auto;    
+        position: relative;
+        left: 32%;
+        height:80px;
+        top:7px;
+    }
+
+    a.block-link > span.arrow {
+
+        position: relative;
+        background-color: #000;
+        opacity: 0.3;
+        display: inline-block;
+        width: 15%;
+        height:100%;
+        top:0px;
+        left:0px;
+        float:right;
+    }
+
+    a.block-link:hover > span.arrow {
+        position: relative;
+        background-color: #000;
+        opacity: 0.3;
+        display: inline-block;
+        width: 20%;
+        height: 100%;
+        top: 0px;
+        left: 0px;
+        float:right;
+    }
+
+    a.block-link > img {
+        position:absolute;
+        right:5%;
+        top:27%;
+    }
+
+    a.block-link:hover > img {
+        position: absolute;
+        right: 3.5%;
+        top: 27%;
+    }
+
+    a.courses-block-link {
+        background-color: #ED8B23;
+        background-image: url("/SiteElements/ChannelShift/Content/images/adult-learning/group-10.png");
+        background-position: 10% 55%;
+        background-repeat: no-repeat;
+    }
+
+    a.venue-block-link {
+        background-color: #B5BD00;
+        background-image: url("/SiteElements/ChannelShift/Content/images/adult-learning/group-9.png");
+        background-position: 10% 55%;
+        background-repeat: no-repeat;
+    }
+
+
+    @@media all and (max-width:1024px) and (min-width: 300px) {
+
+        div.block-link-container { 
+            height:100%;
+        }
+
+        div#content-right > div.block-link-container {
+            border: solid 0px red;
+        }
+
+        div#content-right > div.block-link-container:last-of-type {
+            border: solid 2px blue;
+        }
+
+        .link-outer-container {
+            width: calc(50% - 7.5px);
+            float: left;
+        }
+
+
+        .link-outer-container > div:last-child {
+                padding-bottom: 0px !important;
+            }
+
+        div.advert-outer-container > div:first-child {
+            height: 220px !important;
+            padding-bottom: 0px !important;
+        }
+
+
+        .advert-outer-container {
+            float: right;
+           
+            width: calc(50% - 7.5px);
+        }
+
+         img.advert-image {
+             height:220px!important;
+         }
+
+
+        a.block-link > span.arrow {
+            left: 0px;
+        }
+
+        a.block-link:hover > span.arrow {
+
+            left: 0px;
+        }
+    }
+    @@media all and (max-width:640px) and (min-width: 300px) {
+
+
+        .link-outer-container, .advert-outer-container {
+            width: calc(100% - 0px);
+            float: left;
+        }
+
+
+        div.block-link-container {
+            margin-bottom: 20px;
+        }
+
+        div#advert-item-container {
+            height: 292px;
+        }
+
+        a.block-link > span {
+            left: 85px;
+        }
+
+        a.block-link > span.arrow {
+            float: right;
+            width: 20%;
+            height: 100%;
+            top: 0px;
+            left: unset;
+        }
+
+        img.advert-image {
+            height: 292px !important;
+        }
+
+        a.block-link > span > strong {
+            display: inline-block;
+            margin: auto;
+            position: relative;
+            left: 5%;
+            height: 80px;
+            top: 7px;
+        }
+    }
+
+</style>

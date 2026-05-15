@@ -1,0 +1,285 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Content Type: Catering Services
+// Developer: Asif Nissar
+// License: Blackpool council
+// Date: 14/11/2023
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Catering;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+@using Blackpool.Zengenti.CMS.Models.SiteView;
+
+
+
+@{
+
+    Zengenti.Data.PageOptions options           = new PageOptions(0, 200);
+    String exceptionError                       = string.Empty;
+    Boolean isError                             = false;
+    CateringDTO DTO                             = null;
+    Catering defaultItem                        = null;
+    SiteView TopMenu                            = new SiteView();
+    string defaultSlugName                      = string.Empty;
+    String RazorViewlPath                       = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/catering-services";
+    TopMenu.HomeNodePath                        = "catering";
+    TopMenu.DefaultNodePath                     = TopMenu.HomeNodePath;
+    Zengenti.Contensis.Delivery.Node homeNode   = null;
+
+
+    string currentUrl = this.Request.RawUrl.ToLower();
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                           ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+
+    Zengenti.Contensis.Delivery.Node node       = null;
+    Zengenti.Contensis.Delivery.Node topNode    = null;
+    List<Zengenti.Contensis.Delivery.Node> temp = new List<Zengenti.Contensis.Delivery.Node>();
+
+    try
+    {
+        Zengenti.Data.PagedList<Catering> list = client.Entries.List<Catering>(new EntryListOptions
+        {
+            ContentTypeId = ContensisClientKeys.CATERING,
+            LinkDepth = 2,
+            PageOptions = options
+
+        });
+
+
+        Config config = new Config()
+        {
+            SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.CateringKey }
+        };
+
+        list.Items                      = list.Items.FindAll(x => x.IsActive == true);
+        string slugs                    = (!String.IsNullOrEmpty(Request.QueryString["slug"])) ? Request.QueryString["slug"] : "";
+        string slugPath                 = (!String.IsNullOrEmpty(Request.QueryString["siteViewPath"])) ? Request.QueryString["siteViewPath"] : "";
+        Catering currentItem            = null;
+        defaultItem = currentItem       = list.Items.Find(x => x.PageTitle == "Home");
+        homeNode                        = (client.Nodes.GetByEntryId(currentItem.Id)).FirstOrDefault();
+        defaultSlugName                 = currentItem.Slug = homeNode.Slug;
+        currentItem.Slug                = string.Empty;
+
+
+        List<Zengenti.Contensis.Delivery.Node> CateringNodes = new List<Zengenti.Contensis.Delivery.Node>();
+        CateringNodes.Add(homeNode);
+
+
+        /* Get Nodes for Park and Greenspace */
+        topNode = client.Nodes.GetByPath(TopMenu.DefaultNodePath, null, entryLinkDepth: 1, allowPartialMatch: true);
+
+
+        List<Zengenti.Contensis.Delivery.Node> second_level_nodes = new List<Zengenti.Contensis.Delivery.Node>();
+        List<Catering> seccond_level_items = new List<Catering>();
+
+
+        slugPath = (slugPath != string.Empty) ? slugPath.Substring(0, slugPath.Length - 1) : string.Empty;
+        TopMenu.DefaultNodePath = (slugPath != string.Empty) ? TopMenu.DefaultNodePath + "/" + slugPath + "/" : TopMenu.DefaultNodePath + "/";
+        node = client.Nodes.GetByPath("/catering/brew-cafes/brew-at-anchorsholme-park", null, entryLinkDepth: 1, allowPartialMatch: false);
+        node = client.Nodes.GetByPath(String.Format("{0}/{1}", TopMenu.DefaultNodePath, slugs), null, entryLinkDepth: 1, allowPartialMatch: false);
+        if (node != null && node.Entry() != null)
+        {
+            currentItem = list.Items.Find(x => x.Id.ToString() == node.Entry().Id.ToString() && x.IsActive == true);
+            currentItem.Slug = slugs;
+            currentItem.SiteViewSlug = slugPath;
+            //get all the child nodes ... to be listed on the second level
+            var level_2_nodes = node.Children();
+            foreach (Zengenti.Contensis.Delivery.Node item in level_2_nodes)
+            {
+                if (item.Entry() != null)
+                {
+                    var childItem = list.Items.Find(x => x.Id.ToString() == item.Entry().Id.ToString() && x.IsActive == true);
+                    var level_3_nodes = item.Children();
+                    if (childItem != null)
+                    {
+                        childItem.SiteViewSlug = currentItem.Slug + "/" + item.Slug;
+                        second_level_nodes.Add(item);
+                        seccond_level_items.Add(childItem);
+                    }
+                }
+            }
+            seccond_level_items = seccond_level_items.OrderBy(x => x.PageTitle).ToList();
+        }
+
+
+
+        DTO = new CateringDTO()
+        {
+            Config = config,
+            List = null,
+            CurrentItem = currentItem,
+            DefaultItem = defaultItem,
+            ChildItems = seccond_level_items,
+            BaseImageUrl = Request.Url.AbsoluteUri.Contains("localhost") ? AppSettingKeys.PRVEVIW_CMS_URL : string.Empty,
+            RazorViewPath = RazorViewlPath
+        };
+
+
+        SerialisedContent RawContent = currentItem.GetSerialisedContent();
+
+        ContentSorter sorter = new ContentSorter();
+        DTO.Flow = sorter.sortByGroup(RawContent);
+        DTO.NoImageUrl = "/SiteElements/ChannelShift/Content/Images/sport-blackpool/no-imagebox.png";
+        DTO.IsLocal = true;
+
+        //sitemap work
+        string Id = DTO.CurrentItem.Id;
+        //Grab the children this will be the top menu
+        foreach (var item in topNode.Children())
+        {
+            temp.Add(item);
+        }
+
+
+        TopMenu.Nodes = temp;
+        TopMenu.DefaultSlugName = defaultSlugName;
+        TopMenu.MenuPosition = Menulevel.level_1;
+        TopMenu.ChildNodes = second_level_nodes;
+        DTO.SiteView = TopMenu;
+        DTO.PageType = (DTO.CurrentItem.PageType != string.Empty) ? (CateringPages)Enum.Parse(typeof(CateringPages), DTO.CurrentItem.PageType) : CateringPages.Other;
+
+
+
+
+    }
+    catch (Exception ex)
+    {
+        exceptionError = ex.Message;
+        exceptionError = exceptionError + "<br/><br/>" + ex.StackTrace;
+        isError = true;
+    }
+
+
+
+}
+<link type="text/css" rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat' />
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/bundles/year-2023/base.min.css" />
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/bundles/year-2023/landing.min.css" />
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/catering/index.css" />
+
+<div id="container" class="clearfix" >
+    <a class="blackpooluk-skip-link" href="#contemt-inner">Skip to main content</a>
+    @if (!isError)
+    {
+        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/topmenu.cshtml"), new { Model = DTO })
+
+        if (DTO.PageType == CateringPages.Top_Level_Home)
+        {
+            <div id="homepage-banner" class="zero-pad-all pad-bot-20 clearfix">
+                <div class="clearfix banner-container-text  box-percentage-padding-container">
+                    <div id="image-box">
+                        <img src="~/SiteElements/ChannelShift/Content/images/catering-services/home-header.png" alt="catering services header" class="tablet" style="float:right;" />
+                        <img src="~/SiteElements/ChannelShift/Content/images/catering-services/home-header-new2x.png" alt="catering services heaeder" class="desktop banner-desktop" />
+                    </div>
+                    <div id="message-box">
+                        <div id="inner-message-box">
+                            <div id="banner-heading">
+                                <h2>Serving our community and preparing the future</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="homepage-root-outer-container clearfix">
+            <div id="root-container" class="homepage-max-width clearfix" style="margin-top: 0px; background-color: #fff;">
+                <div id="dynamic-html-content" class="row zero-pad-left zero-pad-right clearfix">
+                    @if (DTO.PageType != CateringPages.Top_Level_Home)
+                    {
+                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/breadcrumb.cshtml"), new { Model = DTO, Client = client });
+                    }
+
+                    <h1 class="sr-only">Catering Pages</h1>
+                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/content.cshtml"), new { Model = DTO, Client = client })
+
+                </div>
+            </div>
+        </div>
+        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/footer.cshtml"), new { Model = DTO })
+
+    }
+    else
+    {
+        Response.Write(exceptionError);
+    }
+</div>
+	<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/services/browserservices.js"></script>
+		<script  type="text/javascript" src="/SiteElements/ChannelShift/Scripts/common/common.js"></script>
+		<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/services/scrollerservices.js"></script>
+		<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/services/utilitiesservices.js?"></script>
+		<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/services/homeservices.js"></script>
+		<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/run/runhome2023.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var updatemarkupinks = function () {
+            var divs = document.getElementsByClassName('markup-section');
+            for (var i = 0; i < divs.length; i++) {
+                var a = divs[i].getElementsByTagName('a');
+                for (var j = 0; j < a.length; j++) {
+                    var elem = a[j];
+                    if (elem.href.indexOf('/catering/') > 0 && elem.href.indexOf('.aspx') < 1) {
+                        console.log('link found and has not .aspx');
+                        elem.href = elem.href + '.aspx';
+                    }
+                }
+            }
+        };
+        var updatesitelinks = function () {
+            var divs = document.getElementsByClassName('content-box-with-image');
+            for (var i = 0; i < divs.length; i++) {
+                var a = divs[i].getElementsByTagName('a');
+                for (var j = 0; j < a.length; j++) {
+                    var elem = a[j];
+                    if (elem.href.indexOf('/catering/') > 0 && elem.href.indexOf('.aspx') < 1) {
+                        console.log('link found and has not .aspx');
+                        elem.href = elem.href + '.aspx';
+                    }
+                }
+            }
+        };
+        updatesitelinks();
+        updatemarkupinks();
+
+        $('#responsive-menu-button').sidr({
+            name: 'sidr-main',
+            source: '#navigation',
+            timing: 'ease-in-out',
+            side: 'right',
+            speed: 500,
+            onOpen: function onOpen() {
+                console.log('open menu');
+                $('#responsive-menu-button').hide();
+            },
+            onClose: function onClose() {
+                console.log('close menu');
+                $('#responsive-menu-button').show();
+            }
+        });
+
+        $(".sidr-class-close").click(function (e) {
+            console.log('click close button');
+            $.sidr('close', 'sidr-main');
+            e.preventDefault();
+            return false;
+        });
+
+    });
+</script>

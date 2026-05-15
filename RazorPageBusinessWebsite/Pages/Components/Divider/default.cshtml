@@ -1,0 +1,16 @@
+﻿@using Content.Modelling.Models.Components
+@model Divider
+
+
+@{
+    // Custom rendering instead of GetHtml() for better security
+    if (string.IsNullOrWhiteSpace(Model.Value))
+    {
+        <hr class="divider" style="border-style: @Model.Style; color: @Model.Color; border-color: @Model.Color;" />
+    }
+    else
+    {
+        @Html.Raw(Model.Value)
+    }
+}
+

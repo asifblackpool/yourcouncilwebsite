@@ -1,0 +1,77 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// Name: headerbox Image - used in blackpool adult learning pages
+// License: Blackpool council
+// Date: 11/10/2021
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolAdultLearning;
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+@{
+    BlackpoolAdultLearningDTO DTO   = Page.Model;
+    ContensisClient Client          = Page.Client;
+    SerialisedItem serialisedItem   = null;
+    ImageBox box                    = null;
+    string slugPath                 = string.Empty;
+    string urlLink                  = string.Empty;
+
+
+
+    string ImageBoxUrl = DTO.NoImageUrl;
+    if (DTO.Flow != null)
+    {
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            var list = item.Items.FindAll(x => x.ClassType == typeof(ImageBox));
+            if (list != null && list.Count > 0)
+            {
+                serialisedItem = list[0];
+                box = SerializeHelper.Deseralize(serialisedItem) as ImageBox;
+                break;
+            }
+        }
+
+        BlackpoolAdultLearning linkedItem = box.LinkedGenericItem<BlackpoolAdultLearning>();
+        if (linkedItem != null && !string.IsNullOrEmpty(linkedItem.Id) && Client != null)
+        {
+            Zengenti.Contensis.Delivery.Node node = Client.Nodes.GetByEntryId(linkedItem.Id).First();
+            urlLink = StringUtility.BuildLinkFromSlug(DTO.Config.SeoUrlList.UrlPath, node.Path);
+
+        }
+
+        ImageBoxUrl = (box != null && box.Image != null && box.Image.Asset != null) ? String.Format("{0}{1}", DTO.BaseImageUrl, box.Image.Asset.Uri) : ImageBoxUrl;
+    }
+}
+
+@if (box != null)
+{
+    <div class="container-image pad-bot-40 clearfix">
+        <div class="centered-text">
+            <img src="@ImageBoxUrl" alt="@box.Image.AltText" />
+        </div>
+    </div>
+
+}
+
+
+
+
+
+

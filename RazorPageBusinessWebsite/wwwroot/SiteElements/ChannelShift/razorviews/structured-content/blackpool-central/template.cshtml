@@ -1,0 +1,106 @@
+﻿
+@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date: 03/12/2017
+}
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolCentral;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+
+@{
+    Boolean isActive = true;
+    Zengenti.Data.PageOptions options = new PageOptions(0, 100);
+
+    string currentUrl = this.Request.RawUrl.ToLower();
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.BlackpoolCentralKey }
+    };
+    var client = Zengenti.Contensis.Delivery
+       .ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID,
+                               ContensisClientKeys.CMS_URL,
+                               ContensisClientKeys.CLIENT_ID,
+                               ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+
+    Zengenti.Data.PagedList<BlackpoolCentral> list = client.Entries.List<BlackpoolCentral>(new EntryListOptions
+    {
+        ContentTypeId = ContensisClientKeys.BLACKPOOL_CENTRAL,
+        LinkDepth = 1,
+        PageOptions = options
+
+    });
+
+    list.Items = list.Items.FindAll(x => x.IsActive == isActive);
+
+    string alias = (!String.IsNullOrEmpty(Request.QueryString["alias"])) ? Request.QueryString["alias"].Replace("-", " ") : "";
+    BlackpoolCentral currentItem = null;
+    currentItem = list.Items.Find(x => x.MenuOrder == 1); //Home page
+    if (list != null && alias != string.Empty)
+    {
+        if (list.Items.Find(x => x.Alias.ToLower().Trim() == alias.ToLower().Trim()) != null)
+        {
+            currentItem = list.Items.Find(x => x.Alias.Trim().ToLower() == alias.Trim().ToLower() && x.IsActive == isActive);
+        }
+    }
+
+    SerialisedContentFlow scf = new ContentSorter().sortByGroup(currentItem.GetSerialisedContent());
+    
+    
+    BlackpoolCentralDTO DTO = new BlackpoolCentralDTO();
+    DTO.Config = config;
+    DTO.CurrentItem = currentItem;
+    DTO.Flow = scf;
+    DTO.Alias = currentItem.Alias;
+    DTO.RazorViewPath = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/blackpool-central/";
+    DTO.BaseImageUrl = Request.Url.AbsoluteUri.Contains("localhost") ? "http://preview.blackpool.gov.uk" : string.Empty;
+    DTO.NoImageUrl = "";
+            
+
+    CurrentContext.Page.Title = currentItem.Alias;
+    String partial = (currentItem.MenuOrder < 2) ? "home.cshtml" : "attractions.cshtml";
+
+}
+
+<div id="blackpool-central" class="gutter clearfix" style="border: solid 0px pink;">
+    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, partial), new { Model = DTO })
+</div>
+<link href="/SiteElements/ChannelShift/content/styles/blackpool-central/index.css" rel="stylesheet" />
+<script type="text/javascript" src="/SiteElements/ChannelShift/scripts/services/scrollerservices.js"></script>
+<script type="text/javascript" src="/SiteElements/ChannelShift/scripts/services/tableservices.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('table').addClass('tbl-responsive');
+        logger.disableLogger();
+        window.footerservices.init();
+        window.tableservices.init();
+        window.homeservices.init();
+        $("#firstWord").html(function () {
+            var text = $(this).text().trim().split(" ");
+            var first = text.shift();
+            return (text.length > 0 ? "<span class='bold'>" + first + "</span> " : first) + text.join(" ");
+        });
+        setTimeout(function () {
+            scrollerservice.ScrollToByClass('homepage-max-width', null);
+        }, 1100);
+ 
+    });
+</script>
+
+
+@*<control name="better central" showInMenu="true" category="Favourites" viewingGroup="2" />*@

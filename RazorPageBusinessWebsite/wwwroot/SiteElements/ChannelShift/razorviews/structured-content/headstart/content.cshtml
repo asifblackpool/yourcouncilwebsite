@@ -1,0 +1,75 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - used in head start page
+    // License: Blackpool council
+    // Date: 30/01/2018
+}
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+    List<HeaderStart> list = Page.ContentList; //Passed Model
+    String RazorPath = Page.RazorPath;
+
+    if (list != null)
+    {
+        HeaderStart content = null;
+        content = list.Find(x => x.PageType == "Home");
+        string alias = Page.Alias;
+        string blogPostTitle = string.Empty;
+        string blogPostDate = string.Empty;
+        string razorName = string.Empty;
+
+        Blog selectedBlog = null;
+        if (!String.IsNullOrEmpty(alias))
+        {
+            blogPostTitle = Request.QueryString["PostTitle"];
+            blogPostDate = Request.QueryString["PostDate"];
+            if (list.Find(x => x.Alias.ToLower() == alias.ToLower()) != null)
+            {
+                blogPostTitle = (blogPostTitle != null) ? blogPostTitle.Replace(".aspx", String.Empty).ToLower() : String.Empty;
+                content = list.Find(x => x.Alias.ToLower() == alias.ToLower());
+                if (content.PageContent[0].Blogs != null && content.PageContent[0].Blogs.Count > 0)
+                {
+                    content.PageContent[0].Blogs.Sort(new BlogSort());
+                    selectedBlog = content.PageContent[0].Blogs.Find(x => x.TitleSlug.ToLower() == blogPostTitle.ToLower() && x.DateOfPostSlug == blogPostDate);
+                }
+            }
+        }
+
+        CurrentContext.Page.Title = content.PageTitle;
+        CurrentContext.Page.MetaData.Add("PageTitle", content.TitleTag);
+        CurrentContext.Page.MetaData.Add("Description", content.MetaDescription);
+
+        switch (content.PageType)
+        {
+            case "Content":
+                razorName = "general";
+                break;
+            case "Blog":
+                razorName = (selectedBlog != null) ? "selectedblog" : "homeblog";
+                break;
+            case "Event":
+                razorName = "events";
+                break;
+            case "Gallery":
+                razorName = "gallery";
+                break;
+            default:
+                razorName = "home";
+                break;
+        }
+
+        @RenderPage(String.Format("{0}{1}", RazorPath, "global/breadcrumb.cshtml"), new { Content = content, Alias = alias, SelectedBlog = selectedBlog })
+        @RenderPage(String.Format("{0}{1}", RazorPath, "partials/" + razorName + ".cshtml"), new { Content = content, SelectedBlog = selectedBlog, RazorPath = RazorPath })
+    }
+}

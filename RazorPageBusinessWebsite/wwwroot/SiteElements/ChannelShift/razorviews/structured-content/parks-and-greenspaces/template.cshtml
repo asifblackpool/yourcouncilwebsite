@@ -1,0 +1,227 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Content Type: Parks and Greenspaces
+// Developer: Asif Nissar
+// License: Blackpool council
+// Date: 23/08/2022
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.ParksAndGreenSpaces;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+@using Blackpool.Zengenti.CMS.Models.SiteView;
+
+
+
+@{
+
+    Zengenti.Data.PageOptions options           = new PageOptions(0, 200);
+    String exceptionError                       = string.Empty;
+    Boolean isError                             = false;
+    ParksAndGreenSpacesDTO DTO                  = null;
+    ParksAndGreenSpaces defaultItem             = null;
+    SiteView TopMenu                            = new SiteView();
+    string defaultSlugName                      = string.Empty;
+    String RazorViewlPath                       = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/parks-and-greenspaces";
+    TopMenu.HomeNodePath                        = "parks-and-greenspace";
+    TopMenu.DefaultNodePath                     = TopMenu.HomeNodePath;
+    Zengenti.Contensis.Delivery.Node homeNode   = null;
+
+
+    string currentUrl = this.Request.RawUrl.ToLower();
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                           ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+
+    Zengenti.Contensis.Delivery.Node node       = null;
+    Zengenti.Contensis.Delivery.Node topNode    = null;
+    List<Zengenti.Contensis.Delivery.Node> temp = new List<Zengenti.Contensis.Delivery.Node>();
+
+    try
+    {
+        Zengenti.Data.PagedList<ParksAndGreenSpaces> list = client.Entries.List<ParksAndGreenSpaces>(new EntryListOptions
+        {
+            ContentTypeId = ContensisClientKeys.PARKS_AND_GREENSPACES_CONTENTTYPE,
+            LinkDepth = 2,
+            PageOptions = options
+
+        });
+
+
+        Config config = new Config()
+        {
+            SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.ParksAndGreenspaceKey }
+        };
+
+        list.Items                      = list.Items.FindAll(x => x.IsActive == true);
+        string slugs                    = (!String.IsNullOrEmpty(Request.QueryString["slug"])) ? Request.QueryString["slug"] : "";
+        string slugPath                 = (!String.IsNullOrEmpty(Request.QueryString["siteViewPath"])) ? Request.QueryString["siteViewPath"] : "";
+        ParksAndGreenSpaces currentItem = null;
+        defaultItem = currentItem       = list.Items.Find(x => x.PageTitle == "Home");
+        homeNode                        = (client.Nodes.GetByEntryId(currentItem.Id)).FirstOrDefault();
+        defaultSlugName                 = currentItem.Slug = homeNode.Slug;
+        currentItem.Slug                = string.Empty;
+
+
+        List<Zengenti.Contensis.Delivery.Node> ParksAndGreenSpacessNodes = new List<Zengenti.Contensis.Delivery.Node>();
+        ParksAndGreenSpacessNodes.Add(homeNode);
+
+
+        /* Get Nodes for Park and Greenspace */
+        topNode = client.Nodes.GetByPath(TopMenu.DefaultNodePath, null, entryLinkDepth: 1, allowPartialMatch: true);
+
+
+        List<Zengenti.Contensis.Delivery.Node> second_level_nodes = new List<Zengenti.Contensis.Delivery.Node>();
+        List<ParksAndGreenSpaces> seccond_level_items = new List<ParksAndGreenSpaces>();
+
+
+        slugPath = (slugPath != string.Empty) ? slugPath.Substring(0, slugPath.Length - 1) : string.Empty;
+        TopMenu.DefaultNodePath = (slugPath != string.Empty) ? TopMenu.DefaultNodePath + "/" + slugPath + "/" : TopMenu.DefaultNodePath + "/";
+        node = client.Nodes.GetByPath(String.Format("{0}/{1}", TopMenu.DefaultNodePath, slugs), null, entryLinkDepth: 1, allowPartialMatch: true);
+        if (node != null && node.Entry() != null)
+        {
+            currentItem = list.Items.Find(x => x.Id.ToString() == node.Entry().Id.ToString() && x.IsActive == true);
+            currentItem.Slug = slugs;
+            currentItem.SiteViewSlug = slugPath;
+            //get all the child nodes ... to be listed on the second level
+            var level_2_nodes = node.Children();
+            foreach (Zengenti.Contensis.Delivery.Node item in level_2_nodes)
+            {
+                if (item.Entry() != null)
+                {
+                    var childItem = list.Items.Find(x => x.Id.ToString() == item.Entry().Id.ToString() && x.IsActive == true);
+                    if (childItem != null)
+                    {
+                        childItem.SiteViewSlug = currentItem.Slug + "/" + item.Slug;
+                        second_level_nodes.Add(item);
+                        seccond_level_items.Add(childItem);
+                    }
+                }
+            }
+            seccond_level_items = seccond_level_items.OrderBy(x => x.PageTitle).ToList();
+        }
+
+
+
+        DTO = new ParksAndGreenSpacesDTO()
+        {
+            Config = config,
+            List = null,
+            CurrentItem = currentItem,
+            DefaultItem = defaultItem,
+            ChildItems = seccond_level_items,
+            BaseImageUrl = Request.Url.AbsoluteUri.Contains("localhost") ? AppSettingKeys.PRVEVIW_CMS_URL : string.Empty,
+            RazorViewPath = RazorViewlPath
+        };
+
+
+        SerialisedContent RawContent = currentItem.GetSerialisedContent();
+
+        ContentSorter sorter = new ContentSorter();
+        DTO.Flow = sorter.sortByGroup(RawContent);
+        DTO.NoImageUrl = "/SiteElements/ChannelShift/Content/Images/sport-blackpool/no-imagebox.png";
+        DTO.IsLocal = true;
+
+        //sitemap work
+        string Id = DTO.CurrentItem.Id;
+        //Grab the children this will be the top menu
+        foreach (var item in topNode.Children())
+        {
+            temp.Add(item);
+        }
+
+
+        TopMenu.Nodes = temp;
+        TopMenu.DefaultSlugName = defaultSlugName;
+        TopMenu.MenuPosition = Menulevel.level_1;
+        TopMenu.ChildNodes = second_level_nodes;
+        DTO.SiteView = TopMenu;
+        DTO.PageType = (DTO.CurrentItem.PageType != string.Empty)
+            ? (ParksAndGreenspacesPages)Enum.Parse(typeof(ParksAndGreenspacesPages), DTO.CurrentItem.PageType) : ParksAndGreenspacesPages.Other;
+
+
+
+    }
+    catch (Exception ex)
+    {
+        exceptionError = ex.Message;
+        exceptionError = exceptionError + "<br/><br/>" + ex.StackTrace;
+        isError = true;
+    }
+
+
+
+}
+
+<div id="container" class="clearfix" style="margin: auto;">
+    <a class="blackpooluk-skip-link" href="#contemt-inner">Skip to main content</a>
+    @if (!isError)
+    {
+        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/topmenu.cshtml"), new { Model = DTO })
+        <div class="homepage-root-outer-container move clearfix content-space gutter" style="border:solid 0px blue;position:relative;">
+            <div id="cloud-1"></div>
+            <div id="cloud-2"></div>
+            <main id="root-container" class="homepage-max-width clearfix">
+                <div id="dynamic-html-content" class="content-inner zero-pad-left zero-pad-right clearfix zero-margin-all">
+                    @if (DTO.PageType != ParksAndGreenspacesPages.Top_Level_Home)
+                    {
+                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/breadcrumb.cshtml"), new { Model = DTO, Client = client });
+                    }
+
+                    <h1 class="sr-only">Blackpool parks and greenspaces</h1>
+                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/content.cshtml"), new { Model = DTO, Client = client })
+
+
+                </div>
+            </main>
+        </div>
+        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/footer.cshtml"), new { Model = DTO })
+    }
+    else
+    {
+        Response.Write(exceptionError);
+    }
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#responsive-menu-button').sidr({
+            name: 'sidr-main',
+            source: '#navigation',
+            timing: 'ease-in-out',
+            side: 'right',
+            speed: 500,
+            onOpen: function onOpen() {
+                console.log('open menu');
+                $('#responsive-menu-button').hide();
+            },
+            onClose: function onClose() {
+                console.log('close menu');
+                $('#responsive-menu-button').show();
+            }
+        });
+
+        $(".sidr-class-close").click(function (e) {
+            console.log('click close button');
+            $.sidr('close', 'sidr-main');
+            e.preventDefault();
+            return false;
+        });
+
+    });
+</script>

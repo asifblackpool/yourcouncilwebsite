@@ -1,0 +1,1 @@
+﻿window.location.replace("https://www.blackpool.gov.uk/Your-Council/Have-your-say/Comments-compliments-and-complaints/Comments,-compliments-and-complaints.aspx")

@@ -1,0 +1,213 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Top Menu - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 09/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSENDIASS;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Interfaces;
+
+
+@{
+    ContentDTO<BlackpoolSENDIASS> DTO = Page.Model;
+    Zengenti.Data.PagedList<BlackpoolSENDIASS> list = DTO.List;
+    List<IListable> convertedList = list.Items.Cast<Blackpool.Zengenti.CMS.Models.Interfaces.IListable>().ToList();
+    ContentHelper helper = new ContentHelper(list.Items.Cast<Blackpool.Zengenti.CMS.Models.Interfaces.IListable>().ToList());
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = Blackpool.Zengenti.CMS.Constants.SeoKeys.BlackpoolSendiasKey }
+    };
+
+    string path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+
+    string homepageHref = String.Format("{0}{1}", DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath, DTO.Config.SeoUrlList.DefaultPage);
+    List<MenuLink> topLinks = new List<MenuLink>();
+    topLinks = (from item in convertedList
+                where (item.IsActive == true && item.PageType == PageTypeKeys.SECOND_LEVEL)
+                select new MenuLink()
+                {
+                    Href = helper.NavigationBuilder(item, path),
+                    Text = item.Alias,
+                    Order = item.MenuOrder,
+                    Level = item.PageType,
+                    ChildMenu = (item.PageType == SportBlackpoolKeys.TOP_LEVEL) ? null : helper.GetChildLinks(convertedList, item, path)
+                }
+    ).ToList();
+
+    topLinks.OrderBy(x => x.Order);
+    topLinks = topLinks.OrderBy(x => x.Order).ToList();
+
+
+    List<BreadCrumbLink> breadcrumbs = new List<BreadCrumbLink>();
+
+    if (DTO.CurrentItem != null && DTO.CurrentItem.PageType != "Top_Level")
+    {
+        breadcrumbs = helper.GetBreadCrumbLink(path, DTO.Config.SeoUrlList.DefaultPage, helper.NavigationBuilder(DTO.CurrentItem, path));
+    }
+
+    bool addComplaintsLink = false;
+
+}
+
+<nav id="navbar" class="row zero-margin-all">
+    <div class="col-lg-12 col-md-12 col-sm-12 zero-pad-all">
+             <!-- desktop view -->
+            <div id="navbar-inner" class="content-space center-block navbar-desktop clearfix">
+                <div class="title" onclick="window.location.href='@homepageHref'"><h1 style="float:right; position:relative; top:22px;">Blackpool <strong>Sendiass</strong></h1></div>
+                <div class="menu">
+                    <ul style="padding-left:0px;">
+                        @foreach (MenuLink item in topLinks)
+                        {
+                            if (Page.Alias.ToLower() == item.Text.ToLower())
+                            {
+                                <li class="@string.Format("{0}", (item.ChildMenu != null && item.ChildMenu.Count > 0) ? "top-menu-link" : "")">
+                                    <a href="@item.Href" class="@string.Format("{0}", (item.ChildMenu != null && item.ChildMenu.Count > 0) ? "add-arrow" : "")">@item.Text</a>
+                                    @if (item.ChildMenu != null && item.ChildMenu.Count > 0)
+                                    {
+                                        <ul class="menu-sub-items">
+                                            @foreach (MenuLink subItem in item.ChildMenu)
+                                            {
+                                                <li><a class="selected" href="@subItem.Href">@subItem.Text</a></li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="@string.Format("{0}", (item.ChildMenu != null && item.ChildMenu.Count > 0) ? "top-menu-link" : "")">
+                                    <a href="@item.Href" class="@string.Format("{0}", (item.ChildMenu != null && item.ChildMenu.Count > 0) ? "add-arrow" : "")">@item.Text</a>
+                                    @if (item.ChildMenu != null && item.ChildMenu.Count > 0)
+                                    {
+                                <ul class="menu-sub-items">
+                                    @foreach (MenuLink subItem in item.ChildMenu)
+                                    {
+                                        <li><a class="selected" href="@subItem.Href">@subItem.Text</a></li>
+                                    }
+                                    @if (!addComplaintsLink)
+                                    {
+                                      <li><a class="selected" href="@String.Format("{0}/{1}", DTO.Config.SeoUrlList.Website, 
+                                            "Your-Council/Have-your-say/Comments-compliments-and-complaints/Comments,-compliments-and-complaints.aspx")">Comments, compliments and complaints
+                                            </a>
+                                       </li>
+                                        addComplaintsLink = true;
+                                    }
+
+                                </ul>
+                                    }
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+            <!-- tablet view -->
+            <div id="navbar-inner" class="navbar-tablet clearfix" style="display:none;">
+                <div class="title" onclick="window.location.href='@homepageHref.Replace(" ", "-")'"><span>Sendiass</span></div>
+                
+
+            </div>
+            <!-- mobile view -->
+            <div id="navbar-inner" class="navbar-mobile clearfix">
+                <div class="title" onclick="window.location.href='@homepageHref'"><h1 style="float:right; position:relative; top:0px;">Blackpool <strong>Sendiass</strong></h1></div>
+                <div class="menu topnav">
+                    <a href="#" class="active">&nbsp;</a>
+                    <ul id="myLinks">
+                        @foreach (MenuLink item in topLinks)
+                        {
+                            <li style="@string.Format("{0}", (item.ChildMenu != null && item.ChildMenu.Count > 0) ? "height:auto;" : "")">
+                                <a href="@item.Href" class="mobile-sub-link">@item.Text</a>
+                                @if (item.ChildMenu != null && item.ChildMenu.Count > 0)
+                                {
+                                    <i class="fa fa-caret-down fa-click" style="font-size:32px"></i>
+                                    <ul class="menu-sub-items" style="display:none;">
+                                        @foreach (MenuLink subItem in item.ChildMenu)
+                                        {
+                                            <li class="truncate" style="position:relative;">
+                                                <a class="mobile-sub-link" style="left:10px;margin-top:-30px;" href="@subItem.Href">@subItem.Text</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </li>
+
+                        }
+                    </ul>
+                    <a href="javascript:void(0);" class="icon" onclick="mobileMenu()">
+                        <i class="fa fa-bars" style="font-size:32px;"></i>
+                        <i class="fa fa-close" style="color:#000; font-size:32px; display:none;"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+</nav>
+
+@if (breadcrumbs.Count > 1)
+{
+<div class="breadcrumb-container center-block">
+    <ul class="breadcrumb">
+        @foreach (var item in breadcrumbs)
+        {
+            <li><a href="@item.Href" class="truncate-breadcrumb">@item.Name.ToTitleCase()</a></li>
+        }
+    </ul>
+</div>
+}
+
+
+
+<script type="text/javascript">
+    var mobileMenu = function() {
+
+            var x = document.getElementById("myLinks");
+            if (x.style.display === "block") {
+                x.style.display = "none";
+                $("i.fa-close").hide();
+                $("i.fa-bars").show();
+            } else {
+                x.style.display = "block";
+                $("i.fa-close").show();
+                $("i.fa-bars").hide();
+            }
+    };
+
+    var mobileClick = function()
+    {
+        $("i.fa-click").click(function(){
+           var ul = this.nextElementSibling;
+           var display = ul.style.display;
+
+           if (display =='none') {
+                 $("i.fa-click").removeClass("fa-caret-down");
+                 $("i.fa-click").addClass("fa-caret-up");
+                ul.style.display = 'block'; 
+           } 
+           else { 
+                $("i.fa-click").removeClass("fa-caret-up");
+                $("i.fa-click").addClass("fa-caret-down");
+               ul.style.display = 'none'; 
+            }
+        });
+
+    };
+
+    mobileClick();
+</script>
+
+

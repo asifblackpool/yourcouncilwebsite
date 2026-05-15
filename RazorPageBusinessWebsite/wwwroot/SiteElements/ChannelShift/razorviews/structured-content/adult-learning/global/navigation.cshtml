@@ -1,0 +1,102 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Top Menu - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 09/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@{
+    SportBlackPoolDTO DTO = Page.Model;
+    Zengenti.Data.PagedList<SportBlackpool> list = DTO.List;
+    SportBlackpoolHelper helper = new SportBlackpoolHelper(list.Items);
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = Blackpool.Zengenti.CMS.Constants.SeoKeys.SportBlackPoolKey }
+    };
+
+    DTO.Config = config;
+
+    string path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+    
+    string homepageHref = String.Format("{0}{1}", DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath, DTO.Config.SeoUrlList.DefaultPage);
+    List<MenuLink> topLinks = new List<MenuLink>();
+    topLinks = (from item in list.Items
+                where (item.PageType == SportBlackpoolKeys.TOP_LEVEL
+                        || item.PageType == SportBlackpoolKeys.SECOND_LEVEL)
+                select new MenuLink()
+                {
+                    Href = helper.NavigationBuilder(item,path ),
+                    Text = item.Alias,
+                    Order = item.MenuOrder,
+                   Level = item.PageType,
+                   ChildMenu = (item.PageType == SportBlackpoolKeys.TOP_LEVEL) ? null : helper.GetChildLinks(list.Items, item, path)
+                }
+    ).ToList();
+
+    topLinks.OrderBy(x => x.Order);
+    topLinks = topLinks.OrderBy(x => x.Order).ToList();
+
+
+    int counter = 0;
+
+
+     
+ <ul class="menu-navigation">
+    <li>
+      <a href="#" class="menu-text">
+          <img src="/siteElements/channelshift/content/images/sport-blackpool/sport-menu.png" alt="Menu" />
+        </a>
+       <ul class="menu">
+            @foreach (var menulink in topLinks){
+                if (menulink.Level != SportBlackpoolKeys.TOP_LEVEL || menulink.Level != SportBlackpoolKeys.HIDDEN_LEVEL){
+                    <li style="@String.Format("{0}", (counter > 0) ? "border-top: dotted 1px #fff;" : "")"><a href="@menulink.Href" class="primary">@menulink.Text</a></li>
+                    if (menulink.ChildMenu != null && menulink.ChildMenu.Count > 0){
+                        foreach (var secondaryLink in menulink.ChildMenu)
+                        {
+                            if (secondaryLink.ChildMenu != null && secondaryLink.ChildMenu.Count > 0){
+                            <li>
+                            <span class="glyphicon glyphicon-plus-sign show-tertiary" style="cursor: pointer;"></span>
+                            <a href="@secondaryLink.Href" class="secondary" style="left:-17px;">@secondaryLink.Text</a>
+                            </li>
+                            }
+                            else 
+                            {
+                                <li><a href="@secondaryLink.Href" class="secondary">@secondaryLink.Text</a></li>
+                            }
+                        
+                            if (secondaryLink.ChildMenu != null && secondaryLink.ChildMenu.Count > 0){
+                                @Html.Raw("<ul style='display:none; margin-bottom:1em;'>")
+                                foreach (var tertiaryLink in secondaryLink.ChildMenu)
+                                {
+                                    <li><a href="@tertiaryLink.Href" class="tertiary" >@tertiaryLink.Text</a></li>
+                                } 
+                                    @Html.Raw("</ul>") 
+                            }
+                        }  
+                    }
+                }
+                counter++;
+            }
+        </ul>
+    </li>
+</ul>              
+
+
+}
+

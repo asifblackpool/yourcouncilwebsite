@@ -1,0 +1,239 @@
+﻿/* overlay pop up*/
+.overlay {
+    margin: auto;
+    position: absolute;
+    top: 0px;
+    left: 0;
+    right: 50px;
+    width: 0;
+    z-index: 105;
+    height: 100%;
+    background-color: #fff;
+    background-color: rgba(255,255,255,.9);
+    overflow-x: hidden;
+    overflow-y: hidden;
+    transition: .2s;
+}
+
+.overlay .closebtn {
+    position: absolute;
+    right: 25px;
+    font-size: 60px;
+    color:black;
+}
+
+.overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.overlay-message {
+    padding: 8px;
+    font-weight: 700;
+    font-size: 24px;
+    color: #830065;
+    display: block;
+}
+ul.dropdown-menu > li a {
+    text-decoration: none !important;
+}
+
+td > a.more-info {
+    position:relative;
+    left:25px;
+}
+
+.red-color {
+    color: #E20032;
+}
+
+.bkg-red-color {
+    background-color: #E20032;
+}
+
+.bkg-light-blue-color {
+    background-color: #00A6CB
+}
+
+
+
+div .modal-content {
+    max-width: 780px;
+    transform: translate(0, 25%);
+    border:none;
+}
+
+section.center-modal {
+    margin: auto;
+    max-width: 740px;
+    margin:10px;
+}
+section.center-modal  div.row {
+    display: table;
+    width: 100%;
+    max-width:740px;
+    margin:0px;
+}
+
+.modal-header {
+
+   height: 80px;
+   background-color:#d50032;
+   border-bottom:none;
+ 
+}
+
+.modal-header > h3 {
+    color: #fff;
+    font-size: 32px;
+    text-align: center;
+    position: relative;
+    top: 4px;
+    z-index: 1;
+    max-width: 680px;
+}
+
+.modal-title {
+    text-align: center;
+    font-size:24px;
+    position:relative;
+    top:-5px;
+}
+
+.modal-header .close {
+    background-color: #fff;
+    z-index: 99;
+    width: 40px;
+    height: 40px;
+    opacity: 1;
+    border-radius: 50%;
+    position:relative;
+    top:0px;
+}
+
+*{
+box-sizing: border-box;
+}
+
+.column {
+    float: left;
+    width: 100%;
+    font-size: 18px;
+    display:table-cell;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.column span {
+    margin-left: 4px;
+}
+
+.class-booking { 
+    color:#fff;
+    border:none;
+    border-radius: 16px;
+    min-width:85px;
+    position:relative;
+    line-height:1.5em;
+    position:relative;
+    right:0px;
+}
+
+.class-booking:hover {
+  text-decoration:underline;
+}
+
+/* hide search*/
+div.dataTables_filter > label { 
+    display:none;
+}
+
+/* hide page size drop down */
+#swimtimetable_length, #classtimetable_length {
+    display:none;
+}
+
+.btn-white {
+    color:#000;
+    background-color: #fff;
+    border-color:#000;
+}
+
+table.dataTable.display tbody tr.odd > .sorting_1, 
+table.dataTable.order-column.stripe tbody tr.odd > .sorting_1 {
+    background-color: transparent;
+}
+
+
+/* mobile view */
+@media all and (max-width: 768px) and (min-width: 300px) {
+
+    .class-booking {
+        position: inherit;
+        float: left;
+    }
+}
+@media all and (max-width: 567px) and (min-width: 300px) {
+
+    #content-inner {
+        font-size: 14px !important;
+    }
+
+    .column, .class-booking {
+        width: 100%;
+        font-size: 14px;
+        width: 100% !important;
+        margin-left: 0px !important;
+        min-height:34px;
+    }
+
+    strong.modal-heading {
+        width: 100%;
+        font-size: 16px;
+        display: inline-block;
+    }
+
+    span.modal-data, p.modal-data {
+        width: 100%;
+        font-size: 16px;
+        display: inline-block;
+    }
+
+    table.dataTable > tbody > tr.child ul {
+        width: 100%;
+        height:32px;
+        padding-top:5px;
+    }
+
+    table.dataTable > tbody > tr.child ul li:first-child {
+            float: left;
+            max-width: 130px;
+            width: 130px;
+            height:30px;
+            position:relative;
+            top:12px;
+    }
+
+    table.dataTable > tbody > tr.child ul li:last-child {
+            float: left;
+            max-width: 125px !important;
+            width: 125px !important;
+            height:30px;
+    }
+
+    span.dtr-data > button {
+        margin-left: 20px!important;
+        position: relative;
+        top: -28px;
+        line-height:10px;
+        height:24px;
+        max-width:80px;
+    }
+}

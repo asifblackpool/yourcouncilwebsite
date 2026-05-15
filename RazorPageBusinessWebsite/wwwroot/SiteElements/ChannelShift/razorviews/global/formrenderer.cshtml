@@ -1,0 +1,166 @@
+﻿@using System.Web.UI.HtmlControls
+@using System.Web.UI.WebControls
+@using System.Text
+
+@using Contensis.FormsModule.Controls
+@using Contensis.FormsModule.Controls.Reporting
+
+@using CMS_API.WebUI.WebControls
+@using CMS_API
+
+@{
+    // =============================================
+    // Validate passed-in Form Content ID
+    // =============================================
+    if (PageData["formContentId"] == null)
+    {
+        throw new ArgumentException("Form Content Id is not set");
+    }
+
+    int formContentId = PageData["formContentId"];
+}
+
+@functions{
+
+    string RenderControl(Control control)
+    {
+        var sb = new StringBuilder();
+        var tw = new StringWriter(sb);
+        var w = new HtmlTextWriter(tw);
+
+        control.RenderControl(w);
+
+        return tw.ToString();
+    }
+
+    void RegisterStyles()
+    {
+        CurrentContext.Page.CSS.Add("/aspnet_client/ContensisThemes/simple/Common/styles.css");
+        CurrentContext.Page.CSS.Add("/aspnet_client/ContensisThemes/simple/Forms/styles.css");
+        CurrentContext.Page.CSS.Add("/aspnet_client/ContensisThemes/simple/jQueryUI.DatePicker/styles.css");
+    }
+
+    string GetFormRules(CMS_API.Page page, Form form)
+    {
+        return HttpUtility.HtmlEncode(new Utilities().GetFormPageRulesMetaData(page, form));
+    }
+
+    string GetActionUrl(Form form)
+    {
+        if (form.FormActionType == FormActionType.ContensisFormsService)
+        {
+            return "/REST/UI/FormsModule/postform/";
+        }
+        else
+        {
+            return GetFormPostUrl(form.CustomUrl);
+        }
+    }
+
+    string GetFormPostUrl(string formUrl)
+    {
+        if (IsAbsoluteUrl(formUrl))
+        {
+            return formUrl;
+        }
+        else
+        {
+            // ensure we return Url with route prefix defined in Global.asax for standard websites
+            return string.Format("{0}{1}", "/custom", formUrl);
+        }
+    }
+
+    static bool IsAbsoluteUrl(string url)
+    {
+        Uri result;
+        return Uri.TryCreate(url, UriKind.Absolute, out result);
+    }
+}
+
+@{
+    // =============================================
+    // Perform the WebControl render
+    // =============================================
+
+    RegisterStyles();
+
+    var controlOutput = "Un-rendered";
+    var corePage = HttpContext.Current.CurrentHandler as CMS_API.WebUI.Page.BasePage;
+    // no need ot change the ID atm
+    //corePage.Form.ID = "aspnetFormX123";
+
+    var formToRender = FormReportingService.GetForm(formContentId, (CMS_API.Page)corePage);
+    var formVersionId = formToRender.VersionID;
+    var formDiv = new Div();
+    var localisation = new WebLocalisation((CMS_API.Page)corePage);
+
+    FormHelper.RegisterRenderJavascript((CMS_API.Page)corePage, formToRender);
+    FormRender.RegisterLocalisations(formDiv, localisation, formToRender.VersionID);
+
+    var utils = new Utilities();
+    string publicKey = String.Empty; // utils.GetProjectSetting("Captcha_PublicKey", corePage.CurrentProject.ID);
+    string privateKey = String.Empty; // utils.GetProjectSetting("Captcha_PrivateKey", corePage.CurrentProject.ID);
+    bool formOutputted = true;
+    string errorMessage = "";
+    string stacktrace = "";
+
+    try
+    {
+
+        FormRender.GenerateFormControls(formDiv, formToRender, true, true, false, ViewType.Live, corePage.IsLiveSite, localisation, publicKey, privateKey, "2");
+
+        controlOutput = RenderControl(formDiv);
+    }
+    catch (Exception ex)
+    {
+        errorMessage = "Error in Generating Form: " + ex.Message;
+        stacktrace = ex.StackTrace;
+        formOutputted = false;
+    }
+
+
+    // =============================================
+    // Markup below
+    // =============================================
+}
+
+
+@if (formOutputted)
+{
+    <div>
+        <div id="formwrapperJS@(formVersionId)" class="sys_cms-form-control sys_labels-top">
+            @Html.Raw(controlOutput)
+        </div>
+    </div>
+
+    <input type="hidden" name="hdPageContent@(formVersionId)" id="hdPageContent@(formVersionId)" value="@corePage.ContentID" />
+    <input type="hidden" name="hdCurrentProject@(formVersionId)" id="hdCurrentProject@(formVersionId)" value="@corePage.CurrentProject.ID" />
+    <input type="hidden" name="hdPageNav@(formVersionId)" id="hdPageNav@(formVersionId)" />
+    <input type="hidden" name="hdPageRules@(formVersionId)" id="hdPageRules@(formVersionId)" value="@Html.Raw(GetFormRules((CMS_API.Page)corePage, formToRender))" />
+    <input type="hidden" name="hdActionUrl@(formVersionId)" id="hdActionUrl@(formVersionId)" value="@Html.Raw(GetActionUrl(formToRender))" />
+
+    if (formToRender.FormActionType != FormActionType.ContensisFormsService)
+    {
+        <input type="hidden" name="hdSaveContensisResponse@(formVersionId)" id="hdSaveContensisResponse@(formVersionId)" value="@formToRender.SaveContensisResponse" />
+    }
+    if (formToRender.ShowCaptcha && !string.IsNullOrEmpty(publicKey) && !string.IsNullOrEmpty(privateKey))
+    {
+        <input type="hidden" name="hdShowCaptcha@(formVersionId)" id="hdShowCaptcha@(formVersionId)" value="@corePage.IsLiveSite" />
+        <input type="hidden" name="hdCaptchaPublicKey@(formVersionId)" id="hdCaptchaPublicKey@(formVersionId)" value="@publicKey" />
+    }
+}
+else
+{
+    <strong>@errorMessage</strong>
+    <br />
+    <p>@stacktrace</p>
+}
+
+
+<style type="text/css">
+    li.sectionbold > span.sys_sectionbreak-header {
+        font-weight: bold;
+        font-size: 2em;
+        margin: 15px 0px;
+    }
+</style>

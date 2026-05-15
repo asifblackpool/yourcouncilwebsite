@@ -1,0 +1,79 @@
+﻿/* accessability style sheet 04/03/2020  */
+
+.blackpooluk-skip-link:link,
+.blackpooluk-skip-link:visited,
+.blackpooluk-skip-link:hover,
+.blackpooluk-skip-link:active,
+.blackpooluk-skip-link:focus {
+    color: #0b0c0c;
+}
+
+.blackpooluk-skip-link:focus {
+    outline: 3px solid #fd0;
+    background-color: #fd0;
+}
+
+a.accessibility-tab:focus,
+a.accessibility-tab-100:focus {
+    border-left: solid 2px black;
+    border-right: solid 2px black;
+    border-top: solid 2px black;
+    border-bottom: solid 2px black !important;
+    background-color: transparent !important;
+    text-decoration: underline !important;
+    outline: none !important;
+    padding:10px;
+
+}
+
+input[type=text].accessibility-tab:focus,
+button.accessibility-tab:focus {
+    border: solid 2px black !important;
+    background-color: transparent !important;
+    color: black;
+}
+
+button-task:focus, .top-tasks:focus {
+    border-left: solid 2px black;
+    border-right: solid 2px black;
+    border-top: solid 2px black;
+    border-bottom: solid 2px black !important;
+    background-color: transparent !important;
+    padding: 10px;
+}
+
+
+a.accessibility-tab-white:focus,
+a.accessibility-tab-white-100:focus {
+    border-left: solid 2px white;
+    border-right: solid 2px white;
+    border-top: solid 2px white;
+    border-bottom: solid 2px white !important;
+    background-color: transparent !important;
+    text-decoration: underline !important;
+    outline: none !important;
+    padding: 10px;
+    display:inline;
+    width:100%;
+}
+
+
+a.button-task-white:focus, .top-tasks:focus {
+    border-left: solid 2px white;
+    border-right: solid 2px white;
+    border-top: solid 2px white;
+    border-bottom: solid 2px white !important;
+    background-color: transparent !important;
+    padding:10px;
+}
+
+input[type=text].accessibility-tab-white:focus,
+button.accessibility-tab-white:focus {
+    border-left: solid 2px white;
+    border-right: solid 2px white;
+    border-top: solid 2px white;
+    border-bottom: solid 2px white !important;
+    color: black;
+}
+
+

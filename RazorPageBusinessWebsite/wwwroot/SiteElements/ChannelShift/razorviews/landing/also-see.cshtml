@@ -1,0 +1,63 @@
+﻿@*<control name="Channel Shift Also See links" showInMenu="true" category="Favourites" viewingGroup="2">
+ <properties>
+    <category name="Also See Links">
+      <repeater name="AlsoSeeLinks" min="1" max="5">  
+        <text name="Title" />
+        <node name="Url"  >
+          	<parameters>
+              <parameter name="ContentTypes" value="0"></parameter>
+          </parameters>
+        </node>
+        <text name="ExternalUrl" label="External URL" />
+      </repeater>
+    </category>
+  </properties>
+</control>*@@{
+
+    // Name: Channel Shift - Also See links - to be used within landing pages
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date:27/01/2016
+}
+
+@functions{
+      
+      public class alsoSeeLinks
+      {
+          public String Name { get; set; }
+          public String Url { get; set; }
+      }
+      
+      }
+@{
+    List<alsoSeeLinks> alsoSeeLinks = new List<alsoSeeLinks>();
+    foreach(var item in Properties.AlsoSeeLinks)
+    {
+        String Url = "";
+        if (item.Title.Trim() != String.Empty)
+        {
+                 
+   		  	Url = (item.ExternalUrl == null) ? string.Empty : item.ExternalUrl;
+   		    Url = (item.Url != null && Url == "") ? item.Url.Path : Url;
+            alsoSeeLinks.Add(new alsoSeeLinks() { Name = item.Title, Url = Url  });
+        }
+     }      
+}
+
+
+<div class="row">
+@if (alsoSeeLinks.Count > 0) { 
+    <div class="col-md-12 zero-pad-all ">
+        <h3 class="sub-header-title">Also See:</h3>
+    </div>
+    <div id="also-see-list" class="col-md-12 col zero-pad-all">
+        <ul>
+            @foreach(var item in alsoSeeLinks)
+            {
+              <li><a href="@item.Url" title="@item.Name">@item.Name</a></li>
+            }
+        </ul>
+    </div>
+ }
+    <div class="bottom-spacer">&nbsp;</div>
+</div>

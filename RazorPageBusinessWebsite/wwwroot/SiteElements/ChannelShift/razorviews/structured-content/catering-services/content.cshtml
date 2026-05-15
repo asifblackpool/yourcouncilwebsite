@@ -1,0 +1,149 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Content used for Catering
+    // License: Blackpool council
+    // Date: 05/11/2023
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.Catering;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.SiteView;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@{
+    CateringDTO DTO   = Page.Model;
+    SiteView siteView               = DTO.SiteView;
+    bool showRightDiv = false;
+    bool formRender                 = false;
+    int ctaLinkCounter              = 0;
+    int childCount                  = DTO.SiteView.ChildNodes.Count();
+
+
+
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.CateringKey }
+    };
+
+    DTO.Config = config;
+
+
+}
+
+<div id="content-inner" class="content-space clearfix">
+    <div id="content-container" class="row zero-margin-all clearfix pad-bot-40">
+        <div id="@string.Format("{0}", showRightDiv ? "content-left" : "content-full-width")" class="@string.Format("{0},", showRightDiv ? "col-md-9 zero-pad-all clearfix" : "col-md-12 col-sm-12 zero-pad-all clearfix")">
+
+
+
+            @if (DTO.PageType != null && DTO.PageType != CateringPages.Top_Level_Home)
+            {
+                <h1 id="content-inner-h1" class="pad-bot-40 marg-bot-0 marg-top-0">@DTO.CurrentItem.PageTitle</h1>
+                foreach (SerialisedContent item in DTO.Flow.GetContent)
+                {
+                    string partial = string.Empty;
+                    string className = item.Items[0].ClassName;
+                    string containerType = item.Items[0].ContainerType;
+                    if (className == "CTALink")
+                    {
+                        ctaLinkCounter++;
+                    }
+
+                    <div style="display:block">
+                        <strong style="display:none">@DTO.Config.SeoUrlList.Key</strong>
+                        <strong style="display:none">@DTO.Config.SeoUrlList.UrlPath</strong>
+                        <strong style="display:none">@className</strong>
+                        <strong style="display:none">@DTO.CurrentItem.PageType</strong>
+                    </div>
+
+                    switch (className)
+                    {
+
+                        case "AccordionContent":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/accordion.cshtml"), new { Model = DTO })
+                            break;
+                        case "ContentBoxWithImage":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/markup-with-image.cshtml"), new { Model = DTO, Markup = item.Items })
+                            break;
+                        case "ContentBox":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/markup.cshtml"), new { Model = DTO, Markup = item.Items })
+                            break;
+                        case "CTALink":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/cta-link.cshtml"), new { Model = DTO, CtaLinks = item.Items, CtaCounter = 0, Serialised = true })
+                            break;
+                        case "Venue":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/map.cshtml"), new { Model = DTO })
+                            break;
+                        case "ImageBox":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/imagebox.cshtml"), new { Model = DTO })
+                            break;
+                        case "CateringWeeks":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/catering-menu.cshtml"), new { Model = DTO, CateringMenu = item.Items })
+                            break;
+                        case "Promotions":
+
+                            if (DTO.PageType == CateringPages.Other)
+                            {
+                                @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/promotions-schools.cshtml"), new { Model = DTO })
+                            }
+                            if (DTO.PageType == CateringPages.Top_Level_Children)
+                            {
+                                @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/promotions-box.cshtml"), new { Model = DTO })
+                            }
+
+                            break;
+                        case "Form":
+                            formRender = true;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if (formRender)
+                    {
+                       @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/form.cshtml"), new { Model = DTO })
+                       formRender = false;
+                    }
+                }
+            }
+            else
+            {
+                /* Home Page */
+                foreach (SerialisedContent item in DTO.Flow.GetContent)
+                {
+                    string className = item.Items[0].ClassName;
+
+                    switch (className)
+                    {
+                        case "ContentBoxWithImage":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/markup-with-image.cshtml"), new { Model = DTO, Markup = item.Items })
+                            break;
+                        case "CTALink":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/cta-link.cshtml"), new { Model = DTO, CtaLinks = item.Items, CtaCounter = 0, Serialised = true })
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/promotions-home.cshtml"), new { Model = DTO })
+            }
+        </div>
+   
+    </div>
+</div> <!-- end of content inner  -->
+
+

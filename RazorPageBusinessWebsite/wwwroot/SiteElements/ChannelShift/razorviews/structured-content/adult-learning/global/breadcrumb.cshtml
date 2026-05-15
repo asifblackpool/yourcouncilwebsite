@@ -1,0 +1,57 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// Name: breadcrumb - used adult learning pages
+// License: Blackpool council
+// Date: 04/10/2021
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolAdultLearning;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+@using Blackpool.Zengenti.CMS.Models.SiteView;
+
+
+
+@{
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.BlackpoolAdultLearningKey }
+    };
+
+    BlackpoolAdultLearningDTO DTO = Page.Model;
+    ContensisClient client = Page.Client;
+
+    DTO.Config = config;
+
+    BreadCrumbBuilder builder = new BreadCrumbBuilder(client, DTO.SiteView.HomeNodePath, DTO.SiteView.DefaultSlugName, 4);
+    builder.BuildBreadCrumbs(DTO.SiteView.DefaultNodePath, DTO.CurrentItem.Slug);
+
+    var breadCrumbs = builder.BreadCurmbs;
+}
+
+
+<div class="breadcrumb-container">
+
+    <ul class="breadcrumb">
+        @foreach (var item in breadCrumbs)
+        {
+            <li><a href="@String.Format("{0}{1}",DTO.Config.SeoUrlList.UrlPath,item.Href)" class="accessibility-tab">@item.Name.ToTitleCase()</a>
+            </li>
+        }
+    </ul>
+</div>

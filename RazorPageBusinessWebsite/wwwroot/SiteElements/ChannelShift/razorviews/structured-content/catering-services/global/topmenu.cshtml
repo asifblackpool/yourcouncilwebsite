@@ -1,0 +1,110 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Top Menu - used in Catering pages
+    // License: Blackpool council
+    // Date: 02/01/2024
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.Catering;
+@using Blackpool.Zengenti.CMS.Models.SiteView;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@{
+    CateringDTO DTO = Page.Model;
+    SiteView siteView = DTO.SiteView;
+
+    int nodeCount = 1;
+
+}
+<div id="navigation-outer-container" class="homepage-outer-container clearfix noprint">
+    <div id="navigation-inner-container" class="homepage-max-width">
+        <!-- Navigation -->
+        <nav id="top-nav" class="navbar navbar-inverse navbar-default">
+            <div class="navbar-header"></div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a class="accessibility-tab" href="/Accessibility.aspx">Accessibility</a></li>
+                    <li class="divider-vertical">|</li>
+                    <li><a class="accessibility-tab" href="/Sitemap.aspx">Sitemap</a></li>
+                    <li class="divider-vertical">|</li>
+                    <li><a class="accessibility-tab" href="/Contact-us.aspx">Contact us</a></li>
+                    <li class="divider-vertical">|</li>
+                    <li><a class="accessibility-tab" href="/List-of-Services.aspx">A to Z</a></li>
+                    <li class="divider-vertical">|</li>
+                    <li><a class="accessibility-tab" title="Newsroom" href="/News/Newsroom.aspx">News</a></li>
+                    <li class="divider-vertical">|</li>
+                    <li><a class="accessibility-tab" href="/List-of-Services.aspx">Keep updated</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<div id="searchbox-outer-container" class="homepage-outer-container clearfix" role="navigation">
+    <div id="search-box-inner" class="homepage-max-width fluid-container">
+        <div class="row zero-pad-left zero-pad-right">
+            <div class="col-sm-12 zero-pad-left zero-pad-right">
+                <h1 class="top-menu-title">Blackpool Catering Services</h1><span class="home-span-link">
+                    <a href="@String.Format("{0}{1}", DTO.Config.SeoUrlList.UrlPath.ToLower(), DTO.Config.SeoUrlList.DefaultPage)" class="home-link">
+                        <img src="/SiteElements/ChannelShift/Content/images/catering-services/home-blue.png" />
+                    </a>
+                </span>
+            </div>
+        </div>
+        <div class="row">
+          
+            <div class="col-xs-12 zero-pad-left zero-pad-right">
+
+                <ul id="navigation" class="gateway-links">
+                    <li class="mobile-close"><a class="close" href="#">&times;</a></li>
+                    @if (siteView.Nodes.Count > 0)
+                    {
+                        foreach (var node in siteView.Nodes)
+                        {
+                            var level_3_nodes = node.Children();
+                            if (nodeCount > 0 && node.IncludeInMenu && nodeCount <= 6) {
+                                <li class="@string.Format("{0}", (level_3_nodes != null && level_3_nodes.Count > 0) ? "desktop top-menu-link" : "desktop")">
+                                    <a 
+                                       class="@string.Format("{0}", (level_3_nodes != null && level_3_nodes.Count > 0) ? "add-arrow" : "")"
+                                       href="@String.Format("{0}{1}.aspx", DTO.Config.SeoUrlList.UrlPath.ToLower(), node.Slug.ToLower())"
+                                    >
+                                        @node.DisplayName
+                                    </a>
+                                    @if (level_3_nodes.Count > 0) {
+                                        <ul class="menu-sub-items">
+                                            @foreach (var item in level_3_nodes){
+                                              <li>
+                                                 <a class="selected" href="@String.Format("{0}{1}/{2}.aspx", DTO.Config.SeoUrlList.UrlPath.ToLower(), node.Slug.ToLower(),item.Slug.ToLower())">@item.DisplayName</a>
+                                              </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                              nodeCount++;
+                        }
+                     }
+                </ul>
+                <div id="mobile-header" class="mobile tablet">
+                    <a id="responsive-menu-button" href="#sidr-main" style="display: inline-block;">
+                        <span class="hamburger">&nbsp;</span>
+                        <span class="hamburger" style="position:relative;">&nbsp;</span>
+                        <span class="hamburger" style="position:relative;">&nbsp;</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

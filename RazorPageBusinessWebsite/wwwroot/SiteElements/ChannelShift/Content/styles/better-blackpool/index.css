@@ -1,0 +1,165 @@
+﻿div.making-blackpool-better a { 
+    text-decoration:underline;
+}
+
+div.making-blackpool-better a:hover { 
+    text-decoration:none;;
+}
+
+
+div.row {
+    margin-bottom:0px;
+}
+
+div.component-container {
+    max-height: 350px;
+    overflow: none;
+    padding-bottom: 10px;
+    margin-bottom:20px;
+    border-bottom: solid 1px silver;
+}
+
+div.row > div.intro-text-container {
+    position:relative;
+    height:100%
+}
+
+img.header-image {
+
+    max-width: 100%;
+	height: auto;
+}
+
+img.section-image {
+    max-width:600px;
+    max-height:300px;
+    width:580px;
+    margin-top:10px;
+}
+
+.section-title {
+    font-weight:bolder;
+    margin-top:0px;
+}
+
+.section-button {
+
+    /*position:absolute;
+    bottom:0px;
+    */
+    border:solid 2px #830065;
+    background-color:#ffffff;
+    color:#830065;
+    width:150px;
+    
+}
+
+input.email-input {
+    border: solid 1px #830065; 
+    display: inline; 
+    width: 85%; 
+    max-width: 400px;
+    border-radius: 0px 0px;
+}
+
+button#better-blackpool-submit {
+    color:#fff;
+    background-color:#830065;
+    position:relative;
+    left:-47px;
+    border: solid 1px #830065;
+    border-radius: 0px 0px;
+}
+
+.better-blackpool-checkbox {
+    float:left;
+    width:20px;
+    height:20px;
+}
+
+.help-block { 
+    font-weight:bold;
+}
+
+
+@media screen and (max-width: 1160px) 
+{
+
+    img.section-image {
+    display:block; 
+    margin:auto;
+    width:500px;
+}
+
+}
+
+@media screen and (max-width: 1024px) {
+
+div.component-container {
+    height:auto;
+    border:none;
+    max-height:none;
+}
+
+.section-button {
+
+    position:relative;
+    bottom:10px;
+    margin-top:30px;
+    margin-bottom:30px;
+    text-align:center;
+    margin-left:auto;
+    margin-right:auto;
+    display:block;
+
+}
+
+img.section-image {
+    display:block; 
+    margin:auto;
+    width:460px;
+    height:300px;
+}
+
+}
+
+@media screen and (max-width: 768px) {
+   #crumbs ul {
+    margin-top:20px;
+    }
+}
+
+@media screen and (max-width: 692px) {
+
+    img.section-image {
+        width: 420px;
+        height:220px;    }
+
+      img.funding-image {
+       width:420px;
+       height:70px;
+   }
+
+   
+}
+
+@media screen and (max-width: 480px) {
+
+   img.section-image {
+    width:310px; 
+   }
+
+   img.funding-image {
+       width:320px;
+       height:55px;
+   }
+   button#better-blackpool-submit {
+   top:-1px;
+   }
+
+   div.component-container {
+
+    border-bottom: solid 0px silver;
+}
+
+}

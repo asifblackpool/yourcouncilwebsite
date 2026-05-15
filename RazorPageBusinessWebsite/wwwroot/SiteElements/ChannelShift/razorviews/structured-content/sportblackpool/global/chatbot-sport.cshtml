@@ -1,0 +1,202 @@
+﻿<br />
+<div class="chat-bot-icon row" style="min-height:50px; display:block;">
+    <strong>Need help ... talk to us</strong> &nbsp;&nbsp;<img src="/SiteElements/ChannelShift/Content/Images/chatbot/chat-bubble.png" alt="Chat bot" class="chat-bot-image" />
+</div>
+<div id="blackpool-chatbot" class="row clearfix" style="margin-top: 20px; padding: 25px; border: 1px dashed grey; display:none; clear:both;">
+    <button class="chatbot-close" style="float:right;">&nbsp;</button>
+    <div>
+        <div id="webchat" role="main"></div>
+    </div>
+</div>
+<style type="text/css">
+
+    div.chat-bot-icon {
+        text-align: right;
+        float: right;
+        padding-top: 10px;
+        cursor: pointer;
+        min-height: 50px;
+        position: fixed;
+        bottom: 5px;
+        right: 20px;
+        z-index: 999;
+        background-color: yellow;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    div#blackpool-chatbot {
+        position: fixed;
+        bottom: 0px;
+        right: 10px;
+        z-index: 999;
+        background-color: yellow;
+        padding-left: 10px;
+        padding-right: 10px;
+        width: 65%;
+        max-width: 650px;
+    }
+
+    div#webchat { 
+        max-height:450px;
+        overflow-y:auto;
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    div.chat-bot-icon > img {
+        height: 45px;
+        width: 45px;
+        float: right;
+        position: relative;
+        top: -3px;
+    }
+
+    button.chatbot-close {
+        border-radius: 50%;
+        padding: 0.5em;
+        width: 30px;
+        height: 30px;
+        border: 2px solid black;
+        color: black;
+        position: relative;
+        right: -20px;
+        top: -20px;
+    }
+
+        button.chatbot-close::before {
+            content: " ";
+            position: absolute;
+            display: block;
+            background-color: black;
+            width: 2px;
+            left: 12px;
+            top: 5px;
+            bottom: 5px;
+            transform: rotate( 45deg );
+        }
+
+        button.chatbot-close::after {
+            content: " ";
+            position: absolute;
+            display: block;
+            background-color: blue;
+            height: 2px;
+            top: 12px;
+            left: 5px;
+            right: 5px;
+            transform: rotate( 45deg );
+        }
+
+    @@media screen and (max-width:968px) {
+
+        div#blackpool-chatbot {
+            width: 80%;
+        }
+    }
+
+    @@media screen and (max-width:792px) {
+
+        div#blackpool-chatbot {
+            width: 90%;
+        }
+    }
+
+    @@media screen and (max-width:600px) {
+
+        div#blackpool-chatbot {
+            width: 100%;
+        }
+    }
+</style>
+<script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //start of chat bot javascript code ...
+        const styleOptions = {
+            // Add styleOptions to customize web chat canvas
+
+            botAvatarInitials: 'BT',
+            accent: '#003087',
+            botAvatarBackgroundColor: "#FFFFFF",
+            botAvatarImage: 'https://image.flaticon.com/icons/png/128/265/265668.png',
+            userAvatarInitials: 'BT',
+            accent: '#003087',
+            userAvatarBackgroundColor: "#FFFFFF",
+            userAvatarImage: 'https://image.flaticon.com/icons/png/128/4776/4776976.png',
+            hideUploadButton: true,
+            suggestedActionLayout: 'stacked',
+            suggestedActionDisabledBorder: null,
+            suggestedActionDisabledBorderColor: '#E6E6E6',
+            suggestedActionDisabledBorderStyle: 'solid',
+            suggestedActionDisabledBorderWidth: 2,
+            suggestedActionsStackedLayoutButtonTextWrap: true,
+            emojiSet: true,
+        };
+
+        var BOT_ID = "c5ca7368-a3f3-430d-a835-e18fa6e21c83";
+        //var BOT_ID = "e18e663a-bde3-453c-97a2-d57a2ff2480d";
+        var theURL = "https://powerva.microsoft.com/api/botmanagement/v1/directline/directlinetoken?botId=" + BOT_ID;
+
+        const store = window.WebChat.createStore(
+            {},
+            ({ dispatch }) => next => action => {
+                if (action.type === "DIRECT_LINE/CONNECT_FULFILLED") {
+                    dispatch({
+                        meta: {
+                            method: "keyboard",
+                        },
+                        payload: {
+                            activity: {
+                                channelData: {
+                                    postBack: true,
+                                },
+                                //Web Chat will show the 'Greeting' System Topic message which has a trigger-phrase 'hello'
+                                name: 'startConversation',
+                                type: "event"
+                            },
+                        },
+                        type: "DIRECT_LINE/POST_ACTIVITY",
+                    });
+                }
+                return next(action);
+            }
+        );
+        fetch(theURL)
+            .then(response => response.json())
+            .then(conversationInfo => {
+                window.WebChat.renderWebChat(
+                    {
+                        directLine: window.WebChat.createDirectLine({
+                            token: conversationInfo.token,
+                        }),
+                        store: store,
+                        styleOptions: styleOptions
+                    },
+                    document.getElementById('webchat')
+                );
+            })
+            .catch(err => console.error("An error occurred: " + err));
+        //end of chat bot javascript code ...
+
+
+        $('.chat-bot-icon').click(function (e) {
+            $(".chat-bot-icon").hide();
+            $("#blackpool-chatbot").slideDown(400, function () {
+                $("html, body").animate({ scrollTop: $("#blackpool-chatbot").offset().top - 300 }, 200);
+
+            });
+            e.preventDefault();
+        });
+
+        $('.chatbot-close').click(function (e) {
+            $("#blackpool-chatbot").slideUp(400, function () {
+                $("html, body").animate({ scrollTop: $(".chat-bot-icon").offset().top }, 200);
+                $(".chat-bot-icon").show();
+            });
+
+            e.preventDefault();
+        });
+    });
+</script>

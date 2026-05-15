@@ -1,0 +1,69 @@
+﻿/* Style for your standard-link-button class */
+.standard-link-button {
+    /* Basic button styling */
+    display: inline-block;
+    padding: 14px 28px;
+    margin: 8px 16px 8px 0;
+    /* Text styling */
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    /* Colors (using your provided colors) */
+    background-color: #ffdd00;
+    color: #041c2c;
+    /* Curved corners */
+    border-radius: 0px;
+    /* Border and effects */
+    border: 0px solid #041c2c;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Smooth transitions */
+    transition: all 0.3s ease;
+    /* Cursor and positioning */
+    cursor: pointer;
+    position: relative;
+    min-width: 200px;
+    /* Prevents text from wrapping */
+    white-space: nowrap;
+    /* Vertical alignment fix */
+    vertical-align: middle;
+    /* Prevent weird focus outline in some browsers */
+    outline: none;
+}
+
+    /* Hover effect */
+    .standard-link-button:hover {
+        background-color: #ffed4e;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Active/click effect */
+    .standard-link-button:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Focus state for accessibility */
+    .standard-link-button:focus {
+        outline: 3px solid rgba(255, 221, 0, 0.4);
+        outline-offset: 2px;
+    }
+
+/* For spacing between multiple buttons */
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.button-container > a {
+    text-decoration:none !important;
+}
+
+/* Alternative: If you want buttons in a row without flex container */
+.standard-link-button + .standard-link-button {
+    margin-left: 16px;
+}

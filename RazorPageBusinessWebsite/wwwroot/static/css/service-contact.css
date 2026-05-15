@@ -1,0 +1,66 @@
+﻿:root {
+    --primary-dark-blue-color: #041c2c;
+    --primary-purple-color: #830065;
+}
+.contact-details-section {
+    background-color: #e3e4e6;
+    padding: 10px 0;
+    margin: 0 0 10px;
+}
+
+/* Inner wrapper – mimics old #contact-wrapper left margin */
+.contact-details-section .contact-grid {
+    margin-left: 5px;
+}
+
+/* Each contact method block – stacked like old divs */
+.contact-details-section .contact-method {
+    margin-bottom: 10px;
+}
+
+.contact-details-section .contact-method:last-child {
+    margin-bottom: 0;
+}
+
+
+.contact-details-section .method-title {
+    font-weight: bold;
+    color: var(--primary-dark-blue-color);
+    margin: 0 0 2px 0; 
+    font-size: 1em; 
+}
+
+/* Method details – reset margins */
+.contact-details-section .method-detail {
+    margin: 0;
+    }
+
+/* Telephone number link – bold and #0412C as requested */
+.contact-phone .method-detail a {
+    color: var(--primary-dark-blue-color);
+    text-decoration: none !important;
+}
+
+/* Email link – purple and bold as requested */
+.contact-email .method-detail a {
+    color: var(--primary-dark-blue-color);
+    text-decoration: none !important;
+}
+
+/* Add underline on hover for both links (optional, good UX) */
+.contact-phone .method-detail a:hover,
+.contact-email .method-detail a:hover {
+    text-decoration: underline;
+}
+
+/* Opening hours – subtle grey, smaller */
+.contact-phone .opening-hours {
+    color: #555;
+    margin: 2px 0 0 0;
+}
+
+/* Postal address – plain text, keep it simple */
+.contact-address .method-detail {
+    color: #000;
+    line-height: 1.4;
+}

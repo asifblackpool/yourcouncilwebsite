@@ -1,0 +1,8 @@
+﻿@media (min-width: 1170px) and (max-width: 9000px) {
+ div#mainbar {
+     width: 1170px !important;
+     min-width: 970px !important;
+     max-width: 1170px !important;
+  }
+
+}

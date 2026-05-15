@@ -1,0 +1,94 @@
+﻿@{
+
+// Name: Channel Shift - Accordions with CTA Button
+// Developer: Asif Nissar
+// License: Blackpool council
+// Date:19/07/2024
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Helpers.Connector;
+@using Blackpool.Zengenti.CMS.Models.Accordions;
+
+
+
+@functions {
+
+
+}
+
+
+@{
+
+
+    //Grab configurable data
+    String accordionTitle = Properties.Title;
+    //Create the Connector to retrieve Accordion data
+    var list = ContensisConnector<AccordionWithButton>.Entries(ContensisClientKeys.ACCORDION_WITH_BUTTON, new PageOptions(0, 1000));
+    List<AccordionWithCTAContent> accordionList = new List<AccordionWithCTAContent>();
+    int counter = 1;
+
+    try
+    {
+        AccordionWithButton accordion = (list != null & list.Items.Count > 0) ? list.Items.Where(x => x.AccordionName == accordionTitle).FirstOrDefault() : null;
+
+
+        if (accordion != null)
+        {
+            accordionList = accordion.GetSerialisedContent();
+        }
+    }
+    catch(Exception ex)
+    {
+        Response.Write(string.Format("{0}<br>", ex.Message));
+    }
+
+}
+
+
+<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default-@accordionTitle">
+    @foreach (var item in accordionList)
+        {
+        <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+                <h2 class="govuk-accordion__section-heading">
+                    <span class="govuk-accordion__section-button" id="accordion-default-heading-@accordionTitle-@counter">
+                        @item.Title
+                    </span>
+                </h2>
+            </div>
+            <div id="accordion-default-content-1" class="govuk-accordion__section-content">
+                <div class="govuk-body">
+                    @Html.Raw(item.BodyContent)
+
+                    <br />
+                    @if (item.CtaAccordionButton != null)
+                    {
+                      <a class="cta-link-button accessibility-tab" onclick="window.location.href='@string.Format("{0}", item.CtaAccordionButton.Url)'">@item.CtaAccordionButton.Text</a>
+                    }
+
+                </div>
+            </div>
+        </div>
+        counter++;
+    }
+</div>
+
+@*<control name="Channel Shift Accordions with cta button" showInMenu="true" category="Favourites" viewingGroup="2">
+     <properties>
+       <category name="Accordion Title">
+        <text name="Title" label="Pick a Title from Content types Accordions (with buttons)" />
+       </category>
+      </properties>
+    </control>*@

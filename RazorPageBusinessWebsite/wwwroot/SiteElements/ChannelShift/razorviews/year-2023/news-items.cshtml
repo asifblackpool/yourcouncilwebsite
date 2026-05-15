@@ -1,0 +1,190 @@
+﻿@{
+
+    // Name: Channel Shift - News Item using News Story Content types
+    // Developer: Asif Nissar
+    // Name: News Stories Home (used in the homepage for blackpool council)
+    // License: Blackpool council
+    // Date: 15/06/2023 - Version 1.0 (part of the new homepage design)
+}
+
+@using System;
+@using System.Configuration;
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Modules.Services;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@using Blackpool.Zengenti.CMS.Models.NewsStory;
+
+@using System.Data;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+
+
+@functions {
+
+
+    public const string WEBP = ".webp";
+    public const string JPEG = ".jpg";
+    public const string PNG = ".png";
+
+    public static string BuildPictureTag(string url, string title, string backupUrl)
+    {
+        string picture = "<picture>";
+
+        if (!String.IsNullOrEmpty(url) && url.IndexOf(WEBP) > 0)
+        {
+            picture += String.Format("<source type='image/webp' srcset='{0}' />", url);
+        }
+
+        if (!String.IsNullOrEmpty(url) && url.IndexOf(JPEG) > 0)
+        {
+            picture += String.Format("<source type='image/jpeg' srcset='{0}' />", url);
+        }
+
+        if (!String.IsNullOrEmpty(url) && url.IndexOf(PNG) > 0)
+        {
+            picture += String.Format("<source type='image/png' srcset='{0}' />", url);
+        }
+
+        if (!string.IsNullOrEmpty(backupUrl) && backupUrl.IndexOf(PNG) > 0)
+        {
+            picture += String.Format("<source type='image/png' srcset='{0}' />", backupUrl);
+            picture += String.Format("<img src= {0} alt='{1}' />", backupUrl, title);
+        }
+
+        if (!string.IsNullOrEmpty(backupUrl) && backupUrl.IndexOf(JPEG) > 0)
+        {
+            picture += String.Format("<source type='image/jpeg' srcset='{0}' />", backupUrl);
+            picture += String.Format("<img src= {0} alt='{1}' />", backupUrl, title);
+        }
+
+        return picture += "</picture>";
+    }
+}
+
+
+
+
+@{
+
+    Zengenti.Data.PageOptions options = new PageOptions(0, 1000);
+    string currentUrl = this.Request.RawUrl.ToLower();
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                            ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+    List<NewsStory> stories = null;
+    List<SeoFriendlyUrlElement> listConfigs = new List<SeoFriendlyUrlElement>();
+    Config config = null;
+
+    try
+    {
+
+        config = new Config()
+        {
+            SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.NewsStoryKey }
+        };
+
+        string realPath = config.SeoUrlList.UrlPath.ToLower();
+        if (config.SeoUrlList.UrlPath != "/news/")
+        {
+            realPath = "/news/";
+        }
+
+
+        String pagePath = realPath + "{0}.aspx?date={1}";
+
+
+        Zengenti.Data.PagedList<NewsStory> list = client.Entries.List<NewsStory>(new EntryListOptions
+        {
+            ContentTypeId = ContensisClientKeys.NEWS_STORY,
+            LinkDepth = 1,
+            PageOptions = options
+
+        });
+
+        stories = list.Items.Where(x => x.Published == true).ToList().OrderByDescending(y => y.DatePublished).Take<NewsStory>(3).ToList();  //get the last two items only
+
+
+        //sanity check (the path should be /news/)
+
+        /*
+        var section = ConfigurationManager.GetSection("SEOFriendlyUrls") as SeoFriendlyUrlSection;
+
+
+        foreach (SeoFriendlyUrlElement url in section.Instances)
+        {
+            Console.WriteLine($"Key: {url.Key}");
+            Console.WriteLine($"  Website: {url.Website}");
+            Console.WriteLine($"  UrlPath: {url.UrlPath}");
+            Console.WriteLine($"  DefaultPage: {url.DefaultPage}");
+            Console.WriteLine($"  DocumentPath: {url.DocumentPath}");
+    
+        }
+        */
+
+
+        listConfigs = new SeoFriendlyUrlService().GetAll().ToList();
+
+
+    }
+    catch { }
+
+    <div style="display:none; padding:40px;">
+        @Html.Raw("<table style='margin:auto;'>")
+        @foreach (var item in listConfigs)
+        {
+            @Html.Raw(
+                        string.Format("<tr><td style='#'>{0}</td><td style='#'>{1}</td></tr>", item.Key, item.UrlPath)
+                        .Replace("#", "border: solid; padding: 0px 50px;")
+                   )
+        }
+        @Html.Raw("</table>")
+    </div>
+
+
+                    <div id="news-items-outer-container" class="row clearfix">
+        <div id="news-items" class="col-xs-12 col-sm-12 col-md-12 news-and-twitter clearfix">
+            <div class="latest-news clearfix">
+                <a href="/News/Newsroom.aspx" class="accessibility-tab"><strong class="home-h3">News</strong></a>
+                <div class="row clearfix latest-news-wrapper">
+                    @foreach (NewsStory item in stories)
+                    {
+                        String pagePath = config.SeoUrlList.UrlPath + "{0}.aspx?date={1}";
+                        var linkNewStory = String.Format(pagePath, item.Slug, StringUtility.DateSlug(item.DatePublished));
+                        string defaultPath = "/SiteElements/ChannelShift/Content/images/placeholders/600x380.png";
+                        string imagePath = (item.ThumbnailImage != null && item.ThumbnailImage.Asset != null)
+                            ? string.Format("{0}{1}", UrlHelper.GetBaseUrl(true, currentUrl), item.ThumbnailImage.Asset.Uri) : defaultPath;
+                        try
+                        {
+                            <div class="col-xs-12 news-item">
+                                <a href="@linkNewStory" title="link description: @item.Title" class="accessibility-tab">
+                                    <figure class="figure-wrapper">
+                                        <div class="icon-wrapper">
+                                            @Html.Raw(BuildPictureTag(imagePath, item.Title, defaultPath))
+                                        </div>
+                                        <figcaption>
+                                            <h4>@item.Title</h4>
+                                        </figcaption>
+                                    </figure>
+                                </a>
+                            </div>
+                        }
+                        catch (Exception e)
+                        {
+                            Response.Write(" error " + e + " <br />");
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}@*<control name="channel shift News Items 2023" 
+          showInMenu="true" 
+          category="favourites" 
+          viewingGroup="1">
+</control>*@

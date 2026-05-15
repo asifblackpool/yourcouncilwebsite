@@ -1,0 +1,156 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Top Level Children - used in Adult Learning Pages
+    // License: Blackpool council
+    // Date: 02/03/2021
+}
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+@using Blackpool.Zengenti.CMS.Models.NewsAndEvents;
+@using Blackpool.Zengenti.CMS.Models.Paging;
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Zengenti.Contensis.Delivery;
+
+
+
+@{
+    BlackpoolAdultLearningDTO DTO = Page.Model;
+    List<SerialisedContent> sc = new List<SerialisedContent>();
+    List<String> titles = new List<string>();
+    List<String> slugs = new List<String>();
+    int counter = 0;
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.BlackpoolAdultLearningKey }
+    };
+
+    DTO.Config = config;
+
+
+string currentUrl = DTO.Config.SeoUrlList.UrlPath + DTO.CurrentItem.Slug + ".aspx";
+
+    if (DTO.ChildItems != null && DTO.ChildItems.Count > 0)
+    {
+        foreach (var item in DTO.ChildItems)
+        {
+            titles.Add(item.PageTitle);
+            sc.Add(item.GetSerialisedContent());
+            slugs.Add(DTO.Config.SeoUrlList.UrlPath + item.SiteViewSlug + ".aspx");
+        }
+    }
+
+
+    PaginationModel<string> pagingSlugs = new PaginationModel<string>(slugs);
+    PaginationModel<SerialisedContent> pagingContent = new PaginationModel<SerialisedContent>(sc);
+    pagingSlugs.PageSize = pagingContent.PageSize = PagingKeys.DEFAULT_PAGE_SIZE;
+
+    try
+    {
+        pagingSlugs.CurrentPage = pagingContent.CurrentPage = (!String.IsNullOrEmpty(Request.QueryString["page"])) ? Convert.ToInt32(Request.QueryString["page"]) : 1;
+    }
+    catch
+    {
+        pagingSlugs.CurrentPage = pagingContent.CurrentPage = 1;
+    }
+
+    counter = pagingContent.CurrentPage - 1;
+    ImageBoxHelper imgBoxHelper = null;
+    ImageHeaderBoxHelper imageHeaderBoxHelper = null;
+    ContentBoxHelper cBoxHelper = null;
+    NewsAndEventsArticles article = null;
+    Venue venue = null;
+}
+
+@foreach (var content in pagingContent.GetPaginatedResult(pagingContent.CurrentPage, pagingContent.PageSize))
+{
+
+    var listImageBox = content.Items.FindAll(x => x.ClassType == typeof(ImageBox));
+    var listImageHeaderBox = content.Items.FindAll(x => x.ClassType == typeof(ImageHeaderBox));
+    var listContentBox = content.Items.FindAll(x => x.ClassType == typeof(ContentBox));
+    imageHeaderBoxHelper = (listImageHeaderBox != null && listImageHeaderBox.Count > 0) ? imageHeaderBoxHelper = new ImageHeaderBoxHelper(listImageHeaderBox[0], DTO.BaseImageUrl, DTO.NoImageUrl) : null;
+    imgBoxHelper = (listImageBox != null && listImageBox.Count > 0) ? imgBoxHelper = new ImageBoxHelper(listImageBox[0], typeofImage.Imagebox, DTO.BaseImageUrl, DTO.NoImageUrl) : null;
+    cBoxHelper = (listContentBox != null && listContentBox.Count > 0) ? cBoxHelper = new ContentBoxHelper(listContentBox[0], 100) : null;
+
+    var NewsAndEvents = content.Items.FindAll(x => x.ClassType == typeof(NewsAndEventsArticles));
+    var Venues = content.Items.FindAll(x => x.ClassType == typeof(Venue));
+
+
+    SerialisedItem item = null;
+    bool isActive = false;
+    if (NewsAndEvents != null && NewsAndEvents.Count > 0)
+    {
+        item = NewsAndEvents[0];
+
+        article = SerializeHelper.Deseralize(item, item.Content) as NewsAndEventsArticles;
+        var itemContent = article.GetSerialisedContent();
+        var img = itemContent.Items.FindAll(x => x.ClassType == typeof(Image)).FirstOrDefault();
+        var contentBox = itemContent.Items.FindAll(x => x.ClassType == typeof(ContentBox)).FirstOrDefault();
+        imgBoxHelper = new ImageBoxHelper(img, typeofImage.Image, DTO.BaseImageUrl, DTO.NoImageUrl);
+        cBoxHelper = (contentBox != null) ? cBoxHelper = new ContentBoxHelper(contentBox, 60) : null;
+    }
+
+    if (Venues!= null && Venues.Count > 0)
+    {
+        item = Venues[0];
+
+        venue = SerializeHelper.Deseralize(item, item.Content) as Venue;
+        //var itemContent = venue.GetSerialisedContent();
+        //var img = itemContent.Items.FindAll(x => x.ClassType == typeof(Image)).FirstOrDefault();
+        //var contentBox = itemContent.Items.FindAll(x => x.ClassType == typeof(ContentBox)).FirstOrDefault();
+        //imgBoxHelper = new ImageBoxHelper(img, typeofImage.Image, DTO.BaseImageUrl, DTO.NoImageUrl);
+        //cBoxHelper = (contentBox != null) ? cBoxHelper = new ContentBoxHelper(contentBox, 60) : null;
+    }
+
+
+    if (item != null)
+    {
+        <div class="row item-box">
+
+            <div class="imagebox-list-container col-lg-6 col-md-6 col-sm-6 col-xs-12 zero-pad-all">
+                @if (imgBoxHelper != null)
+                {
+                    <img src="@imgBoxHelper.ImageBoxUrl" alt="@imgBoxHelper.AltText" class="img-responsive" />
+                }
+                @if (imageHeaderBoxHelper != null)
+                {
+                    <img src="@imageHeaderBoxHelper.ImageBoxUrl" alt="@imageHeaderBoxHelper.AltText" class="img-responsive" />
+                }
+                <hr class="border" />
+            </div>
+            <div class="textbox-list-container col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                @if (article != null)
+                {
+                    <span class="date-published"> @StringUtility.DateTextFull(article.DateOfPost)</span>
+                }
+                <h2 style="margin-top:0px;">@titles[counter]</h2>
+                @if (cBoxHelper != null)
+                {
+                    @Html.Raw(String.Format("{0} ...", cBoxHelper != null ? cBoxHelper.HTMLTextShort : string.Empty))
+                }
+
+                <div class="button-container"><a href="@slugs[counter]" class="button item-button">Read More</a></div>
+            </div>
+
+        </div>
+        counter++;
+    }
+
+
+               
+}
+
+@RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/sub/paging.cshtml"), new { Model = slugs, PageUrl = currentUrl })
+
+

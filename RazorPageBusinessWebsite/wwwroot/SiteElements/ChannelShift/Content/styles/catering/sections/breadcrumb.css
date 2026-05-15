@@ -1,0 +1,14 @@
+﻿.breadcrumb {
+    padding: 22px 15px;
+    padding-left:0px;
+    list-style: none;
+    background-color: transparent;
+}
+
+.breadcrumb > li > a {
+    text-align: left;
+    font: normal normal normal 19px/27px Calibri;
+    letter-spacing: 0px;
+    color: #041C2C;
+    opacity: 1;
+}

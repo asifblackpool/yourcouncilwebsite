@@ -1,0 +1,61 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Load Google Map - used in Adult Learning Pages
+    // License: Blackpool council
+    // Date: 11/10/2021
+}
+
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+@using Blackpool.Zengenti.CMS.Models.NewsAndEvents;
+@using Zengenti.Contensis.Delivery;
+@using Blackpool.Zengenti.CMS.Helpers.ContentTypes;
+
+@{
+
+    string apiKey                   = System.Web.Configuration.WebConfigurationManager.AppSettings["GoogleApiKey"];
+    BlackpoolAdultLearningDTO DTO   = Page.Model;
+    VenueHelper venueHelper         = null;
+    Venue venue                     = null;
+    if (DTO.Flow != null)
+    {
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            var list = item.Items.FindAll(x => x.ClassType == typeof(Venue));
+            if (list != null && list.Count > 0)
+            {
+              
+                venueHelper = new VenueHelper(list[0], string.Empty);
+                venue = venueHelper.Venue as Venue;
+                break;
+            }
+        }
+    }
+}
+
+@if (venue != null)
+{
+    <strong style="font-weight:normal;display:inline-block;width:100%;" class="pad-bot-30">@Html.Raw((venue != null) ? venue.FormattedAddress : string.Empty)</strong>
+  
+    <strong style="font-weight:normal; display:inline-block;width:100%;" class="pad-bot-30">@Html.Raw((string.IsNullOrEmpty(venue.TelephoneNumber) ? string.Empty : venue.TelephoneNumber + ""))</strong>
+    <strong style="font-weight:normal; display:inline-block; width:100%;" class="pad-bot-40">@Html.Raw(string.IsNullOrEmpty(venue.Email) ? string.Empty : String.Format("<a href=\"mailto:{0}\">{0}</a>", venue.Email))</strong>
+    <div id="map" style="width:100%;height:650px;background:yellow"></div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            googlemapservices.map('@venue.LocationMap.Lat', '@venue.LocationMap.Lon', "map", 17);
+        });
+    </script>
+    <script src="@venueHelper.Googlemap_JS_API_URL"></script>
+}
+

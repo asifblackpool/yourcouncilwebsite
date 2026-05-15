@@ -1,0 +1,411 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Standard BG - This is an Example showing how to use forms section in siteView
+    // License: Blackpool council
+    // Date: 14/01/2025
+}
+
+
+@using System;
+@using System.Text;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Templates;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Data
+@using Blackpool.Zengenti.CMS.Helpers.Connector;
+
+
+@{
+
+
+    //Grab configurable data
+    Boolean isError = false;
+    SerialisedContent canvas = null;
+    List<StandardList> standardList = null;
+    List<StandardListLink> standardListLink = null;
+    FormContent form = null;
+    String paragraph = string.Empty;
+    StringBuilder sb = new StringBuilder();
+    String errorMessage = string.Empty;
+
+    if (Page.Model != null)
+    {
+        try
+        {
+
+            BGStandard item = Page.Model;
+            canvas = item.GetSerialisedCanvas();
+
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message + "<br/>" + string.Format("<p style='display:none;'>{0}</p>", ex.StackTrace);
+            isError = true;
+        }
+    }
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+<link type="text/css" rel="stylesheet" href="~/SiteElements/ChannelShift/content/styles/contensis/cms-themes.css" />
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/contensis/common/forms/styles-2024.css" />
+<script type="module" crossorigin src="https://cms-blackpool.cloud.contensis.com/app/ui/forms/forms.js"></script>
+
+
+@foreach (var canvasItem in canvas.Items)
+{
+    try
+    {
+        if (canvasItem.ContainerType == CanvasKeys.PARAGRAPH)
+        {
+            paragraph = canvasItem.Content.ToString();
+            List<CanvasParagraph> cpItems = new List<CanvasParagraph>();
+            List<FragmemtParagraph> fpItems = new List<FragmemtParagraph>();
+
+            if (canvasItem.ClassType == typeof(FragmemtParagraph))
+            {
+                fpItems = SerializeHelper.JsonParser<FragmemtParagraph>(paragraph);
+
+            }
+            else
+            {
+                CanvasParagraph cp = JsonConvert.DeserializeObject<CanvasParagraph>(paragraph);
+                cpItems.Add(cp);
+            }
+
+
+            foreach (CanvasParagraph s in cpItems)
+            {
+                if (s.Properties != null && s.Properties.ParagraphType == ParagraphTypes.LEAD)
+                {
+                    sb.Append(string.Format("<p class='lead'>{0}</p> ", s.Value));
+                }
+                else
+                {
+                    sb.Append(string.Format("<p class='normal'>{0}</p> ", s.Value));
+                }
+            }
+            @Html.Raw(sb.ToString())
+            @sb.Clear()
+
+            foreach (var s in fpItems)
+            {
+                foreach (Values item in s.Value)
+                {
+                    if (item.Properties != null && item.Properties.Link != null)
+                    {
+                        sb.Append(string.Format("<a href='{0}'>{1}</a> ", item.Properties.Link.Sys.Uri, item.Value));
+                    }
+                    else
+                    {
+                        sb.Append(string.Format("{0} ", item.Value));
+                    }
+                }
+
+            }
+            @Html.Raw(sb.ToString())
+            sb.Clear();
+
+        }
+        if (canvasItem.ContainerType == CanvasKeys.FORM)
+        {
+            form = SerializeHelper.Deseralize(canvasItem);
+            <br />
+
+            <div data-contensis-form-project-id="lgWebsite" data-contensis-form-id="@form.contentType.id"></div>
+            <br />
+        }
+        if (canvasItem.ContainerType == CanvasKeys.LIST && canvasItem.ClassType == typeof(StandardListLink))
+        {
+            standardListLink = JsonConvert.DeserializeObject<List<StandardListLink>>(canvasItem.Content.ToString());
+
+            <ul>
+                @foreach (StandardListLink item in standardListLink)
+                {
+                    <li><a href="@item.value[0].properties.link.sys.uri">@item.value[0].value</a></li>
+                }
+            </ul>
+            <br />
+        }
+        if (canvasItem.ContainerType == CanvasKeys.LIST && canvasItem.ClassType == typeof(StandardList))
+        {
+            standardList = JsonConvert.DeserializeObject<List<StandardList>>(canvasItem.Content.ToString());
+            <ul>
+                @foreach (StandardList item in standardList)
+                {
+                    <li>@item.value</li>
+                }
+            </ul>
+            <br />
+        }
+        if (canvasItem.ContainerType == CanvasKeys.PANEL)
+        {
+            String PanelType = string.Empty;
+            String Content = string.Empty;
+            if (canvasItem.ClassType == typeof(CanvasPanelComplex))
+            {
+                var cp = JsonConvert.DeserializeObject<CanvasPanelComplex>(canvasItem.Content.ToString());
+                PanelType = cp.Properties.PanelType;
+                foreach (CanvasItems item in cp.Value)
+                {
+
+                    if (item.properties != null && item.properties.decorators != null)
+                    {
+
+                        foreach (string s in item.properties.decorators)
+                        {
+                            if (s == "strong")
+                            {
+                                Content = Content + String.Format("<strong>{0}</strong>", item.value);
+                            }
+                            if (s == "linebreak")
+                            {
+
+                                Content = Content + String.Format("{0}", "<br/>");
+                            }
+                            if (item.properties != null && item.properties.link != null)
+                            {
+                                Content = Content + string.Format("<a href='{0}'>{1}</a> ", item.properties.link.Sys.Uri, item.value);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (item.properties != null && item.properties.link != null)
+                        {
+                            Content = Content + string.Format("<a href='{0}'>{1}</a> ", item.properties.link.Sys.Uri, item.value);
+                        }
+                        else
+                        {
+                            Content = Content + item.value;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var cp = JsonConvert.DeserializeObject<CanvasPanel>(canvasItem.Content.ToString());
+                PanelType = cp.Properties.PanelType;
+                Content = cp.Value;
+
+            }
+
+            <aside @string.Format("_ngcontent-ng-{0}", PanelType) tabindex="0" class="@string.Format("panel {0} ng-star-inserted", PanelType)">
+                <div @string.Format("_ngcontent-ng-{0}", "general") class="panel-icon">
+                    <svg-icon @string.Format("_ngcontent-ng-{0}", PanelType) icon="triangle-sign" class="ng-star-inserted">
+                        <svg xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true" role="presentation" class="svg">
+                            <i class="@string.Format("fa fa-exclamation-circle {0}-circle", PanelType)"></i>
+                        </svg>
+                    </svg-icon>
+                </div>
+                <p _ngcontent-ng-general="" placeholder="Panel" role="textbox" class="blk__editable blk" contenteditable="true" aria-disabled="false" tabindex="0" data-composed-item-type="_panel">
+                    @Html.Raw(Content)
+                </p>
+            </aside>
+        }
+    }
+    catch (Exception ex)
+    {
+        errorMessage = ex.Message + "<br/>" + string.Format("<p style='display:none;'>{0}</p>", ex.StackTrace);
+        isError = true;
+    }
+}
+
+@if (isError)
+{
+    @Html.Raw(String.Format("<div style='border:solid 1px black'>{0}</div>", errorMessage))
+}
+
+<style type="text/css">
+
+    h1 {
+        font-size: 36px !important;
+    }
+
+    i.icon-section-title {
+        display: none !important;
+    }
+
+    div#mainbar.col-md-10 {
+        margin: 10px 0 0px !important;
+        display: inline-block
+    }
+
+    p.lead {
+        color: #04124C;
+        font-size: 1.5em;
+    }
+
+    ul {
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    /* panel general */
+
+    .panel {
+        background-color: var(--color-background-tint) !important;
+        padding: var(--size-space-12) !important;
+        margin: 0px;
+    }
+
+        .panel[_ngcontent-ng-general] {
+            display: flex;
+            padding: var(--size-space-16) var(--size-space-24) var(--size-space-16) var(--size-space-24);
+            border: var(--size-border-medium) solid var(--color-stroke-info-panel-outline-info);
+            border-radius: var(--size-border-radius-base);
+            align-items: center;
+            background-color: var(--color-background-info-panel-outline-info);
+        }
+
+    .panel-icon[_ngcontent-ng-general] {
+        margin-inline-end: var(--size-space-8);
+        padding: var(--size-space-4);
+        padding-block-start: var(--size-space-2);
+        align-self: flex-start;
+        margin-bottom: var(--size-space-0);
+        width: 8%;
+        display: table-cell;
+        padding-right: 10px;
+    }
+
+    svg-icon {
+        block-size: var(--size-dimension-24);
+        inline-size: var(--size-dimension-24);
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        vertical-align: middle;
+        fill: var(--color-icon-base);
+    }
+
+    .svg {
+        display: inline-block;
+        vertical-align: middle;
+        background-repeat: no-repeat;
+        background-size: contain;
+        block-size: var(--size-dimension-24);
+        inline-size: var(--size-dimension-24);
+        overflow: visible;
+        transform: translateZ(0);
+    }
+
+    .panel[_ngcontent-ng-general], p[_ngcontent-ng-general] {
+        inline-size: 100%;
+        word-break: break-word;
+    }
+
+        .panel[_ngcontent-ng-general] p[_ngcontent-ng-general] {
+            inline-size: 100%;
+            word-break: break-word;
+        }
+
+    /*svg-icon.info-icon {
+      background: url(/siteElements/channelshift/content/images/icons/alert-boxes/warning-circle.svg);
+      background-size: cover;
+      }
+    */
+
+    /* Panel info CSS */
+    i.info-circle {
+        font-size: 2rem;
+        color: var(--color-stroke-info-panel-outline-infor);
+        position: relative;
+        top: 0px;
+    }
+
+    .panel.info[_ngcontent-ng-info] {
+        border-color: var(--color-stroke-info-panel-outline-info);
+        background-color: var(--color-background-info-panel-outline-info);
+        display: inline-table;
+        width: 100%;
+    }
+
+    /*panel warning CSS */
+    i.warning-circle {
+        font-size: 2rem;
+        color: var(--color-stroke-info-panel-outline-warning);
+        position: relative;
+        top: 0px;
+    }
+
+    .panel.warning[_ngcontent-ng-warning] {
+        border-color: var(--color-stroke-info-panel-outline-warning);
+        background-color: var(--color-background-info-panel-outline-warning);
+        display: inline-table;
+        width: 100%;
+    }
+
+    /* Panel error CSS */
+    i.error {
+        font-size: 2rem;
+        color: var(--color-stroke-info-panel-outline-error);
+        position: relative;
+        top: 0px;
+    }
+
+    .panel.error[_ngcontent-ng-error] {
+        border-color: var(--color-stroke-info-panel-outline-error;
+        background-color: var(--color-background-info-panel-outline-error);
+        display: inline-table;
+        width: 100%;
+    }
+
+    /* Panel success CSS */
+    i.success-circle {
+        font-size: 2rem;
+        color: var(--color-stroke-info-panel-outline-success);
+        position: relative;
+        top: 0px;
+    }
+
+    .panel.success[_ngcontent-ng-success] {
+        border-color: var(--color-stroke-info-panel-outline-success);
+        background-color: var(--color-background-info-panel-outline-success);
+        display: inline-table;
+        width: 100%;
+    }
+
+    /* Panel note CSS */
+    i.note-circle {
+        font-size: 2rem;
+        color: var(--color-stroke-info-panel-outline-note);
+        position: relative;
+        top: 0px;
+    }
+
+    .panel.note[_ngcontent-ng-note] {
+        border-color: var(--color-stroke-info-panel-outline-note);
+        background-color: var(--color-background-info-panel-outline-note);
+        display: inline-table;
+        width: 100%;
+    }
+
+    .panel.success[_ngcontent-ng-note] svg {
+    }
+
+    canvas-list code:not(.prism), canvas-list > p,
+    canvas-list > p:last-child, canvas-list .panel, canvas-list blockquote,
+    canvas-preview code:not(.prism),
+    canvas-preview > p, canvas-preview > p:last-child,
+    canvas-preview .panel, canvas-preview blockquote {
+        margin-block-start: var(--size-space-16);
+        margin-block-end: var(--size-space-16);
+    }
+
+    body {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-background-scrollthumb) var(--color-background-scrollbar);
+        overflow: auto;
+    }
+</style>
+

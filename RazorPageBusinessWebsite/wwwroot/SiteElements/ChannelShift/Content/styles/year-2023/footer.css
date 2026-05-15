@@ -1,0 +1,52 @@
+﻿
+#footer-bottom-outer-container {
+    padding-top:0px;
+    border:solid 0px red;
+    padding-bottom:30px !important;
+    height:120px;
+}
+
+.footer-title {
+    color: #FFDD00;
+    font-weight:bold;
+    font-size:19.2px;
+    padding-bottom:15px;
+}
+
+.footer-text {
+    color:#fff;
+    font-size:19px;
+}
+
+ul.footer-menu {
+    padding-left:0px;
+}
+
+ul.footer-menu > li > a {
+    font-size: 19px;
+    color: #fff
+}
+
+#footer-bottom-outer-container {
+    background-color: #041c2c;
+    width:100%;
+}
+
+a.social-media-block {
+    padding-right:15px;
+}
+
+a.social-media-block > img {
+    width:26px;
+    height:26px;
+}
+
+
+
+@media screen and (max-width: 768px) {
+     
+}
+
+@media (max-width: 480px) {
+
+}

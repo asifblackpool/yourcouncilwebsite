@@ -1,0 +1,71 @@
+﻿ @{
+
+    // Name: Channel Shift - Ancestry Linked in Control
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Requires the following scripts 
+    //
+    // 1. include file handlebars.min.js 
+    // 2. include file several libraries services 
+}
+<p>You are able to use Ancestry.co.uk as part of your Blackpool library membership.</p>
+<p>To access the link please <a title="Blackpool library account" href="/Residents/Libraries-arts-and-heritage/Libraries/Blackpool-library-account.aspx" >log in to your library account</a></p>
+<div id="ancestry-container">
+     <div id="ancestry-content-placeholder" style="margin-bottom:25px;">&nbsp;</div>
+</div>
+<style type="text/css">
+    #ancestry-message { 
+        font-weight:bold;
+        font-size:29px;
+        display: block; 
+        text-align:left;
+        padding:20px;
+    }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //logger.disableLogger();
+        //window.commonservices.Redirect();
+        commonservices.removeCMSForm();
+        //window.homeservices.init();
+        window.scrollerservice.init();
+        window.footerservices.init();
+
+        securitylibraryservices.loggedin(function(isAutenticated) {
+
+            var populateTemplate = function(data) {
+                 var template = Handlebars.compile($("#ancestry-template").html());
+                var htmldata = template({ apidata: data });
+                $('#ancestry-content-placeholder').html(htmldata);
+            };
+            var libUser =  { token: null,  userId: null };
+            if (isAutenticated) {
+                libUser.userId = window.cookieservices.ReadCookie("libraryUserName");
+                populateTemplate(libUser);
+             }
+             else {
+                 populateTemplate(null);
+             }
+    
+        });
+    });
+</script>
+	<script  type="text/javascript" src="/SiteElements/ChannelShift/Scripts/services/library/commonlibraryservices.js"></script>
+	<script  type="text/javascript" src="/SiteElements/ChannelShift/Scripts/services/library/sharedlibraryservices.js"></script>
+	<script  type="text/javascript" src="/SiteElements/ChannelShift/Scripts/services/library/togglelibraryservices.js"></script>
+	<script  type="text/javascript" src="/SiteElements/ChannelShift/Scripts/services/library/cataloglibraryservices.js"></script>
+	<script  type="text/javascript" src="/SiteElements/ChannelShift/Scripts/services/library/accountlibraryservices.js"></script>
+	<script  type="text/javascript" src="/SiteElements/ChannelShift/Scripts/services/library/securitylibraryservices.js"></script>
+
+    <script id="ancestry-template" type="text/x-handlebars-template">
+        {{#if this.apidata}}
+            <strong id="ancestry-message">Hello {{ apidata.userId }} You are currently logged into your library account</strong>
+            <button type="button" class="btn btn-cta" onclick="window.location.href='https://ancestrylibrary.proquest.com/aleweb/ale/do/login?userid=39Q4DW3PRN&password=Covid19!'" style="">Ancestry Website</button>
+        {{else }}
+            <strong id="ancestry-message">You are not logged into your library account</strong>
+        {{/if}}
+    </script>
+@*<control name="Ancestry Authenticated Control" showInMenu="true" category="Favourites" viewingGroup="2">
+
+</control>*@

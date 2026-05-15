@@ -1,0 +1,89 @@
+﻿.table > tbody > tr > td {
+  border-top: none;
+  padding:0px;
+}
+ 
+
+/* table styling  */
+.tbl-responsive {
+  margin: 0 auto;
+  width: 100%;
+  margin-bottom: 15px;
+  border: 2px solid #B5BD00;
+}
+
+.tbl-responsive thead th,
+.tbl-responsive tr th {
+  border: solid 0px #fff;
+  background: #B5BD00;
+  color: #fff;
+}
+.tbl-responsive thead th,
+.tbl-responsive tr th,
+.tbl-responsive tbody td {
+  padding: .8rem;
+}
+
+.tbl-responsive tbody td {
+  background: #fff;
+  border: solid 0px #fff;
+}
+
+.tbl-responsive tbody td.alternate {
+  background: 	hsla(63, 100%, 37%, 0.2);
+
+}
+
+span.mobile-title { display:none;}
+
+.headstart-button {
+    border: solid 1px white;
+    color:#fff;
+    background-color:#830065;
+    display:inline;
+    border-radius:6px;
+    padding: 3px 10px 3px 10px
+
+}
+
+
+@media screen and (max-width: 600px) {
+  .tbl-responsive thead,
+    .tbl-responsive tr th {
+    display: none;
+  }
+
+  .tbl-responsive tbody td {
+    display: block;
+    padding: .6rem;
+  }
+
+  .tbl-responsive tbody tr td:first-child {
+    background: #B5BD00;
+    color: #fff;
+  }
+
+.tbl-responsive tbody tr.event-details td:first-child {
+    background: #fff;
+    color: #000;
+}
+
+.tbl-responsive tbody tr.event-details-alternate td:first-child {
+    background: 	hsla(63, 100%, 37%, 0.2);
+    color: #000;
+}
+
+  .tbl-responsive tbody td:before {
+    content: attr(data-th);
+    font-weight: bold;
+    display: inline-block;
+    width: 1rem;
+  }
+
+    span.mobile-title {
+        width: 30%;
+        display: block;
+        float: left;
+        margin-right: 4px;
+    }
+}

@@ -1,0 +1,82 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Gallery Image - used in sports blackpool pages
+    // License: Blackpool council
+    // Original Date: 11/06/2018
+    // Modified: 08/09/2022- account for base content type.
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+    SportBlackPoolDTO DTO = Page.Model;
+    CTALink ctalink = null;
+    Config config = DTO.Config;
+    String path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+    int IndexCounter = Page.CtaCounter;
+
+
+    SerialisedItem serialisedItem = null;
+    string Url = "#";
+    if (DTO.Flow != null)
+    {
+        int counter = 0;
+        foreach (var item in Page.CtaLinks)
+        {
+
+            serialisedItem = item;
+            ctalink = SerializeHelper.Deseralize(serialisedItem) as CTALink;
+            SportBlackpool temp = ctalink.LinkedContentPage as SportBlackpool;
+
+            //if cast return null ... lets check if we can find the page by its alias
+            //this is a sanity check
+            if (temp == null & ctalink.LinkedContentPage != null)
+            {
+                temp = DTO.List.Items.Where(x => x.Alias == ctalink.LinkedContentPage.Alias).First();
+            }
+
+            if (temp != null && temp.PageType == SportBlackpoolKeys.HIDDEN_LEVEL)
+            {
+
+                Url = (ctalink.LinkedContentPage != null )
+                    ? (new SportBlackpoolHelper(DTO.List.Items)).HiddenNavigationBuilder(ctalink.LinkedContentPage.Alias, path): ctalink.ExternalURL;
+            }
+            else
+            {
+
+                Url = (temp != null )
+                    ? (new SportBlackpoolHelper(DTO.List.Items)).NavigationBuilder(temp, path) : ctalink.ExternalURL;
+            }
+
+            if (IndexCounter == counter)
+            {
+                break;
+            }
+            counter++;
+
+        }
+    }
+}
+    @if (ctalink != null) {
+        <br/>
+        <a class="cta-link-button accessibility-tab" onclick="window.location.href='@string.Format("{0}", Url)'">@ctalink.ButtonText</a>
+        <br/><br/>
+
+    }
+    
+   

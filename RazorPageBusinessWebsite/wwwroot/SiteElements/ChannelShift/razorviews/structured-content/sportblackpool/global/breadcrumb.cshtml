@@ -1,0 +1,55 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: breadcrumb - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@{
+    
+
+    //breadcrum builder 
+    SportBlackPoolDTO DTO = Page.Model;
+    Zengenti.Data.PagedList<SportBlackpool> list = DTO.List;
+    SportBlackpoolHelper helper = new SportBlackpoolHelper(list.Items);
+    List<BreadCrumbLink> breadcrumbs = new List<BreadCrumbLink>();
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.SportBlackPoolKey }
+    };
+
+    DTO.Config = config;
+
+    string path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+
+    if (DTO.CurrentItem != null) {
+        breadcrumbs = helper.GetBreadCrumbLink(path, DTO.Config.SeoUrlList.DefaultPage, helper.NavigationBuilder(DTO.CurrentItem, path));
+    }
+
+    
+ <div class="breadcrumb-container">
+
+    <ul class="breadcrumb">
+       @foreach (var item in breadcrumbs){
+        <li><a href="@item.Href" class="accessibility-tab">@item.Name.ToTitleCase()</a></li>
+       }
+   </ul>
+ </div>
+
+}

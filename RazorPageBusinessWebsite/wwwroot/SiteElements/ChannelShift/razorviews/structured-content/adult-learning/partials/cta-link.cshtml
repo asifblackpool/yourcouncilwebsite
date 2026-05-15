@@ -1,0 +1,90 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: CTA Link - used in adult learning blackpool pages
+    // License: Blackpool council
+    // Date: 03/01/2022
+}
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolAdultLearning;
+
+@using Zengenti.Contensis.Delivery;
+
+@{
+    BlackpoolAdultLearningDTO DTO = Page.Model;
+    CTALink ctalink = null;
+    Config config = DTO.Config;
+    String path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+    int IndexCounter = Page.CtaCounter;
+
+
+    SerialisedItem serialisedItem = null;
+    string Url = "#";
+    if (DTO.Flow != null)
+    {
+        int counter = 0;
+        foreach (var item in Page.CtaLinks)
+        {
+
+            if (Page.Serialised)
+            {
+                serialisedItem = item;
+                ctalink = SerializeHelper.Deseralize(serialisedItem) as CTALink;
+            }
+            else
+            {
+                ctalink = item;
+            }
+
+            Url = (ctalink.LinkedContentPage != null)  ? ctalink.LinkedContentPage.Sys.Uri : ctalink.ExternalURL;
+
+            if (ctalink.LinkedContentPage != null)
+            {
+
+                if (Url != null)
+                {
+                    Url = Url.Contains("/home/")
+                        ? Url.Replace("/home/adult-learning/", DTO.Config.SeoUrlList.UrlPath)
+                        : Url.Replace("/adult-learning/", DTO.Config.SeoUrlList.UrlPath);
+
+                    Url = String.Format("{0}.aspx", Url);
+                }
+                else
+                {
+                    Url = "#";
+                }
+
+            }
+
+            ///home/adult-learning/
+
+
+
+            if (IndexCounter == counter)
+            {
+                break;
+            }
+            counter++;
+
+        }
+    }
+}
+@if (ctalink != null)
+{
+    <div class="button-container">
+    <a class="cta-link-button accessibility-tab" style="text-decoration:none !important;" onclick="window.location.href='@string.Format("{0}", Url)'">@ctalink.ButtonText</a>
+   </div>
+
+}
+
+

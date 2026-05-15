@@ -1,0 +1,230 @@
+﻿/* 
+    brand colors
+    purple: #830065;  
+    blue: #00add0;
+    geen: #B3bd00;
+    dark blue (text) : #041c2c; 
+    grey: #ccd2d5    
+*/
+
+div,label,ol,p,ul{font-size: 17.2px;}
+
+i.icon-yourarea {
+    background: url("/SiteElements/ChannelShift/content/images/icons/myarea.svg");
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-position: 0px 0px;
+    background-size: 170px 140px;
+    height: 170px;
+    width: 170px;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    display: block
+}
+#mainbar a {
+    text-decoration: none;
+}
+
+ul.tree li {
+    list-style-type: none;
+    position: relative;
+}
+ul.tree li ul {
+    display: none;
+    margin-left: -20px;
+}
+
+ul.tree li ul.ul-roadwork {
+    margin-left:-55px;
+}
+
+
+ul.tree li.open > ul {
+    display: block;
+}
+ul.tree li > a.pseudo-link {
+    color: #000;
+    text-decoration: none;
+    padding:0px;
+}
+ul.tree li a:before {
+    height: 1em;
+    padding: 0 .1em;
+    font-size: .8em;
+    display: block;
+    position: absolute;
+    left: -1.3em;
+    top: .2em;
+}
+ul.tree li > a:not(:last-child):before {
+    content: url('/siteElements/channelshift/content/Images/icons/my-nearest/arrow-up.svg');
+    z-index: 1000;
+    height: 15px;
+    width: 20px;
+    top:5px;
+    left: -20px;
+}
+ul.tree li.open > a:not(:last-child):before {
+    content: url('/siteElements/channelshift/content/Images/icons/my-nearest/arrow-down.svg');
+    z-index: 1000;
+    height: 15px;
+    width: 20px;
+    left: -20px;
+}
+ul.tree li.fixed-list {
+    margin-left: -15px;
+}
+
+#find-services-input {
+    border: solid 2px #830065;
+}
+span.input-group-btn {
+    border: solid 2px #830065;
+    background-color: #830065;
+    left: 0px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+#find-services-button {
+    color: #fff;
+    background-color: #830065;
+    border-width: 0px;
+}
+.btn {
+    padding: 3px 12px;
+}
+input[type=checkbox] {
+    border: solid 1px #830065;
+    width: 12px;
+    top:3px;
+    height: 13px;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -o-appearance: none;
+}
+
+#map_canvas {
+        height: 100%;
+}
+
+.container-fluid {
+    padding-left: 0px;
+    padding-right: 0px;
+    background-color: #ccd2d5;
+    margin-top: 20px;
+}
+.container-fluid div.map-title,
+.container-fluid > .map-container {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.map-info {
+    border: solid 0px black;
+    padding: 10px 5px 10px 5px;
+}
+.map-info img {
+    width: 25px;
+}
+
+.map-info >  div.media  .media-body {
+  display:table;
+  overflow:visible;
+  font-size:16.2px;
+  width:100%;
+
+}
+
+a.your-map-link {
+    text-decoration: none;
+}
+.map-info ul {
+    list-style-type: none;
+    padding: 0px;
+}
+.map-info ul li {} .map-km {
+    color: #830065;
+    font-weight: bold;
+}
+.map-km { margin-left:5px;}
+dl.dl-horizontal dt {
+    width: 65px;
+}
+dl.dl-horizontal dd {
+    margin-left: 70px;
+}
+div#your-area-container input.form-control {
+    border: solid 1px #830065;
+    border-radius: 0px 0px;
+}
+@media (min-width: 1200px) {}
+/* Portrait tablet to landscape and desktop */
+
+@media (min-width: 768px) and (max-width: 979px) {
+    ul.tree { padding-top: 25px;}
+
+    #postcode-search.input-group {
+        border:solid 0px red;
+        width:80%;
+        margin:auto;
+        text-align:center;
+    }
+}
+
+@media (max-width: 767px) {
+      ul.tree { padding-top: 25px;}
+
+    #postcode-search.input-group {
+        border:solid 0px red;
+        width:80%;
+        margin:auto;
+        text-align:center;
+    }
+}
+/* Landscape phones and down */
+
+@media screen and (max-width: 480px) {
+ .map-info {
+        width:100%;
+}
+.media {
+     width:100%; 
+     border:solid 0px red;
+}
+
+.media-body { width: 100%; }
+
+dl.dl-horizontal { 
+    width:100%;
+}
+
+dl.dl-horizontal dt {
+    display:inline-block;
+    vertical-align:top;
+    width:24%;
+}
+
+dl.dl-horizontal dd {
+    margin-left: 0px;
+    vertical-align:top;
+    display:inline-block;
+    width:74%;
+    word-wrap:break-word;
+}
+
+dl.dl-horizontal dd a { margin-left:-5px;}
+}
+
+
+@media screen and (max-width: 350px) {
+
+    dl.dl-horizontal {
+        width: 180px;
+    }
+
+   dl.dl-horizontal dd {
+            margin-left: 5px;
+            width: 60%;
+   }
+}

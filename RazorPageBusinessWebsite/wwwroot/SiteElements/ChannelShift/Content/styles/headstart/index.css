@@ -1,0 +1,383 @@
+﻿
+body {
+  font-family: "Arial Black",  Gadget, sans-serif;
+} 
+
+
+/*
+    brand colors */
+.purple {
+    color: #830065;
+}
+.blue {
+    color: #00add0;
+}
+.green {
+    color: #B3bd00;
+}
+.dark-blue {
+    color: #041c2c;
+}  
+
+
+.gutter { padding-left:5px; padding-right:5px;}  
+
+.zero-pad-all { padding:0px;}
+
+
+h1, h2, h3, h4, h5, h6 {
+    color:#830065
+}
+
+
+p { font-size: 16px; }
+
+
+zero-margin-all { 
+    margin:0px;
+    margin-left:0px;
+    margin-right:0px
+
+}
+
+ul.navigation-links {
+     display:block;
+     max-width:1200px;
+     padding:0px;
+     margin:0px;
+     position:relative;
+     top:18px;
+     width:99%;
+}
+ ul.navigation-links li {
+     list-style-type:none;
+     display:inline-block;
+     vertical-align:middle;
+     margin-top:25px;
+}
+ ul.navigation-links li a {
+     font-weight:bold;
+     font-size:18px;
+     color:#000;
+     margin: 0px 14.5px 0px 14.5px;
+}
+ img.logo {
+     max-width:300px;
+     max-height:120px;
+     width:100%;
+     object-fit:contain;
+     float:right;
+     text-align:center;
+     margin:auto;
+     position:relative;
+     left:15px;
+     top:2px;
+}
+ img.home-image {
+     width:49px;
+     height:44px;
+}
+
+ img.image-banner {
+    width: 1920px; /* or any custom size */
+    height: 710px; 
+    margin-left:50%;
+    transform: translateX(-50%);
+ }
+
+ div.image-home-banner-placeholder {
+    overflow:hidden; 
+    position:relative;
+ }
+
+ .move { 
+     position: relative; 
+     top: 45px;
+ }
+
+
+ footer {
+     min-height: 200px;
+     background-color: #071B2C;
+     color:#fff;
+}
+ footer > div.outer-footer {
+     max-width:1200px;
+     text-align:center;
+     margin:auto;
+}
+ footer div.outer-footer > div.row > div {
+     text-align:left;
+     padding-top:80px;
+}
+ ul.footer-links {
+     position:relative;
+     top:-35px;
+}
+ ul.footer-links li {
+     list-style-type: none;
+     margin-bottom:10px;
+     text-align:left;
+}
+ ul.footer-links li > a {
+     color: #fff;
+     font-weight:bold;
+     font-size:14px;
+}
+ .fa {
+     width: 50px;
+     text-align: center;
+     text-decoration: none;
+}
+ .fa:hover {
+     opacity: 0.7;
+}
+ .fa-facebook, .fa-twitter, fa-instagram, fa-snapchat {
+     background-color: transparent;
+     color: white;
+}
+ span.social-media-title {
+     position:relative;
+     left:15px;
+     font-size:17px;
+}
+ div.national-lottery-image > a > img {
+     position:relative;
+     top:-45px;
+     max-width:140px;
+     max-height:120px;
+     object-fit:contain;
+     width:100%;
+}
+
+ img.footer-council-logo {
+        max-width:245px;
+        max-height:47.5px; 
+        width:100%;
+        object-fit:contain;
+        position:relative;
+        left:-20px;
+ }
+
+/* stcky bit */
+ .content {
+     padding: 16px;
+     width:100%;
+}
+ .sticky {
+     position: fixed;
+     top: 0px;
+     left:0px;
+     width: 100%;
+     z-index:100;
+     margin:0;
+     min-height:160px;
+     border:solid 0px black;
+
+}
+
+}
+ .sticky + .content {
+     padding-top: 160px;
+}
+
+ .blurred {
+        box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        overflow: hidden;
+        position: fixed;
+        top: 0px;
+        left: 0;
+        height: 200px;
+        width: 100%;
+        -webkit-filter: blur(13px);
+        -moz-filter: blur(13px);
+        -o-filter: blur(13px);
+        -ms-filter: blur(13px);
+        filter: blur(13px);
+        z-index:1;
+        background-color:white;
+        opacity:0.98
+    }
+
+/* container */
+ #root-container {
+     width: 100%;
+     border:solid 0px red;
+     margin:auto;
+     text-align:center;
+     position:relative;
+     top:-30px;
+     
+}
+ #dynamic-html-content {
+     margin:auto;
+     text-align:left;
+     max-width: 1200px;
+     position:relative;
+  
+}
+
+
+ .mobile-text { 
+     position:relative; 
+     top: 10px;
+     left: -20px;
+     font-size:18px;
+ }
+
+.mobile-view { 
+    display:none;
+    width:50px;
+}
+
+.mobile-view > a.menu-anchor {
+    color: #000;
+    display: block;
+    padding: 2px 0 0;
+    position:fixed;
+    top:5px;
+}
+
+
+.mobile-close-icon {
+  background-size: cover;
+    background-repeat: no-repeat;
+    height: 30px;
+    width: 30px;
+    z-index: 999;
+    display: none;
+}
+
+.mobile-nav-icon {
+    background-image: url('/SiteElements/ChannelShift/content/images/headstart/menu-button/menu.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 30px;
+    width: 30px;
+    z-index: 999;
+    display: block;
+}
+
+.intro-text { 
+    max-width:900px;
+    margin:auto;
+    text-align:center;
+    margin-bottom:35px;
+    font-size: 24px; 
+}
+
+/* video iframes */
+    .iframe-wrapper {
+        position: relative;
+        padding-bottom: 56.25%;
+        padding-top: 30px;
+        height: 0;
+        overflow: hidden;
+    }
+
+    .iframe-wrapper iframe, .video-container object, .video-container embed {
+         position: absolute;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+    }
+
+    iframe {
+        max-width: 100%;
+    }
+
+/* twitter */
+
+
+div#twitter-container { 
+    max-width:370px;
+    height:100%;
+    margin: 0px 10px 0px 10px;
+    background-color:#1DA1F2;
+}
+
+div.twitter-inner-container {
+    border-left: solid 8px #1DA1F2;
+    border-right: solid 8px #1DA1f2;
+}
+
+div.twitter-header > img { 
+    width:100%;
+}
+
+div.twitter-message { 
+    background-color:#fff;
+    height:inherit;
+    min-height:235px;
+    font-size:20px;
+    padding: 5px;
+}
+
+.row.equal {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left:0px;
+    margin-right:0px;
+  }
+
+
+
+
+@media only screen and (max-width: 992px){
+
+    #dynamic-html-content {
+  
+    }
+
+    .mobile-view {
+        display: block;
+        float: right;
+        position:fixed;
+        right:2px;
+        top:2px;
+        z-index:999999;
+    }
+
+    #navigation { display: none;  }
+
+    div.image-home-banner-placeholder {
+    
+     height:400px;
+     }
+
+     img.footer-council-logo {
+   
+     }
+
+     img.logo { float:left;}
+}
+
+
+@media only screen and (max-width:568px) {
+
+   footer div.outer-footer > div.row > div.national-lottery-image, 
+   footer div.outer-footer > div.row > div.blackpool-council-image {
+        text-align:center;
+    }
+
+    img.footer-council-logo {
+        position:relative;
+        top:-80px;
+        text-align:center;
+        left:0px;
+    }
+
+     ul.footer-links li > a {
+
+     font-size:18px;
+    }
+
+    span.social-media-title {
+
+    font-size: 23px;
+    margin-bottom:15px;
+}
+
+}
+  

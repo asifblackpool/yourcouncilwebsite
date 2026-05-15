@@ -1,0 +1,20 @@
+﻿/* stylesheet overried for index css sunbeds */
+
+    div.homepage-outer-container { background-image:none; }
+    #searchbox-outer-container, #search-box-inner { background-color:#000;}
+
+    @media (max-width: 767px) {
+         #search-container { 
+            float:right;
+            width:100%;
+        }
+
+        a.top-link-mobile > img {
+            display: block;
+        }
+        div.mobile-home-link, a.top-link-mobile {
+            display: block;
+        }
+    }
+   
+

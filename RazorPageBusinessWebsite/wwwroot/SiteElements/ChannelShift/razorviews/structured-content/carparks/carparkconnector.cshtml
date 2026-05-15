@@ -1,0 +1,267 @@
+﻿@{
+
+    // Name: Channel Shift - Car Parks
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date:28/05/2024
+}
+
+@using System;
+
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Helpers.Connector;
+@using Blackpool.Zengenti.CMS.Models.CarParks
+@using Blackpool.Zengenti.CMS.Helpers.ContentTypes;
+@using System.Linq;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+
+
+@functions {
+
+
+}
+
+
+@{
+
+    //Create the Connector to retrieve Accordion data
+    var list = ContensisConnector<CarParks>.Entries(ContensisClientKeys.CARPARKS, new PageOptions(0, 1000));
+    //Grab configurable data
+
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.CarParksKey }
+    };
+
+
+    string redirectUrl = String.Format("{0}{1}{2}", config.SeoUrlList.Website, config.SeoUrlList.UrlPath, config.SeoUrlList.IgnorePages);
+    string alias = (!String.IsNullOrEmpty(Request.QueryString["alias"])) ? Request.QueryString["alias"] : "";
+    string currentUrl = string.Format("{0}{1}.aspx", UrlHelper.GetEverythingBeforeLastSlash(Request.Url.LocalPath), alias);
+
+
+    string title = alias.Replace("-", " ").Trim().ToLower();
+    CarParks selectedCarPark = (list != null & list.Items.Count > 0) ? list.Items.Where(x => x.SearchBy == title).FirstOrDefault() : null;
+
+    List<CarParks> accordionList = new List<CarParks>();
+
+    //Newtonsoft.Json.Linq.JArray items = selectedCarPark.Type; ;
+    //String[] x = items.Select(x => x.ToString()).ToArray();
+
+    if (selectedCarPark == null)
+    {
+        Response.Redirect(redirectUrl);
+    }
+
+    VenueHelper venueHelper = null;
+
+
+    //Emergency Box Content 
+
+    String messageColor = string.Empty;
+    String display = string.Empty;
+    String EmergencyTitle = string.Empty;
+    String message = string.Empty;
+    String infoLink = string.Empty;
+    String showLink = string.Empty;
+    String showEmergencyBox = string.Empty;
+    String warningType = string.Empty;
+    if (selectedCarPark != null && !String.IsNullOrEmpty(selectedCarPark.MessageTitle))
+    {
+        messageColor = selectedCarPark.MessageColor;
+        display = String.IsNullOrEmpty(selectedCarPark.MessageTitle) ? "Hide" : "Show";
+        EmergencyTitle = selectedCarPark.MessageTitle;
+        message = selectedCarPark.MessageContent;
+        infoLink = selectedCarPark.MoreInformationLink;
+        showLink = (infoLink == "") ? "none;" : "block;";
+        showEmergencyBox = (display == "Hide") ? "none;" : "block;";
+        warningType = (messageColor == "#e68a00") ? "important warning" : "severe warning";
+
+    }
+
+
+
+
+
+            }
+
+
+<div id="car-park-content">
+    @if (selectedCarPark != null)
+    {
+
+        if (display == "Show")
+        {
+            <div id="emergency-box" class="row emergency-box" style="display:@showEmergencyBox; background-color:#eee;" role="contentinfo">
+                <div id="emergency-placeholder" class="col-md-12" style="color:#000;padding-bottom:20px;">
+                    <span class="emergency-title"><strong>@title</strong></span>
+                    <i class="fa fa-exclamation-circle emergency-icon" aria-hidden="true" style="color:@messageColor;position:absolute;"></i>
+                    <p class="emergency-message">@Html.Raw(message)</p>
+                    <p class="more-info" title="more information" style="color:#000; display:@showLink">
+                        <input type="button" class="btn btn-info accessibility-tab" value="More information" onclick="window.location = '@infoLink'" style="font-weight:bold; height:40px;background-color:#b5bd00; border-color:#b5bd00; color:#041c2c;" />
+                    </p>
+                </div>
+            </div>
+        }
+
+        <h2>Address</h2>
+        <p>@selectedCarPark.Address</p>
+
+        if (selectedCarPark.LocationMap != null)
+        {
+            venueHelper = new VenueHelper(null, string.Empty);
+            <div id="map" style="width:100%;height:650px;background:yellow"></div>
+
+            <script type="text/javascript">
+            $(document).ready(function () {
+            googlemapservices.map('@selectedCarPark.LocationMap.Lat', '@selectedCarPark.LocationMap.Lon', "map", 17);
+        });
+            </script>
+            <script src="~/SiteElements/ChannelShift/scripts/services/googlemapservices.js"></script>
+            <script src="@venueHelper.Googlemap_JS_API_URL"></script>
+        }
+
+
+        if (!string.IsNullOrEmpty(selectedCarPark.OpeningHours))
+        {
+            <h2>Opening hours</h2>
+            <p>@String.Format("{0}", selectedCarPark.OpeningHours)</p>
+
+        }
+        if (selectedCarPark.CarParkTypes.Count > 0)
+        {
+            <h2>Type</h2>
+            <ul>
+                @foreach (string s in selectedCarPark.CarParkTypes)
+                {
+                    <li>@s</li>
+                }
+            </ul>
+        }
+        if (!String.IsNullOrEmpty(selectedCarPark.PostcodeForSatNav))
+        {
+            <h2>Postcode for satnav</h2>
+            <p>@String.Format("If you are using a satnav to locate this car park please the postcode: {0}", selectedCarPark.PostcodeForSatNav)</p>
+        }
+
+        if (!String.IsNullOrEmpty(selectedCarPark.ParkingCharges))
+        {
+            <h2>Parking charges</h2>
+            @Html.Raw(selectedCarPark.ParkingCharges);
+        }
+
+        if (!String.IsNullOrEmpty(selectedCarPark.PayByPhoneCode))
+        {
+            <h2>Pay by phone code</h2>
+            @Html.Raw(selectedCarPark.PayByPhoneCode);
+            <br />
+            <br />
+            <p>
+                You can use the PayByPhone app to pay for your stay in this car park, giving you complete control from your own phone. You can download the PayByPhone app from the
+                <a href="#">App Store</a> or <a href="#">Google Play Store </a>or visit the <a href="#">PayByPhone website</a>.
+                Once downloaded just enter the correct identification number for your vehicle type.
+            </p>
+        }
+
+        if (!string.IsNullOrEmpty(selectedCarPark.Details))
+        {
+            <h2>Details</h2>
+            @Html.Raw(selectedCarPark.Details);
+        }
+
+
+        <link type="text/css" rel="stylesheet" href="~/SiteElements/ChannelShift/Content/styles/carparks/tables.css" />
+        <link type="text/javascript" href="~/SiteElements/ChannelShift/scripts/services/tableservices.js" />
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+        window.tableservices.tablename('div#car-park-content table');
+
+        var metaDesc = document.querySelector('meta[name="Description"]');
+        if (metaDesc) {
+            metaDesc.setAttribute('content', '@selectedCarPark.MetaDescription');
+        }
+        var metaTitle = document.querySelector('meta[name="PageTitle"]');
+        if (metaTitle) {
+            metaTitle.setAttribute('content', '@selectedCarPark.MetaTitle');
+        }
+
+        document.title = '@selectedCarPark.CarParkName';
+
+        //change the title name
+        $('#landing-title > div > h1').html('@selectedCarPark.CarParkName');
+        //change the breadcrumb last link
+        $('#crumbs > ul > li.last > a').text('@selectedCarPark.CarParkName');
+        $('#crumbs > ul > li.last > a').attr("href", '@currentUrl');
+    });
+        </script>
+    }
+</div>
+
+@if (display != "Hide")
+{
+
+  <style type="text/css">
+    p.emergency-message {
+        color:#000 !important;
+        position:relative !important;
+        left:28px !important;
+        margin-right:20px !important;
+        margin-left:20px !important;
+     }
+
+     i.emergency-icon {
+        font-size: 60px !important;
+        top:20px;
+        left: 8px;
+     }
+
+     #emergency-box {
+        border-left:15px solid @messageColor;
+      }
+
+      #emergency-placeholder p {
+          color: black !important;
+      }
+
+      #emergency-placeholder p a {
+            color: black !important;
+      }
+
+    @@media screen and (max-device-width:760px) {
+
+    #emergency-box {
+         overflow-x: hidden;
+         border-left:15px solid @messageColor;
+        width:calc(100% - 5px);
+
+        }
+
+    span.emergency-title {
+    position:relative;
+    left:15px;
+    }
+
+    p.emergency-message {
+        text-align:left !important;
+    }
+
+    i.emergency-icon {
+        font-size: 30px !important;
+    top:16px;
+    }
+
+
+ }
+
+
+ </style>
+
+}
+    @*<control name="car parks content" showInMenu="true" category="favourites" viewingGroup="1">
+        </control>*@

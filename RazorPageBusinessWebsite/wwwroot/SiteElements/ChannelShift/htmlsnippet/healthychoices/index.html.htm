@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <title>index.html</title>
+    <meta name="GENERATOR" content="Contensis CMS Version 8.3" />
+    
+</head>
+<body>
+    <h2>Healthier choices</h2>
+<div class="healthy-container">
+<div class="row search-box">
+<div class="reset"><button id="reset-search-button" class="btn btn-blue" aria-label="reset button" type="button">Reset</button></div>
+<div class="col-md-4 col-sm-4 col-xs-4 zero-pad-all search">
+<div class="input-group"><label class="visuallyhidden" title="this is a input box" for="autocomplete">search</label> <input id="autocomplete" class="form-control biginput" aria-labelledby="ct-search-button" type="text" placeholder="Search for..." name="autocomplete" /> <span class=" input-group-btn"> <button id="ct-search-button" class="btn btn-default " style="outline: none;" aria-label="search button" type="button">&nbsp;</button> </span></div>
+<div><span class="error-message">&nbsp;</span></div>
+</div>
+<div class="filter"><label for="FilterDropDownList">&nbsp;&nbsp;filters:&nbsp;</label><select id="FilterDropDownList" class="selectpicker" name="FilterDropDownList"></select>&nbsp;&nbsp; <label class="visuallyhidden" for="AwardTypeDropDown">&nbsp;&nbsp;filter:&nbsp;</label><select id="AwardTypeDropDown" class="selectpicker" name="AwardTypeDropDown"></select></div>
+</div>
+<div id="loading-indicator" style="position: relative; left: 40%; top: 50%; margin-top: 10px; display: none;"><strong><img alt="" height="44" width="44" src="/SiteElements/ChannelShift/Content/images/gif.gif" /> ... Loading</strong></div>
+<div class="top-placeholder"></div>
+<div class="content-placeholder"></div>
+<div class="bottom-placeholder"></div>
+</div>
+<script type="text/javascript" src="/SiteElements/ChannelShift/scripts/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/SiteElements/ChannelShift/scripts/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/SiteElements/ChannelShift/scripts/services/pagingservices.js"></script>
+<script type="text/javascript" src="/SiteElements/ChannelShift/scripts/services/healthychoices/healthychoicesservices.js"></script>
+<script type="text/javascript" src="/SiteElements/ChannelShift/scripts/run/runhealthychoices.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVsTyhXl-6vIdyMJRG5Iv_MUv4tbWkzgM"></script>
+<link href="/SiteElements/ChannelShift/content/styles/jquery/jquery-ui.min.css" rel="stylesheet" /> <link href="/SiteElements/ChannelShift/content/styles/healthychoices/index.css" rel="stylesheet" />
+</body>
+</html>

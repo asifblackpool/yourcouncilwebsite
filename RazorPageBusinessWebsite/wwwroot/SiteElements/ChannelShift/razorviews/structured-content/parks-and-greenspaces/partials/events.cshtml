@@ -1,0 +1,278 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// Name: HTML Mak up for Parks and Greenspaces
+// License: Blackpool council
+// Date: 09/12/2022
+}
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Blackpool.Zengenti.CMS.Models.EventsAndCourses;
+
+@functions {
+
+
+    public class VenueEventDTO
+    {
+        public VenueEventDTO()
+        {
+
+        }
+        public string Id { get; set; }
+        public string EventName { get; set; }
+        public Venue Venue { get; set; }
+        public String When { get; set; }
+    }
+}
+
+@{
+
+    string apiKey = System.Web.Configuration.WebConfigurationManager.AppSettings["GoogleApiKey"];
+    string CMS_URL = System.Configuration.ConfigurationManager.AppSettings.Get("CMS_URL");
+    string API_URL = System.Configuration.ConfigurationManager.AppSettings.Get("Blackpool_Root_API_URL");
+
+    ParksAndGreenSpacesDTO DTO = Page.Model;
+    List<SerialisedItem> serialisedItems = Page.Events;
+    List<CourseAndEvents> eventslist = new List<CourseAndEvents>();
+    List<VenueEventDTO> venuelist = new List<VenueEventDTO>();
+
+
+    Config config = DTO.Config;
+
+
+    if (serialisedItems != null)
+    {
+        foreach (var item in serialisedItems)
+        {
+            //eventslist.Add(SerializeHelper.Deseralize(item) as CourseAndEvents);
+            eventslist = SerializeHelper.JsonParser<CourseAndEvents>(item.Content);
+        }
+    }
+
+}
+
+<div>
+    <div class="col-md-12">
+        <dl class="events">
+            @foreach (CourseAndEvents item in eventslist)
+            {
+                string when = string.Format("{0} {1}", StringUtility.DateTextDay(item.StartDate), StringUtility.DateTextMonth(item.StartDate));
+                venuelist.Add(new VenueEventDTO() { Id = item.Id, EventName = item.PageTitle, Venue = item.Venue, When = when });
+                <dt class="event-block">
+                    <span class="month">@string.Format("{0}", StringUtility.DateTextMonthShort(item.StartDate))</span>
+                    <span class="event-name">@string.Format("{0}", item.PageTitle)</span>
+                </dt>
+                <dd class="event-link">
+                    <span class="day">@string.Format("{0}", StringUtility.DateTextDay(item.StartDate))</span>
+                    <span class="event-location">
+                        <a id="event_@item.Id" class="open-modal" href="#" data-toggle="modal" data-target="myModal">@string.Format("{0}", (item.Venue != null) ? item.Venue.VenueName : "unknown")</a>
+                    </span>
+                </dd>
+            }
+        </dl>
+    </div>
+</div>
+
+@{
+    System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+    string json = serializer.Serialize(venuelist);
+
+}
+
+
+<div id="loading-indicator" style="position: relative; left: 40%; top: 50%; margin-top: 10px; display: none;">
+    <strong><img alt="" height="44" width="44" src="/SiteElements/ChannelShift/Content/images/gif.gif" /> ... Loading</strong>
+</div>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div id="event-content-placeholder" class="modal-content" style="transform:translate(0,15%);">
+
+        </div>
+    </div>
+</div>
+
+<!-- handlebar template -->
+<script id="event-template" type="text/x-handlebars-template">
+
+    <div class="modal-header bkg-green-color">
+        <button type="button" class="close green-color" data-dismiss="modal" style="outline:none;">&times;</button>
+        <h4 class="modal-title" style="background-color:transparent; color:#fff">{{ apiData.Title }}</h4>
+    </div>
+    <div class="modal-body">
+        <section class="center-modal">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="/SiteElements/ChannelShift/Content/images/parks-and-greenspaces/when.png" />
+                    <strong style="display:inline-block; padding-bottom:7px;">When</strong><br />
+                    {{{ apiData.When }}}
+                </div>
+                <div class="col-md-6">
+                    <img src="/SiteElements/ChannelShift/Content/images/parks-and-greenspaces/where.png" />
+                    <strong style="display:inline-block; padding-bottom:7px;">Where</strong>
+                    <address>{{{ apiData.Where }}}</address>
+                </div>
+            </div>
+            <div class="row clearfix" style="margin-top:0px">
+                <div id="map" class="event-map col-md-12" style="top:50%; height:380px; width:100%;"></div>
+            </div>
+        </section>
+    </div>
+</script>
+
+<!-- googe map script -->
+<script type="text/javascript" src="@GoogleApiHelper.GoogleMapUrl(apiKey)"></script>
+
+<!-- modal dialog script -->
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var parksPopup = function (e) {
+
+            var _templateId = "event-template";
+            var _placeholderId = "event-content-placeholder";
+
+            var getTemplate = function () {
+                return commonservices.returnHandlebarTemplate(Handlebars, _templateId);
+            };
+
+            var populateTemplate = function (data) {
+                var _html = getTemplate();
+                $("#" + _placeholderId).html(_html({ apiData: data }));
+            }
+
+            var resetTemplates = function () {
+                $("." + _placeholderId).html("");
+            };
+
+            var showLoader = function () {
+                $("#loading-indicator").show();
+            };
+
+            var hideLoader = function () {
+                $("#loading-indicator").hide();
+            };
+
+            var bindclosebutton = function () {
+                $('.close').on('click', function () {
+                    console.log('close modals');
+                    $("#myModal").fadeOut();
+                });
+
+                $(document).keyup(function (e) {
+                    if (e.key === "Escape") { 
+                        console.log('close modals');
+                        $("#myModal").fadeOut();
+                    }
+                });
+            };
+
+            function eventDetails(id, title, when, where, location) {
+
+                const details = {
+                    Id: id,
+                    Title: title,
+                    When: when,
+                    Where: where,
+                    Location: location
+                }
+
+                return details;
+            };
+
+
+            var grabEventData = function (url) {
+
+
+                var buildAddress = function (venue) {
+                    var address = "";
+
+                    address = venue.venue + "<br/>";
+                    address = address + venue.address + "<br/>";
+                    address = address + venue.town + "<br/>";
+                    address = address + venue.postCode;
+
+                    return address;
+                }
+
+                var buildWhen = function (dt, time) {
+                    if (dt !== null) {
+                        var temp = dateservices.convertSQLDateWithoutTime(dt, "-");
+                        var date = temp.getDate();
+                        var fd = dateservices.formatDate(date, temp.getMonth(), temp.getFullYear(), false);
+
+                        return fd + "<br/>" + time.replace(":", ".");
+                    }
+
+                    return null;
+                }
+
+                resetTemplates();
+                $.get(url,
+                    function (data, status) {
+                        console.log('get course events by id success');
+                        var startdate   = data.startDate;
+                        var time        = data.daysAndTime;
+                        var venue       = buildAddress(data.venue)
+                        var location    = data.venue.locationMap;
+                        var when        = buildWhen(startdate, time);
+                        var details     = eventDetails(data.sys.id, data.courseTitle, when, venue, location);
+                       
+
+                        populateTemplate(details);
+
+                        window.googlemapservices.map(location.lat, location.lon, "map", 17);
+
+                        setTimeout(function () {
+                            $("#myModal").css({ "opacity": "1", "width:": "300px", "display": "block" });
+                            hideLoader();
+                            bindclosebutton();
+                        }, 1500);
+
+                    }
+                ).fail(function () {
+                    console.log("failure get course events")
+                });
+            }
+
+            var id          = $(this).attr("id").split("_")[1];
+            var config      = commonservices.Config();
+            var projectId   = config.deliveryApi.projectId;
+            var url         = config.deliveryApi.templateUrls.entryById;
+
+
+            url = url.replace("{0}", projectId);
+            url = url.replace("{1}", id);
+            url = config.deliveryApi.rootUrl + url + "?linkDepth=1";
+
+            showLoader();
+            grabEventData(url);
+   
+
+            console.log('open modal parks');
+            console.log(id);
+            console.log(url);
+            e.stopPropagation();
+            e.preventDefault();
+
+
+        };
+
+        $('a.open-modal').on('click', parksPopup);
+       
+
+
+
+        window.commonservices.init('@CMS_URL', '@API_URL');
+
+    });
+</script>
+
+
+

@@ -1,0 +1,71 @@
+﻿:root {
+    --primary-purple-color: #830065;
+}
+
+.tile-boar {}
+
+div.justify-content-center {
+    justify-content: center;
+    display: flex;
+}
+
+.tile-card {
+    border: 2px solid purple;
+    border-radius: 25px;
+    min-height: 165px;
+    margin-bottom: 30px;
+    background-color: #fff;
+    transition: background-color 0.2s ease;
+    position: relative;
+    /* required for stretched-link to anchor to */
+}
+
+/* The card-body only provides spacing; its contents are handled by the link */
+.tile-card .card-body {
+    padding: 0;
+    height: 100%;
+    /* ensures it fills the card */
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* The stretched link covers the whole card and becomes a flex container */
+.tile-card .card-body a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    /* keeps content at top, then push with ::before */
+    color: var(--primary-purple-color);
+    text-decoration: none !important;
+    position: relative;
+    z-index: 99999;
+    height: 165px;
+    text-align: center;
+}
+
+.tile-card .card-body a:hover {
+    color: white !important;
+}
+
+.tile-card .card-body a::before {
+    content: '';
+    height: 30%;
+    /* 30% of the link’s height */
+}
+
+
+.tile-card:hover {
+    background-color: var(--primary-purple-color);
+    color: blue !important;
+}
+
+/* Force the link text to white when the card is hovered */
+.card-body a:hover {
+    color: #fff !important;
+}
+
+/* Optional smooth transition for the link colour */
+.tile-card .card-body a {
+    transition: color 0.2s ease;
+}

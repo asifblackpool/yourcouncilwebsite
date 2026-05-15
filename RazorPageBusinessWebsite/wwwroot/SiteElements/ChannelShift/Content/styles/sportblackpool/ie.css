@@ -1,0 +1,12 @@
+﻿
+/* IE10+ CSS styles go here */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+
+    div.class-timetable > a > h3, div.swim-timetable > a > h3 {
+        top:9px;
+    }
+
+
+
+
+}

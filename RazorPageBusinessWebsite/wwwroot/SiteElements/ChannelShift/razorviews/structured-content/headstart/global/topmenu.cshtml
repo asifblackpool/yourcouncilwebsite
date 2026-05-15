@@ -1,0 +1,89 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Top Menu - used in head start page
+    // License: Blackpool council
+    // Date: 16/01/2018
+}
+
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+
+@{
+    List<HeaderStart> modelTopMenu = Page.TopMenu; //Passed Model
+    string _fullUrl = Request.Url.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped);
+
+    <div class="blurred"></div>
+    <div id="navbar" class="row sticky zero-margin-all">
+        <div class="col-lg-2 col-md-2 col-sm-2 zero-pad-all" style="padding:0px;">
+            <a href="@string.Format("{0}{1}.aspx", Page.HomeItem.BaseUrlPath, Page.HomeItem.Alias.ToLower())" style="cursor:pointer;display:inline-block; min-height:80px;min-width:170px;float:left;">
+                <img src="/SiteElements/ChannelShift/Content/images/headstart/global/headstart-text.png" class="logo" style="cursor:pointer" />
+            </a>
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-10" style="padding:0px;">
+            <ul id="navigation" class="navigation-links">
+                @foreach (var menuItem in modelTopMenu)
+                {
+                    if (menuItem.PageType != "Home")
+                    {
+                        <li>
+                            <a href="@string.Format("{0}{1}.aspx", menuItem.BaseUrlPath ,menuItem.Alias.ToLower())" class="@string.Format("{0}", Page.Alias.ToLower().Trim() == menuItem.Alias.ToLower().Trim() ? "active" : "not-active")">@menuItem.PageTitle</a>
+                        </li>
+                    }
+                }
+            </ul>
+            <div id="side-nav" class="sidenav">
+                <div class="mobile-close-view pull-right">
+                    <strong>Menu&nbsp;&nbsp;</strong>
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"><span class="mobile-nav-icon close-icon" style="float:right;">&nbsp;</span></a><br />
+                </div>
+                <ul class="mobile-menu-list">
+                    @foreach (var menuItem in modelTopMenu)
+                    {
+                        if (menuItem.PageType != "Home")
+                        {
+                            <li>
+                                <a href="@string.Format("{0}{1}.aspx", menuItem.BaseUrlPath ,menuItem.Alias.ToLower())" class="@string.Format("{0}", Page.Alias.ToLower().Trim() == menuItem.Alias.ToLower().Trim() ? "active" : "not-active")">@menuItem.PageTitle</a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+            <div class="mobile-view pull-right">
+                <strong>Menu&nbsp;&nbsp;</strong>
+                <a id="toggle-menu" class="menu-anchor" title="mobile menu icon" onclick="openNav();" href="javascript:void(0);">
+                    <span class="mobile-nav-icon open-icon">&nbsp;</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var containerHeight = function () { return $('#container').outerHeight(); }
+        function openNav() {
+            containerHeight();
+            document.getElementById("side-nav").style.height = (containerHeight() - 20) + "px";
+            document.getElementById("side-nav").style.width = "320px";
+            $('.close-icon').css({ 'background-image': 'url(/SiteElements/ChannelShift/content/images/headstart/menu-button/menu-close.png)' });
+            $('.open-icon').hide();
+            $('.close-icon').show();
+        }
+        function closeNav() {
+            document.getElementById("side-nav").style.width = "0";
+            $('.close-icon').hide();
+            $('.open-icon').show();
+        }
+    </script>
+}
+
+@*<control name="headstart top menu" showInMenu="true" category="Favourites" viewingGroup="2" />*@

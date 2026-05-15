@@ -1,0 +1,49 @@
+﻿@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Helpers.Standard;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+@using Blackpool.Zengenti.CMS.Models.NewsStory;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+
+
+@{
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.NewsStoryKey }
+    };
+
+    String RazorPath    = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/newsstory";
+    String pagePath     = config.SeoUrlList.UrlPath + "{0}.aspx?date={1}";
+    string currentUrl   = this.Request.RawUrl.ToLower();
+    string homeUrl      = string.Empty;
+
+
+    homeUrl = config.SeoUrlList.UrlPath + config.SeoUrlList.DefaultPage;
+
+
+    if (currentUrl.ToLower().Trim().Contains(homeUrl.ToLower().Trim()))
+    {
+        //load up news story landing page
+        @RenderPage(String.Format("{0}{1}", RazorPath, "/partials/news-stories-landing.cshtml"), new { Model = config, PagePath =pagePath  })
+    }
+
+    else
+    {
+        //load up selected news story
+        @RenderPage(String.Format("{0}{1}", RazorPath, "/partials/news-stories.cshtml"), new { Model = config, PagePath = pagePath })
+    }
+
+
+
+}

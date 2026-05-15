@@ -1,0 +1,100 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Promitions School - used in Catering pages
+    // License: Blackpool council
+    // Original Date: 11/02/2024
+    // Modified: 08/09/2023- account for base content type.
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+    CateringDTO DTO         = Page.Model;
+    Promotions promotions   = null;
+    List<ImageBox> lists    = new List<ImageBox>();
+    Config config           = DTO.Config;
+    String path             = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+
+
+
+    SerialisedItem serialisedItem = null;
+    int promotionsCounter = 1;
+    if (DTO.Flow != null)
+    {
+        int counter = 0;
+        foreach (var item in DTO.Flow.GetContent)
+        {
+
+            var list = item.Items.FindAll(x => x.ClassType == typeof(Promotions));
+            if (list != null && list.Count > 0)
+            {
+                serialisedItem = list[0];
+                promotions = SerializeHelper.Deseralize(serialisedItem) as Promotions;
+                lists.Add(promotions.Promotion1);
+                lists.Add(promotions.Promotion2);
+                lists.Add(promotions.Promotion3);
+                break;
+            }
+
+        }
+    }
+}
+@if (lists.Count > 0)
+
+{
+    <div class="row promo-schools">
+        @foreach(var item in lists)
+        {     
+         string ImageBoxUrl = (item != null && item.Image != null && item.Image.Asset != null) ? String.Format("{0}{1}", DTO.BaseImageUrl, item.Image.Asset.Uri) : DTO.NoImageUrl; ;
+        <div class="col-md-4">
+            <div class="img-title ">@item.Title</div>
+            <div class="img-information">@item.Information</div>
+            <div class="img-container">
+                <img src="@ImageBoxUrl" alt="@item.Image.AltText" style="width:100%;" />
+                  <div class="link-container">
+                    @if (item.ExternalURL != null)
+                    {
+                        <a href="@item.ExternalURL.Replace("/catering/", DTO.Config.SeoUrlList.UrlPath)">@string.Format("Week {0}", promotionsCounter)</a>
+                    }
+                </div>
+            </div>
+          
+        </div>
+            promotionsCounter++;
+        }
+    </div>
+    <script  type="text/javascript">
+        $(document).ready(function () {
+            divs = $('div.promo-schools >  div.col-md-4 > div.img-container');
+            var pagename = window.utilities.helper.getPageName()
+            var qs = window.utilities.helper.getQueryString("week");
+            var week = (qs === null) ? (pagename == "primary-school-meals.aspx" ? 1 : -1) : qs;
+            if (divs !== null) {
+                for (var i = 0; i < divs.length; i++) {
+                    if (i === (week-1)) {
+                        var div = divs[i];
+                        $(div).addClass("box-shaddow-week" + week);
+                        break;
+                    }
+                }
+            }
+        });
+    </script>
+
+
+}

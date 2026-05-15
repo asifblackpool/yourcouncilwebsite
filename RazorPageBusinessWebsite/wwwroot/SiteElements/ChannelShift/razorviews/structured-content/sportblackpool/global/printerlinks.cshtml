@@ -1,0 +1,54 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// Name: breadcrumb - used in sports blackpool pages
+// License: Blackpool council
+// Date: 11/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@{
+
+    String DateModifiedString = DateTime.Now.ToString();
+    SportBlackPoolDTO DTO = Page.Model;
+    String dm = "";
+
+
+    if (DTO.CurrentItem != null)
+    {
+        Boolean isHome = ( DTO.CurrentItemPageType == SportBlackpoolPageTypes.TopLevel);
+        DateModifiedString = isHome ? String.Empty : DTO.CurrentItem.Sys.Version.Published.ToString();
+        if (!isHome)
+        {
+           DateTime DateModified = Convert.ToDateTime(DateModifiedString);
+           dm = "Last modified " + DateModified.ToString("MMMM dd, yyyy");
+        }
+      
+    }
+
+}
+
+    <div id="pdf-print-links" class="row clearfix">
+        <div id="last-modified-container" class="col-md-8 zero-pad-all"><span id="last-modified" class="pull-left">@String.Format("{0}",dm)</span></div>
+        <div id="printer-icons-container" class="col-md-4 zero-pad-all">
+            <ul id="print-links-ul" class="pull-right">
+                <li><a title="Download this page as a PDF" class="icon-pdf accessibility-tab" rel="nofollow" href="https://www.blackpool.gov.uk/Residents/Residents.aspx?download=DownloadasPDFlink_pdf">Download as PDF</a></li>
+                <li class="last">
+                    <a href="#" class="icon-printer accessibility-tab" onclick="window.print(); return false;" style="color:#fff;">&nbsp;pdf</a>
+                </li>
+            </ul>
+        </div>
+    </div>

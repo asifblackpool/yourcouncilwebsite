@@ -1,0 +1,116 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@{
+
+    //breadcrum builder
+    SportBlackPoolDTO DTO = Page.Model;
+    DTO.Config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key =  Blackpool.Zengenti.CMS.Constants.SeoKeys.SportBlackPoolKey }
+    };
+    Zengenti.Data.PagedList<SportBlackpool> list = DTO.List;
+    SportBlackpoolHelper helper = new SportBlackpoolHelper(list.Items);
+    List<MenuLink> footerlinks = new List<MenuLink>();
+    string path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+    string email_sign_up = path + "email-sign-up.aspx";
+
+    if (DTO.CurrentItem != null)
+    {
+        var attribute = AttributeExtensions.GetAttribute<SportBlackpoolPageTypeAttribute>(SportBlackpoolPageTypes.FooterLevel);
+        List<SportBlackpool> footerContentList = list.Items.FindAll(x => x.PageType == attribute.Name);
+        footerContentList.Sort(new SportBlackpoolSort() { ComparisonMethod = SportBlackpoolSort.ComparisonType.Ascending });
+        footerlinks = helper.FooterNavigationBuilder(footerContentList, path);
+    }
+}
+
+<footer class="clearfix">
+    <div id="footer-links-container" class="row zero-margin-all clearfix">
+        <div class="col-md-2 col-sm-4 zero-pad-all align-left copy-height">
+            <ul class="footer-links">
+                @foreach (var item in footerlinks)
+                {
+                    <li><a class="roboto-link accessibility-tab-white" href="@string.Format("{0}", item.Href)">@item.Text</a></li>
+                }
+                <li><a class="roboto-link accessibility-tab-white" href="https://www.blackpool.gov.uk/Your-Council/Transparency-and-open-data/Data-protection/Privacy-notices/Privacy-notices.aspx#Sportandleisure">Privacy notice</a></li>
+                <li><a class="roboto-link accessibility-tab-white" href="https://www.blackpool.gov.uk/Privacy-policy-and-cookies.aspx">Privacy policy & cookies</a></li>
+                <li><a class="roboto-link accessibility-tab-white" href="https://www.blackpool.gov.uk/Disclaimer.aspx">Disclaimer</a></li>
+            </ul>
+
+        </div>
+        <div class="col-md-1 col-sm-3 zero-pad-all align-left copy-size">
+            <ul class="footer-links">
+                <li><a href="https://www.facebook.com/sportblackpool/" class="fa fa-facebook accessibility-tab-white"><span class="social-media-title">&nbsp;&nbsp;Facebook</span></a></li>
+                <li><a href="https://twitter.com/SportBlackpool" class="fa fa-twitter accessibility-tab-white"><span class="social-media-title">&nbsp;Twitter</span></a></li>
+
+            </ul>
+        </div>
+        <div class="email-signup col-md-3 col-sm-5 zero-pad-all white align-left copy-size">
+            <strong class="subscribe-text text-offers">Subscribe to our offers</strong>
+            <label for="search-offers" style="visibility:hidden;">search offers:</label>
+            <input id="search-offers" name="search-offers" class="search-text accessibility-tab-white" type="text" placeholder="Email" style="outline:none;" />
+            <button id="email-sign-up" type="button" class="search-button accessibility-tab-white" style="outline:none;" onclick="window.location.href='@email_sign_up'"><img src="/SiteElements/ChannelShift/Content/images/sport-blackpool/email-arrow.png" alt="emailer arrow" width="25" height="27" /></button>
+        </div>
+        <div class="col-md-3 col-sm-6 zero-pad-all align-left copy-size">
+            <strong class="subscribe-text">Jobs</strong><br />
+            <p class="jobs">We are always looking for talent, visit <a href="https://greater.jobs/towns-organisations/blackpool-and-fylde/" class="white accessibility-tab-white" style="font-weight:bold; color:white;">greater.jobs/sportblackpool</a></p>
+        </div>
+        <div class="col-md-3 col-sm-6 zero-pad-all footer-council-logo-container">
+            <a class="accessibility-tab-white" href="https://www.blackpool.gov.uk"><img class="footer-council-logo" alt="Blackpool Council" src="/SiteElements/ChannelShift/Content/images/sport-blackpool/active-blackpool-footer.png" "></a>
+        </div>
+    </div>
+</footer>
+<style type="text/css">
+
+
+    div.footer-diagonal-div {
+        border: 0;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 0;
+        border-style: solid;
+        border-width: 0px 96vw 32px 0;
+        border-color: transparent #fff transparent transparent;
+        transform: scale(1.0001);
+        position: relative;
+        top: 0;
+    }
+</style>
+<script>
+$(document).ready(function() {
+    var footerresizer = function () {
+        $('.copy-size').each(function () {
+            var copyEl = $('.copy-height');
+            var targetEl = $(this);
+            targetEl.height(copyEl.height() + 'px');
+        });
+    };
+    $(window).on('resize', function () { });
+
+
+
+});
+
+</script>

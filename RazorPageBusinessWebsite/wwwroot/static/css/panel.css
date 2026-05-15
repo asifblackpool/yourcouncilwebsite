@@ -1,0 +1,107 @@
+﻿/* ==================================
+   Base shared styles
+   ================================== */
+
+.note-panel,
+.warning-panel,
+.info-panel {
+    display: flex;
+    flex-direction: column; /* stack icon + content */
+    align-items: flex-start;
+    padding: 20px;
+    min-height: 180px;
+    margin-bottom: 20px; /* spacing between panels */
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Shared icon styles */
+.note-icon,
+.warning-icon,
+.info-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Content spacing */
+.note-content,
+.warning-content,
+.info-content {
+    margin-top: 20px; /* space below icon */
+    border:solid 0px white !important;
+}
+
+.note-content p,
+.warning-content p,
+.info-content p {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 20px;
+}
+
+
+/* ==================================
+   WARNING PANEL (Dark Red)
+   ================================== */
+
+.warning-panel {
+    background-color: #e20032;
+    border-left: 6px solid darkred;
+    color: white !important;
+}
+
+.warning-icon {
+    background-color: darkred;
+    color: #ffff;
+}
+
+.warning-panel  p {
+    color: white;
+}
+
+
+/* ==================================
+   INFO PANEL (Light Blue)
+   ================================== */
+
+.info-panel {
+    background-color: #ccd1d4;
+    border-left: 6px solid black;
+    color: #041c2c;
+}
+
+.info-icon {
+    background-color: black;
+    color: #ffffff;
+}
+
+.info-panel p {
+    color: #041c2c;
+}
+
+
+/* ==================================
+   NOTE PANEL (Green)
+   ================================== */
+
+.note-panel {
+    background-color: #809e06;
+    border-left: 6px solid #6b8605;
+    color: #041c2c;
+}
+
+.note-icon {
+    background-color: #4f6303;
+    color: #fff;
+}
+
+.note-panel p {
+    color: #041c2c;
+}

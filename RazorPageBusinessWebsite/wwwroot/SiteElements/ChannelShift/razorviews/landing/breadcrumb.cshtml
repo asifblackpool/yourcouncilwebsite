@@ -1,0 +1,89 @@
+﻿@using Contensis.Framework.Web
+@using Contensis.Framework.Web.Search
+@using System.Web;
+@using System.Collections;
+
+@{
+
+    // Name: Channel Shift - BreadCrumb (Used within the Landing Page)
+    // Developer: Asif Nissar
+    // License: Blackpool council
+}
+
+
+@{
+
+   }
+
+
+@functions 
+{
+       //used for bread Crumb 
+       public class CrumbTrail
+       {
+           public String Name { get; set; }
+           public String Url { get; set; }
+       }     
+}
+
+@{
+
+    // Bread Crumb Trail
+    var breadCrumb = new List<CrumbTrail>();
+    //breadCrumb.Add(new CrumbTrail() { Name = "Home", Url = "/" });
+
+    var currentFolder = (CurrentNode != null) ? CurrentNode.Parent : null;
+    var currentDepth = (CurrentNode != null) ? CurrentNode.Parent.Depth : -1;
+
+
+    int depth = (currentDepth == 1) ? 0 : 0;
+    for(int i=currentDepth; i >= 0; i--){
+
+        var currentAncestor = CurrentNode.Parent.AncestorAtDepth(depth);
+
+        if (currentAncestor == null)
+        {
+            break;
+        }
+
+        foreach (var aPage in currentAncestor.Children<ContentNode>().Where(aP => aP.IsHomePage == true && aP.IsWebPage == true ).OrderBy(aP => aP.MenuOrder)){
+
+            string title= aPage.Title;
+            breadCrumb.Add(new CrumbTrail() { Name = aPage.Parent.MenuName.Replace("-", " "), Url = aPage.Path });
+            depth++;
+        }
+
+
+    }
+    if (CurrentNode != null && !CurrentNode.IsHomePage)
+    {
+        breadCrumb.Add(new CrumbTrail() { Name = CurrentNode.Name.Replace("-", " "), Url = CurrentNode.Path });
+    }
+
+
+
+
+    int itemTotal = breadCrumb.Count;
+    int itemTracker = 1;
+
+}
+
+<!-- start of bread crumb -->
+<div class="row">
+	<div id="crumbs" class="clearfix col-md-12 col zero-pad-all">
+    	<ul>
+        	@foreach (var item in breadCrumb)
+			{
+           		<li class=" @String.Format("{0}", (itemTracker == itemTotal) ? "last" : "")"><a class="accessibility-tab" href="@item.Url">@item.Name</a></li>
+            	if (itemTracker != itemTotal){	<li>></li>	}
+            	itemTracker++;
+			}
+    	</ul>
+	</div>
+</div>
+<!-- end of bread crumb -->
+
+
+
+@*<control name="Channel Shift BreadCrumb" showInMenu="true" viewingGroup="2" category="Favourites">
+</control>*@

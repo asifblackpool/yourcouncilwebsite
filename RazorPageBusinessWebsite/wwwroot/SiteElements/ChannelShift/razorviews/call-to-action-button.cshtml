@@ -1,0 +1,41 @@
+﻿@{
+
+    // Name: Channel Shift - call to action button
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date:27/01/2016
+}
+
+@{
+  
+  String Name = Properties.CtaText;
+  String Url  = (Properties.CtaUrl != null) ? Properties.CtaUrl.Path : Properties.CtaExternalUrl;
+
+  String FontColor  = (Properties.FontColor != null) ? Properties.FontColor : "";
+  String BackgroundColor =  (Properties.BackgroundColor != null) ? Properties.BackgroundColor: "";
+  
+  string styleBuilder = "";
+
+  styleBuilder = (FontColor != "") ?  string.Format("color:{0};", FontColor) : "";
+  styleBuilder = (BackgroundColor != "")  ? string.Format("{0}background-color:{1};", styleBuilder, BackgroundColor)  : "";
+
+}
+
+<button type="button" class="btn btn-cta" onclick="window.location.href='@Url'" style="@styleBuilder">@Name</button>
+       @*<control name="Channel Shift CTA Button" showInMenu="true" category="Favourites" viewingGroup="2">
+ <properties>
+   <category name="Call To Action Details">
+       <text name="CtaText" label="button Text" />
+       <node name="CtaUrl" label="Web Page URL" editor="single">
+         	<parameters>
+              <parameter name="ContentTypes" value="0, 16"></parameter>   
+          </parameters>
+     </node>
+     <text name="CtaExternalUrl" label="External URL" default="" /> 
+  </category>
+    <category name="Call To Style Overrides">
+       <text name="BackgroundColor" label="Add css background color" />
+       <text name="FontColor" label="Add css font color" default="" /> 
+  </category>
+  </properties>
+</control>*@

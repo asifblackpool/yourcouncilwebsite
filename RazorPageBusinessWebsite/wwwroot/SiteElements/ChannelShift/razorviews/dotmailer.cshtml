@@ -1,0 +1,112 @@
+﻿
+<div id="email-panel" class="panel panel-default">
+    <div class="panel-heading"><h3>Email sign-up </h3></div>
+    <div class="panel-body">
+        <div role="form" id="dotmailer">
+            <p>Receive our monthly e-version of Your Blackpool with information on developments, leisure activities and events in Blackpool.</p>
+            <form name="signup" id="signup" action="https://blackpoolcouncil.org/signup.ashx" method="post" style="display:block;">
+                <input type="hidden" name="addressbookid" value="1095870" />
+                <input type="hidden" name="userid" value="74179" />
+                <input type="hidden" name="ReturnURL" value="https://www.blackpool.gov.uk/SiteElements/Forms/Sign-up-stage-message.aspx">
+                <div class="form-group">
+                    <label for="email">Email address:</label>
+                    <input type="text" class="form-control" id="Email" name="Email" value="" onkeyup="clearError('email-error')" />
+                    <span id="email-error" class="error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="cd_FIRSTNAME">First Name:</label>
+                    <input type="text" class="form-control" id="cd_FIRSTNAME" name="cd_FIRSTNAME" value="" onkeyup="clearError('firstname-error')" />
+                    <span id="firstname-error" class="error"></span>
+                </div>
+                <div class="form-group">
+                    <label for="proxy-lastname">Last Name:</label>
+                    <input type="text" class="form-control" id="cd_LASTNAME" name="cd_LASTNAME" value="" onkeyup="clearError('lastname-error')" />
+                    <span id="lastname-error" class="error"></span>
+                </div>
+                <input type="button" class="btn btn-defualt" value="Subscribe" onclick="dotmailerFormServices.proxySubmit();" />
+            </form>
+</div>
+        <!-- End of signup -->
+        <style type="text/css">
+            div#dotmailer input.form-control {
+                border: 1px solid #830065;
+                border-radius: 0;
+            }
+            div#dotmailer input[type=radio] {
+                top:3px;
+            }
+            div.form-group span {
+                margin-right:20px; 
+                display:inline-block;
+                min-width:130px;
+            }
+        </style>
+    </div>
+</div>
+
+<script type="text/javascript">
+(function (dotmailerFormServices, $, undefined) {
+
+    var _utility = null;
+
+    dotmailerFormServices.proxySubmit = function () {
+
+        var form        = document.getElementById('signup');
+        var firstname   = $('#cd_FIRSTNAME').val();
+        var secondname  = $('#cd_LASTNAME').val();
+        var email       = $('#Email').val();
+        var messages    = dotmailerFormServices.submitform(email, firstname, secondname);
+
+        if (messages.email === '' && messages.firstname === '' && messages.secondname === '') {
+            $('form[name="signup"]').submit();
+            var frm = document.getElementById('form1') || null;
+            frm.action =  "https://blackpoolcouncil.org/signup.ashx"; 
+            $('#__VIEWSTATE').val('');
+            frm.submit();
+            return true;
+        }
+        else {
+            $("#email-error").html(messages.email);
+            $("#firstname-error").html(messages.firstname);
+            $("#lastname-error").html(messages.secondname);  
+            return false;
+        }
+    };
+
+    dotmailerFormServices.init = function (ut) {
+        _utility = ut;
+        //addFormTemplate();
+    };
+
+    dotmailerFormServices.submitform = function (email, firstname, secondname) {
+
+        var message = '';
+        var errorMessages = { email: '', postcode: '', firstname: '', secondname: '' };
+
+        if (firstname === "") {
+            errorMessages.firstname = 'You have not entered a first name.'
+        }
+        if (secondname === "") {
+            errorMessages.secondname = 'You have not entered a second name.'
+        }
+
+        message = _utility.validateEmailAddress(email);
+        if (message !== "") {
+            errorMessages.email = message;
+            message = '';
+        }
+
+        /* submit proxy form */
+        return errorMessages;
+    };
+
+
+})(window.dotmailerFormServices = window.dotmailerFormServices || {}, jQuery);
+
+$(document).ready(function () {
+    console.log('start page services');
+    //commonservices.removeCMSForm();
+    dotmailerFormServices.init(window.utilities);
+});
+
+</script>@*<control name="Dot Mailer" showInMenu="true" category="Favourites" viewingGroup="2"/>*@

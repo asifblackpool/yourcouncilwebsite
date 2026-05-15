@@ -1,0 +1,120 @@
+﻿/* accessability style sheet 04/03/2020  */
+.sr-only {
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+}
+
+.blackpooluk-skip-link {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+    font-size: 19px !important;
+    font-size: .875rem;
+    line-height: 1.14286;
+    display: block;
+    padding: 10px 15px
+}
+
+.blackpooluk-skip-link:active,
+.blackpooluk-skip-link:focus {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: inherit !important;
+    overflow: visible !important;
+    clip: auto !important;
+    clip-path: none !important;
+    white-space: inherit !important
+ }
+
+.blackpooluk-skip-link:link,
+.blackpooluk-skip-link:visited,
+.blackpooluk-skip-link:hover,
+.blackpooluk-skip-link:active,
+.blackpooluk-skip-link:focus {
+    color: #0b0c0c;
+ }
+
+.blackpooluk-skip-link:focus {
+   outline: 3px solid #fd0;
+   background-color: #fd0;
+   display: inline;
+   position: absolute !important;
+   top: 6px;
+   z-index: 99;
+ }
+
+#onetrust-policy-text a,
+.accessibility-tab, .accessibility-tab-100
+a.accessibility-tab, a.accessibility-tab-100 {
+    border: solid 0px red;
+}
+
+#onetrust-policy-text a:focus,
+#twitter-feed-last-tweet a:focus,
+a.accessibility-tab:focus, .accessibility-tab:focus,
+a.accessibility-tab-100:focus, .accessibility-tab-100:focus {
+    border-bottom: solid 3px black !important;
+    background-color: yellow !important;
+    text-decoration: none !important;
+    outline: none !important;
+    color: #000 !important;
+    padding: 3px !important;
+    display: inline-block !important;
+    z-index: 1 !important;
+    }
+
+a.accessibility-tab-100 {
+    width: 100% !important;
+    
+}
+
+input[type=text].accessibility-tab:focus,
+button.accessibility-tab:focus {
+    border: solid 2px yellow !important;
+    background-color: yellow !important;
+    color: #000 !important;
+    font-weight: bold !important;
+    padding: 3px !important;
+    z-index: 1 !important;
+    outline: none !important;
+}
+
+
+a.button-task {
+    height: 167px;
+    background: none;
+    cursor: pointer;
+    outline: none;
+    display: inline-block;
+}
+
+a.button-task:focus, .top-tasks:focus {
+    border-bottom: solid 3px black !important;
+    background-color: yellow !important;
+    display: block !important;
+    outline: none !important;
+ }
+
+::placeholder {
+    color: black !important;
+    font-weight:bold;
+    opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: black !important;
+    font-weight:bold;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: black !important;
+    font-weight:bold;
+}
+

@@ -1,0 +1,49 @@
+﻿
+@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - render the homepage
+    // License: Blackpool council
+    // Date: 21/02/2018
+
+}
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+
+@{ 
+    HeaderStart model = Page.Content;
+}
+
+@if (model.PageType != "Home"){
+<div class="row zero-pad-all" style="margin-left:0px; margin-right:0px;">
+    <div id="crumbs" class="clearfix col-md-12 col zero-pad-all">
+        <ul>
+            <li><a href="@StringUtility.GetUntilOrEmpty(Request.Url.ToString())" class="purple">HeadStart</a></li>
+            <li>&gt;</li>
+            @if (Page.Alias == "blog")
+            {
+                <li><a href="@string.Format("{0}{1}.aspx", model.BaseUrlPath, model.Alias.ToLower())">@model.PageTitle</a></li>
+                if (Page.selectedBlog != null)
+                {
+                    <li>&gt;</li>
+                    <li><a href="@string.Format("{0}/{1}/{2}/{3}.aspx", model.BaseUrlPath, model.Alias.ToLower(), Page.selectedBlog.DateOfPostSlug, Page.selectedBlog.TitleSlug)">@Page.SelectedBlog.Title</a></li>
+                }
+            }
+            else
+            {
+                <li><a href="@string.Format("{0}{1}.aspx", model.BaseUrlPath, model.Alias.ToLower())">@model.PageTitle</a></li>
+            }
+        </ul>
+    </div>
+</div>
+<div class="row zero-pad-all" style="margin-left:0px; margin-right:0px;"><h1 class="header-one-title">@model.PageTitle</h1></div>
+}

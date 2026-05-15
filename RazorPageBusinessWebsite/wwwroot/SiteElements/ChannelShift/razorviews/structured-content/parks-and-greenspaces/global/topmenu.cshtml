@@ -1,0 +1,67 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Top Menu - used in Adult Learning pages
+    // License: Blackpool council
+    // Date: 09/01/2022
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.ParksAndGreenSpaces;
+@using Blackpool.Zengenti.CMS.Models.SiteView;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@{
+    ParksAndGreenSpacesDTO DTO = Page.Model;
+    SiteView siteView = DTO.SiteView;
+
+    int nodeCount = 1;
+
+}
+
+<nav id="navbar" class="row zero-margin-all gutter">
+    <div class="col-lg-12 col-md-12 col-sm-12 zero-pad-all">
+        <!-- desktop view -->
+        <div id="navbar-inner" class="content-space clearfix">
+            <div class="title">
+                <a alt="home page link" href="@String.Format("{0}{1}", DTO.Config.SeoUrlList.UrlPath,DTO.Config.SeoUrlList.DefaultPage)">
+                    <span style="float:left; position:relative;" class="accessibility-tab home-page-link">Blackpool Parks<br/><span class="skills" >and Green Spaces</span></span>
+                </a>
+            </div>
+            <ul id="navigation" class="top-menu desktop">
+                <li class="mobile-close"><a class="close" href="#">&times;</a></li>
+                @if (siteView.Nodes.Count > 0)
+                {
+                    foreach (var node in siteView.Nodes)
+                    {
+                        if (nodeCount > 0 && node.IncludeInMenu && nodeCount < 7)
+                        {
+                            <li><a href="@String.Format("{0}{1}.aspx", DTO.Config.SeoUrlList.UrlPath, node.Slug)">@node.DisplayName</a></li>
+                        }
+                        nodeCount++;
+                    }
+                }
+            </ul>
+
+            <div id="mobile-header" class="mobile tablet">
+                <a id="responsive-menu-button" href="#sidr-main" style="display: inline-block;">
+                    <span class="hamburger">&nbsp;</span>
+                    <span class="hamburger" style="position:relative;">&nbsp;</span>
+                    <span class="hamburger" style="position:relative;">&nbsp;</span>
+                </a>
+            </div>
+        </div>
+        <!-- mobile view -->
+    </div>
+</nav>
+

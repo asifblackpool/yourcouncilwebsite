@@ -1,0 +1,94 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: headerbox Image - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSENDIASS;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+@{
+    ContentDTO<BlackpoolSENDIASS> DTO = Page.Model;
+    SerialisedItem serialisedItem = null;
+    string Title = string.Empty;
+    ImageHeaderBox box = null;
+    HeaderStrapLine hsl = null;
+
+
+    string headerImageBox = DTO.NoImageUrl;
+    if (DTO.Flow != null)
+    {
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            var list = item.Items.FindAll(x => x.ClassType == typeof(ImageHeaderBox));
+            if (list != null && list.Count > 0)
+            {
+                serialisedItem = list[0];
+                box = SerializeHelper.Deseralize(serialisedItem) as ImageHeaderBox;
+                break;
+            }
+        }
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            var list = item.Items.FindAll(x => x.ClassType == typeof(HeaderStrapLine));
+            if (list != null && list.Count > 0)
+            {
+                serialisedItem = list[0];
+                hsl = SerializeHelper.Deseralize(serialisedItem) as HeaderStrapLine;
+                break;
+            }
+        }
+
+        headerImageBox = (box != null && box.Image != null && box.Image.Asset != null)
+            ? String.Format("{0}{1}", DTO.BaseImageUrl, box.Image.Asset.Uri) : headerImageBox;
+
+        Title = (DTO.CurrentItem.PageType == PageTypeKeys.TOP_LEVEL) ? string.Empty : DTO.CurrentItem.Title;
+    }
+
+}
+<style type="text/css">
+        div.container-image {
+             background-attachment: scroll;
+             background-position: center;
+             background-size: cover;
+             background-image: url('@Html.Raw(headerImageBox)');
+             position:relative;
+             border-bottom: solid 0px #fff;
+             max-height: 447px;
+             height:  4447px;
+         }
+
+          div.centered-text {
+             z-index:99;
+             height:400px;
+             border:solid 0px red;
+          }
+</style>
+
+<div class="container-image clearfix">
+    <div class="centered-text center-block">
+        @if (hsl != null && hsl.ShowHeader)
+        {
+      
+            <h1 class="header-box-text">
+              @Html.Raw(String.Format("{0}", (hsl.StrapLine != null) ? hsl.StrapLine : String.Empty))
+            </h1>
+        }
+        else
+        {
+            <h1>@String.Format("{0}", Title)</h1>
+        }
+
+    </div>
+
+</div>
+

@@ -1,0 +1,266 @@
+﻿/* original 200-article style sheet */
+
+#contentwrapper .sys_articleContent img {
+    /*float:left;*/
+    margin: 0px 21px 10px 0px;
+}
+#contentwrapper .sys_articleContent,
+#contentwrapper {
+    line-height: 1.7em;
+    clear: both;
+    margin-bottom: 20px;
+}
+#contentwrapper .sys_articleContent p {
+    padding: 0 0 11px;
+}
+#contentwrapper .sys_articleContent ul li {
+    list-style: square outside;
+    padding-left: 10px;
+    line-height: 1.75em;
+    font-size: 1em;
+}
+#contentwrapper .sys_articleContent .sys_pagefooter {
+    clear: both;
+}
+#contentwrapper .sys_subtitle,
+#contentwrapper .sys_articleContent h2,
+#contentwrapper h2 {
+    font-size: 1.4em;
+    padding: 15px 0 14px 0;
+    clear: both;
+    border: none;
+    margin: 0;
+}
+#contentwrapper .sys_relatedbox {
+    border: 1px solid #CCCCCC;
+    background: #FFFFFF;
+    padding: 16px 23px;
+    margin-bottom: 20px;
+}
+#contentwrapper .sys_relatedbox ul {
+    padding-top: 2px;
+}
+#contentwrapper .sys_relatedbox ul li {
+    list-style: square inside;
+    padding: 5px 0;
+}
+#contentwrapper .sys_relatedbox span.sys_relatedbox-heading {
+    font-size: 1.3em;
+}
+#contentwrapper .sys_relatedbox div {
+    padding: 0 0 20px;
+}
+#contentwrapper .sys_relatedbox div.sys_last {
+    padding: 0 0 0;
+}
+#Body #contentwrapper div.sys_icons a.sys_relateditemslink,
+#Body #contentwrapper div.sys_icons span.sys_relateditemslink {
+    padding: 4px 3px 0 0;
+    display: block;
+    float: left;
+}
+#contentwrapper span.sys_disabledlink {
+    color: #666666;
+}
+.sys_commentlist-themed .sys_comments-control .sys_comments-title {
+    font-size: 1.7em !important;
+    font-weight: normal !important;
+}
+.sys_add-your-comment {
+    width: 500px;
+}
+div.sys_addcomments-row input,
+div.sys_addcomments-row textarea {
+    border: 1px solid #DFE0E2;
+}
+#Body .sys_wrapper #contentwrapper div.sys_comments-rating-and-button input.sys_button {
+    background: url('/SiteImages/Images/commentSubmitBg.png') no-repeat;
+    color: #ffffff;
+    width: 130px;
+    height: 29px;
+}
+.sys_theme-simple .sys_comments-control .sys_add-your-comment .sys_addcomments-row {
+    margin-bottom: 7px;
+}
+.sys_addcomments-row textarea {
+    height: 80px;
+}
+.sys_imagebox.sys_image-right {
+    float: right;
+    width: 250px;
+    margin: 0 0px 10px 10px;
+}
+.sys_imagebox.sys_image-left {
+    float: left;
+    width: 250px;
+    margin: 0 10px 10px 0px;
+}
+#contentwrapper .sys_imagebox.sys_image-right img {
+    float: none !important;
+    display: block;
+}
+#contentwrapper .sys_imagebox .sys_image-caption {
+    clear: both;
+    width: 100%;
+    font-size: 0.9em;
+}
+#contentwrapper table {
+    width: 100%;
+    border-collapse: collapse-all;
+    margin: 0 0 15px 0;
+}
+#contentwrapper table th,
+#contentwrapper table td {
+    padding: 0.4em 8px;
+    border-top: 1px solid #d4d4d4;
+    border-bottom: 1px solid #d4d4d4;
+}
+#contentwrapper table th {
+    background: #b1b1b1;
+    color: #fff;
+}
+#contentwrapper table td {} .sys_sitemap li ul {
+    padding: 5px;
+}
+.sys_reportpageform {
+    padding: 5px 0;
+}
+.sys_reportpageform #ReportPagePageTitle {
+    padding: 5px 20px;
+}
+.sys_reportpageform .sys_reporturl {
+    display: none;
+}
+
+
+
+/* contensis form overrides */
+.sys_cms-form-body li input,
+.sys_cms-form-body li select,
+.sys_cms-form-body li textarea,
+.sys_cms-form-body li label,
+.sys_cms-form-body li .sys_legend,
+.sys_cms-form-body li .sys_fieldlabel,
+.sys_cms-form-body li div label,
+.sys_cms-form-body .sys_sectionbreak-header,
+.sys_cms-form-body .sys_sectionbreak-text {
+     font-family: 'Calibri W01 Light', Calibri, Arial;
+     font-size:20px;
+}
+.sys_cms-form-body .sys_sectionbreak-header {
+     font-size:24px;
+}
+.sys_cms-form-body textarea.sys_small, 
+.sys_cms-form-body textarea.sys_medium, 
+.sys_cms-form-body textarea.sys_large 
+{
+    width:100%;
+}
+
+button.sys_form-submit { color:#fff; font-size:25px; text-transform:uppercase; background-color:#830065; border:solid 0px #fff; height:40px; }
+
+
+/* additonal info details */
+#sidebar div.sys_relateditemslisting-control h2.sys_standardlist-title {
+    background-color: #e3e4e6;
+    padding: 5px;
+    margin-top: 0px;
+}
+#sidebar div.sys_relateditemslisting-control h3.sys_standardlist-title {
+    background-color: #e3e4e6;
+    ;
+    padding: 5px;
+    margin-top: 0px;
+}
+#sidebar div#RelatedItemsasStandardList_List ul {
+    list-style-type: none;
+    padding: 0px;
+}
+#sidebar div#RelatedItemsasStandardList_List ul li {} #sidebar div#RelatedItemsasStandardList_List ul li a {
+    font-weight: bold;
+    color: #041c2c;
+}
+
+/* articles caption text */
+div.sys_imagebox > div.sys_caption {
+    background-color: #e3e4e6;
+    padding: 5px;
+}
+
+/*contact article control */
+div#contact-details {
+    background-color: #e3e4e6;
+    padding: 10px 0px 10px 0px;
+    margin: 0px 0px 10px 0px;
+}
+div#contact-details > div#contact-wrapper {
+    margin-left: 5px;
+}
+div#contact-details h3 {
+    margin-top: 0px;
+}
+div#contact-address {
+    margin: 10px 0px 10px 0px;
+}
+div.sys_imagebox > div.sys_caption {
+    background-color: #ccd2d5;
+    padding: 5px;
+}
+
+
+@media only screen and (max-width:768px)
+{
+    button.sys_form-submit { 
+        font-size:19.2px; 
+        height:35px; 
+
+    }
+    .sys_cms-form-body input.sys_medium, 
+    .sys_cms-form-body select.sys_medium
+    {
+        width:100%;
+    }
+}
+
+@media only screen and (min-width: 100px) and (max-width: 480px) {
+    div,
+    a,
+    p,
+    span,
+    form,
+    label,
+    li,
+    ul,
+    ol,
+    input,
+    blockquote {
+        font-size: 16px;
+    }
+    /* contensis form overrides */
+    .sys_cms-form-body li input,
+    .sys_cms-form-body li select,
+    .sys_cms-form-body li textarea,
+    .sys_cms-form-body li label,
+    .sys_cms-form-body li .sys_legend,
+    .sys_cms-form-body li .sys_fieldlabel,
+    .sys_cms-form-body li div label,
+    .sys_cms-form-body .sys_sectionbreak-text, 
+    .sys_cms-form-body .sys_sectionbreak-header {
+     font-size:16px;
+    }
+
+    .sys_cms-form-body .sys_sectionbreak-header {
+     font-size:20px;
+    }
+
+
+    .sys_imagebox.sys_image-left,
+    .sys_imagebox.sys_image-right {
+        width: 100%;
+    }
+    .sys_image,
+    .sys_caption {
+        width: 250px;
+    }
+
+}

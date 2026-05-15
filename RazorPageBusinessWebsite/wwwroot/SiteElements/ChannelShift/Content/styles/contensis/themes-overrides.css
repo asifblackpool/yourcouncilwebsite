@@ -1,0 +1,67 @@
+﻿.sys_theme-simple h1,
+.sys_theme-simple h2,
+.sys_theme-simple h3,
+.sys_theme-simple h4,
+.sys_standardlist-title,
+.sys_search-title {
+    color: #830065;
+}
+.sys_itemslist {
+    list-style-type: none;
+}
+div.sys_noresults {
+    display: none;
+}
+
+
+.sys_theme-simple .sys_itemslist div.sys_0 {
+    background-image:none;
+}
+
+/* File Upload */
+.sys_cms-form-body input.formsuploader {
+    float: left;
+    width: 100%;
+    margin: 10px;
+    padding: 5px;
+    border: dashed 0.5px grey;
+}
+
+.sys_cms-form-body .sys_instructions {
+    display: none;
+    top: 0;
+    left: 100%;
+    position: absolute;
+    border: 1px solid #cfd6d7;
+    color: #474c50;
+    background: #eceff0;
+    margin-top: 5px;
+    margin-left: 10px;
+    padding: 6px 8px;
+    width: 55%;
+    font-size: 1.1em !important;
+}
+
+
+
+
+@media screen and (max-width: 480px) {
+
+    #search-box-inner .col-xs-9 {
+        width: 120px;
+        float: right;
+    }
+
+    /* search results paging */
+    .sys_theme-simple .sys_flickrpager .sys_paginginfo {
+        width: 100%;
+        margin: auto;
+        text-align: center;
+        height: 40px;
+    }
+
+    .sys_theme-simple .sys_flickrpager .sys_navigation {
+
+    text-align: center;
+    }
+}

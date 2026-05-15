@@ -1,0 +1,23 @@
+﻿@*<control name="Channel Shift Related List Links" showInMenu="true" category="Favourites" viewingGroup="2">
+ <properties>
+   <category name="standard related list Links">
+       <text name="HeaderTitle" label="Title" />
+       <text name="CtaText" label="Text" />
+       <node name="CtaUrl" label="Web Page URL" editor="single">
+         	<parameters>
+              <parameter name="ContentTypes" value="0, 16"></parameter>   
+          </parameters>
+       </node>
+       <text name="CtaExternalUrl" label="CTA External URL" />
+       <repeater name="Items" min="1" max="12" label="Page Links">  
+        <text name="Title" label="Title (Link)" />
+         <node name="Url" label="URL"   >
+          	<parameters>
+              <parameter name="ContentTypes" value="0,16"></parameter>
+          </parameters>
+        </node>
+        <text name="ExternalUrl" label="External URL" />
+      </repeater> 
+  </category>
+  </properties>
+</control>*@

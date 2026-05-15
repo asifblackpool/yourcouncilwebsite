@@ -1,0 +1,137 @@
+﻿
+@{
+
+    // Name: Channel Shift - accordion content items
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date:20/05/2018
+}
+
+@functions {
+
+
+    public static class contentHtmlHelper
+     {
+          public static string Converter(string text)
+          {
+               string temp = text;
+          
+               temp =  temp.Replace("%26amp;","&");
+               temp =  temp.Replace("%26","&");
+               temp =  temp.Replace("&nbsp;"," ");
+               temp =  temp.Replace("&rsquo;","'");
+               temp =  temp.Replace("&lt;","<");   
+               temp =  temp.Replace("&gt;",">");
+
+               return temp;
+          }
+     }
+
+    public class AccordionContent
+    {
+        private List<AccordionItemContent> _items = null;
+
+        public AccordionContent()
+        {
+            _items = new List<AccordionItemContent>();
+        }
+
+        public void AddAccordionItemContent(AccordionItemContent item)
+        {
+            _items.Add(item);
+        }
+
+        public List<AccordionItemContent> Items
+        {
+            get { return _items; }
+        }
+    }
+
+    public class AccordionItemContent
+    {
+        public string Name { get; set; }
+        public string Content { get; set; }
+        public ContentLink Link { get; set; }
+    }
+
+    public class ContentLink
+    {
+        public String Text { get; set; }
+        public String Href { get; set; }
+    }
+
+}
+
+@{
+    //Grab configurable data
+    AccordionContent accordionContent = new AccordionContent();
+    AccordionItemContent a = null;
+
+
+    foreach (var item in Properties.AccordionItemRepeater)
+    {
+        Contensis.Framework.Web.ContentNode node = (item.Url == null) ? null : item.Url;
+
+        accordionContent.AddAccordionItemContent(new AccordionItemContent()
+        {
+            Name = item.Title,
+            Content = contentHtmlHelper.Converter(item.Content),
+            Link = new ContentLink() { Text = (item.UrlText == null) ? string.Empty : item.UrlText, Href = (node == null) ? string.Empty : node.Path }
+        });
+
+    }
+
+}
+
+
+<div class="accordion clearfix">
+    <ul id="accordion-ul" class="outer-ul">
+        @foreach (var item in accordionContent.Items)
+        {
+            <li class="head">
+                <a id='link-head-@item.Name.Replace(" ", "-")' class="link-head accessibility-tab-100" href="#ignore"><h2 class="clearfix"><span class="pull-left">@item.Name</span><span class="pull-right"><i title="Open or close" class="icon-arrow-down"></i></span></h2></a>
+                <div class="accordion-togglable" style="display none;">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12 zero-pad-all" style="background-color:#fff;">
+                
+                            @Html.Raw(HttpUtility.HtmlDecode(item.Content))
+                            @if (!String.IsNullOrEmpty(item.Link.Text))
+                            {
+                                  <br/><span><a href="@item.Link.Href" class="accessibility-tab">@item.Link.Text</a></span>
+                            }
+                        </div>
+                     </div>
+                 </div>
+           </li>
+        }
+    </ul>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        window.accordionservices.init();
+    });
+</script>
+<style type="text/css">
+    li.head:hover {
+        background-color: #F8F8F8;
+    }
+</style>
+
+@*<control name="Accordion Items Razor" showInMenu="true" viewingGroup="1">
+      <properties>
+        <category name="Accordion">
+          <repeater name="AccordionItemRepeater" min="0" max="25">
+            <text name="Title" label="Accordion Content Title" />
+            <text name="Content">
+              <parameters> <parameter name="MultiLine" value="true"/></parameters>
+            </text>
+            <text name="UrlText" label="Web Page Url Text" />
+            <node name="Url" label="Web Page URL" editor="single">
+                <parameters>
+                    <parameter name="ContentTypes" value="0, 16"></parameter>
+                </parameters>
+            </node>
+          </repeater>
+        </category>
+     </properties>
+    </control>*@

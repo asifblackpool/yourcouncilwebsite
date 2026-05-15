@@ -1,0 +1,61 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// Name: footer - used in Parks and Greenspaces pages 
+// License: Blackpool council
+// Date: 10/03/2022
+}
+
+
+@using System;
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolAdultLearning;
+@using Blackpool.Zengenti.CMS.Models.SiteView;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+
+@{
+
+    ParksAndGreenSpacesDTO DTO = Page.Model;
+    SiteView siteView = DTO.SiteView;
+    List<Zengenti.Contensis.Delivery.Node> temp = new List<Zengenti.Contensis.Delivery.Node>();
+    Zengenti.Contensis.Delivery.Node footerNode = null;
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.ParksAndGreenspaceKey }
+    };
+
+    DTO.Config = config;
+
+
+
+}
+
+
+
+<footer class="clearfix">
+    <div id="footer-links-container" class="row zero-margin-all clearfix gutter" style="width:100%;">
+        <div class="col-md-6 col-sm-6 zero-margin-all">
+            <ul class="footer-links ">
+                <li><a class="calibri-link accessibility-tab-white" href="https://www.blackpool.gov.uk/Privacy-policy-and-cookies.aspx">Privacy Policy</a></li>
+                <li><a class="calibri-link accessibility-tab-white" href="https://www.blackpool.gov.uk/Disclaimer.aspx">Disclaimer</a></li>
+                <li><a class="calibri-link accessibility-tab-white" href="https://www.blackpool.gov.uk/Help.aspx">Help</a></li>
+            </ul>
+        </div>
+        <div class="col-md-6 col-sm-6">
+            <img src="~/SiteElements/ChannelShift/Content/images/parks-and-greenspaces/footer-blackpool-council.png" alt="blackpool parks and greenspace council" class="footer-logo"style="width:280px; height:80px;" />
+        </div>
+    </div>
+</footer>
+

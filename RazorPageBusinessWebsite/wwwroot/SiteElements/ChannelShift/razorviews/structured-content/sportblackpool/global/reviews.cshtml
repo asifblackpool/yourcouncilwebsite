@@ -1,0 +1,68 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@{
+
+    //breadcrum builder
+    SportBlackPoolDTO DTO = Page.Model;
+    Zengenti.Data.PagedList<SportBlackpool> list = DTO.List;
+    SportBlackpoolHelper helper = new SportBlackpoolHelper(list.Items);
+    List<MenuLink> footerlinks = new List<MenuLink>();
+
+        Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = Blackpool.Zengenti.CMS.Constants.SeoKeys.SportBlackPoolKey }
+    };
+
+    DTO.Config = config;
+    string path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+
+
+    if (DTO.CurrentItem != null)
+    {
+
+    }
+}
+<div class="background-angle"></div>
+<div id="happy-members" class="clearfix">
+  
+</div>
+<div id="review-loading-indicator" style="position: relative; left: 40%; top: 50%; margin-top: 10px; display: none;">
+    <strong><img src="/SiteElements/ChannelShift/Content/images/gif.gif" alt="loading bin" />  ... Loading</strong>
+</div>
+
+<style type="text/css">
+    footer {
+
+        background-color: #041C2C !important;
+  
+
+    }
+</style>
+<script>
+$(document).ready(function() {
+    insightnpsservices.init();
+});
+
+</script>

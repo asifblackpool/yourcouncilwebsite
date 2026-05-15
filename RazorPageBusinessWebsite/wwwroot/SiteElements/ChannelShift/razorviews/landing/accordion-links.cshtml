@@ -1,0 +1,193 @@
+﻿@{
+
+    // Name: Channel Shift - accordion links - to be used within landing pages
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date:27/01/2016
+}
+
+@functions {
+
+      public class Accordion
+      {
+          private List<AccordionItem> _items = null;
+
+          public Accordion()
+          {
+              _items = new List<AccordionItem>();
+          }
+          
+        public void AddAccordionItem(AccordionItem item)
+        {
+            _items.Add(item);
+        }
+        
+        public List<AccordionItem> Items 
+        {
+            get { return _items; }
+        }    
+      }
+      
+      public class AccordionItem
+      {
+          public string Name { get; set; }
+          public List<SectionLinks> Links { get; set; }
+          public CtaButton CallToActionButton { get; set;  }
+      }
+      
+      
+      public class SectionLinks
+      {
+          public String Name { get; set; }
+          public String Url { get; set; }
+      }
+
+
+      public class CtaButton
+      {
+          public String Name { get; set; }
+          public String Url { get; set; }
+      } 
+      
+      
+      public class InUse
+      {
+          public Boolean Active   { get; set;    }
+          public String Category { get; set; }
+      }    
+}
+
+
+@{
+   //Grab configurable data 
+   Accordion accordion = new Accordion();
+   AccordionItem a = new AccordionItem();
+   a.Name = Properties.HeaderTitle;
+  
+   string Url = "";
+   string ctaUrl =  Properties.CtaExternalUrl;
+          ctaUrl = (Properties.CtaUrl != null && ctaUrl == "") ? Properties.CtaUrl.Path : ctaUrl;
+   
+  
+  
+   a.CallToActionButton = new CtaButton() { Name = Properties.CtaText, Url = ctaUrl };
+   List<SectionLinks> sl = new List<SectionLinks>();
+  
+   foreach (var links in Properties.Items){
+     
+   Url =  links.ExternalUrl;
+   Url = (links.Url != null && Url == "") ? links.Url.Path : Url;
+  
+     sl.Add(new SectionLinks() { Name = links.Title, Url = (Url != "") ? Url : "#" });
+   }
+   a.Links = sl;
+   accordion.AddAccordionItem(a);
+       
+   int TotalAccordionItems = accordion.Items.Count;
+   int Counter = 1;
+   int LinksMax = 4;
+   int ctaColWidth = 2;
+   string nameId = "";
+      
+}
+
+
+
+@foreach (var accordionItem in accordion.Items)
+{
+    int TotalLinks = accordionItem.Links.Count;
+  
+
+    List<SectionLinks> linksColumn1 = null;
+    List<SectionLinks> linksColumn2 = null;
+    
+    if (TotalLinks > LinksMax){
+        linksColumn1 = accordionItem.Links.Take(LinksMax).ToList();
+        linksColumn2 = accordionItem.Links.Skip(LinksMax).ToList();    
+    }
+    else {
+        linksColumn1 = accordionItem.Links.ToList();
+        ctaColWidth = 4;
+    }
+
+    nameId = accordionItem.Name.Replace(" ", "-").Replace("/", "-");
+    
+
+   <li class="head">
+     <a id="@String.Format("link-head-{0}", nameId)" href="#ignore" class="link-head accessibility-tab-100">
+  		<h2 class="clearfix">
+  			<span class="pull-left">@accordionItem.Name</span>
+  			<span class="pull-right"><i title="Open or close" class="icon-arrow-down"></i></span>
+  		</h2>
+     </a>
+     <div class="accordion-togglable" style="display: none;">
+          <div class="row">
+
+              @if (linksColumn2 != null)
+              {
+                  //column one links
+     <div class="@String.Format("col-md-{0} col-sm-{1} col-xs-{1} zero-pad-all", 5, 6)">
+                    <ul>
+                        @foreach (var item in linksColumn1) 
+                        { 
+                            <li><a class="accessibility-tab" href="@item.Url">@item.Name</a></li>
+                        }
+                    </ul>
+                  </div>
+                 //column two links
+                  <div class="@String.Format("col-md-{0} col-sm-{1} col-xs-{1} zero-pad-all", 5, 6)">
+                    <ul>
+                        @foreach (var item in linksColumn2) 
+                        { 
+                            <li><a class="accessibility-tab" href="@item.Url">@item.Name</a></li>
+                        }
+                    </ul>
+                  </div>
+
+              }
+              else
+              {
+                  //column one links
+                  <div class="@String.Format("col-md-{0} col-sm-{0} col-xs-{0} zero-pad-all", 8)">
+                    <ul>
+                        @foreach (var item in linksColumn1) 
+                        { 
+                            <li><a class="accessibility-tab" href="@item.Url">@item.Name</a></li>
+                        }
+                    </ul>
+                  </div>
+              }
+  <div class="@String.Format("col-md-{0} col-sm-{0} col-xs-{0} zero-pad-all", ctaColWidth)">  
+                  @if (!String.IsNullOrEmpty(accordionItem.CallToActionButton.Url)) { 
+                  <button type="button" class="btn btn-cta accessibility-tab" onclick="window.location.href='@accordionItem.CallToActionButton.Url'">@accordionItem.CallToActionButton.Name</button>
+                  }
+              </div>
+          </div>
+     </div>
+  </li>
+  Counter++;
+
+}
+@*<control name="Channel Shift Accordion Item" showInMenu="true" category="Favourites" viewingGroup="2">
+ <properties>
+   <category name="standard accordion item">
+       <text name="HeaderTitle" label="Header Title" />
+       <text name="CtaText" label="CTA Text" />
+       <node name="CtaUrl" label="CTA Web Page URL" editor="single">
+         	<parameters>
+              <parameter name="ContentTypes" value="0, 16"></parameter>   
+          </parameters>
+       </node>
+       <text name="CtaExternalUrl" label="CTA External URL" />
+       <repeater name="Items" min="1" max="12" label="Page Links">  
+        <text name="Title" label="Title (Link)" />
+         <node name="Url" label="URL"   >
+          	<parameters>
+              <parameter name="ContentTypes" value="0,16"></parameter>
+          </parameters>
+        </node>
+        <text name="ExternalUrl" label="External URL" />
+      </repeater> 
+  </category>
+  </properties>
+</control>*@

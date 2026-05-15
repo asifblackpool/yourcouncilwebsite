@@ -1,0 +1,153 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date: 10/01/2025
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+@using Blackpool.Zengenti.CMS.Models.SiteView;
+@using Blackpool.Zengenti.CMS.Models.Templates;
+
+
+
+@{
+
+    Zengenti.Data.PageOptions options = new PageOptions(0, 200);
+    String exceptionError = string.Empty;
+    Boolean isError = false;
+    SiteView topMenu = new SiteView();
+    topMenu.HomeNodePath = "forms";
+    String razorViewPath = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/siteview/forms";
+    topMenu.DefaultNodePath = topMenu.HomeNodePath;
+    Zengenti.Contensis.Delivery.Node node = null;
+    Zengenti.Contensis.Delivery.Node selectedNode = null;
+    List<Zengenti.Contensis.Delivery.Node> temp = new List<Zengenti.Contensis.Delivery.Node>();
+    BGStandard selectedItem = null;
+    List<MenuLink> formLinks = new List<MenuLink>();
+    string title = string.Empty;
+    string slugs = (!String.IsNullOrEmpty(Request.QueryString["slug"])) ? Request.QueryString["slug"] : "contact-us-form";
+
+
+    string currentUrl = this.Request.RawUrl.ToLower();
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                           ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.FormsKey }
+    };
+
+
+    try
+    {
+        Zengenti.Data.PagedList<BGStandard> list = client.Entries.List<BGStandard>(new EntryListOptions
+        {
+            ContentTypeId = ContensisClientKeys.BG_STANDARD,
+            LinkDepth = 1,
+            PageOptions = options
+
+        });
+        node = client.Nodes.GetByPath(topMenu.DefaultNodePath, null, entryLinkDepth: 1, allowPartialMatch: true);
+
+        if (node != null && node.Children() != null)
+        {
+            var formNodes = node.Children();
+            foreach (Zengenti.Contensis.Delivery.Node item in formNodes)
+            {
+                if (item.Entry() != null)
+                {
+                    formLinks.Add(new MenuLink()
+                    {
+                        Text = item.DisplayName,
+                        Href = string.Format("{0}{1}.aspx", config.SeoUrlList.UrlPath, item.Slug)
+                    });
+                }
+            }
+
+            if (formNodes != null)
+            {
+                selectedNode = formNodes.SingleOrDefault(x => x.Slug.ToLower().Trim() == slugs.ToLower().Trim());
+                string Id = selectedNode.EntryId.ToString();
+
+                //var selectedItem = client.Entries.Get(Id);
+                selectedItem = list.Items.FirstOrDefault(x => x.Sys.Id.ToString() == Id);
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        exceptionError = ex.Message;
+        exceptionError = exceptionError + "<br/><br/>" + ex.StackTrace;
+        exceptionError = exceptionError + "<br/><br> we are looking for slug " + slugs;
+        isError = true;
+        if (isError)
+        {
+            @Html.Raw(String.Format("<strong>{0}</strong>", exceptionError))
+        }
+    }
+}
+
+
+@if (!isError)
+{
+    <ul style="display:none;">
+        @foreach (var link in formLinks)
+        {
+            <li><a href='@string.Format("{0}", link.Href)'>@link.Text</a></li>
+        }
+    </ul>
+    
+    if (selectedItem != null)
+    {
+        @RenderPage(String.Format("{0}{1}", razorViewPath, "/partials/standardBG.cshtml"), new { Model = selectedItem })
+    }
+
+    <script type="text/javascript">
+
+    var changePageTitle = function () {
+        var titleElement = document.getElementById("landing-title");
+        var titleChildren = titleElement.getElementsByTagName("H1");
+        titleChildren[0].innerHTML = '@selectedItem.PageTitle';
+    };
+
+    var changeBreadcrumb = function () {
+
+        var href = '@string.Format("{0}{1}.aspx", config.SeoUrlList.UrlPath, selectedNode.Slug)';
+            var crumbs = document.getElementById("crumbs");
+            var listChildren = crumbs.getElementsByTagName("li");
+            for (var i = 0; i < listChildren.length; i++) {
+                var li = listChildren[i];
+                if (li.className === 'last') {
+                    li.innerHTML = '@selectedItem.PageTitle';
+                    var atag = li.getElementsByTagName("a");
+                    atag.href = href;
+                }
+            }
+        };
+
+    changePageTitle();
+    changeBreadcrumb();
+
+    </script>
+}
+
+

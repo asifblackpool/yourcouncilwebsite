@@ -1,0 +1,176 @@
+﻿
+@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Content (used for Sendiass)
+    // License: Blackpool council
+    // Date: 14/07/2019
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSENDIASS;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+
+
+@functions {
+
+
+    enum ColumnType { oneCol = 0, twoCol = 1 };
+    ColumnType _columntype = ColumnType.oneCol;
+
+
+    ColumnType CloumnView
+    {
+        get
+        {
+            return _columntype;
+        }
+        set
+        {
+            _columntype = value;
+        }
+    }
+
+    ColumnType PageColumnView(List<SerialisedContent> sc)
+    {
+        _columntype = ColumnType.oneCol;
+        foreach (SerialisedContent item in sc)
+        {
+
+            string className = item.Items[0].ClassName;
+            string containerType = item.Items[0].ContainerType;
+
+            switch (className)
+            {
+
+                case "ContentBox":
+                case "CTALink":
+                case "Form":
+                    break;
+                case "Video":
+                case "ImageBox":
+                    _columntype = ColumnType.twoCol;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return _columntype;
+    }
+}
+@{
+
+    ContentDTO<BlackpoolSENDIASS> DTO = Page.Model;
+
+
+ }
+
+
+    <div id="content-inner" class="row content-space clearfix" style="margin-top:0px;">
+        @if (PageColumnView(DTO.Flow.GetContent) == ColumnType.oneCol)
+        {
+        <div id="mainbar"  class="col-md-12 col-sm-12 zero-margin-all zero-pad-left">
+            @foreach (SerialisedContent item in DTO.Flow.GetContent)
+            {
+                string partial = string.Empty;
+                string className = item.Items[0].ClassName;
+                string containerType = item.Items[0].ContainerType;
+                <strong style="display:none;">@className</strong>
+                switch (className)
+                {
+                    case "AccordionContent":
+                        <br />
+                        <br />
+                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/accordion.cshtml"), new { Model = DTO })
+                        break;
+                    case "ContentBox":
+                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/markup.cshtml"), new { Model = DTO, Markup = item.Items })
+                        break;
+                    case "CTALink":
+                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/cta-link.cshtml"), new { Model = DTO, Markup = item.Items })
+                        break;
+                    case "Video":
+                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/video.cshtml"), new { Model = DTO })
+                        break;
+                    case "Form":
+                        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/form.cshtml"), new { Model = DTO })
+                        break;
+                    default:
+                        break;
+                }
+            }
+        </div>
+        }
+
+        @if (PageColumnView(DTO.Flow.GetContent) == ColumnType.twoCol)
+        {
+            <div class="col-md-6 col-sm-12 zero-pad-right zero-pad-left zero-margin-all">
+                @foreach (SerialisedContent item in DTO.Flow.GetContent)
+                {
+                    switch (item.Items[0].ClassName)
+                    {
+
+                        case "ContentBox":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/markup.cshtml"), new { Model = DTO, Markup = item.Items })
+                            break;
+                        case "CTALink":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/cta-link.cshtml"), new { Model = DTO, Markup = item.Items })
+                            break;
+                        case "Form":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/form.cshtml"), new { Model = DTO })
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            </div>
+            <div class="col-md-6 col-sm-12 zero-pad-right zero-margin-all right-column">
+                @foreach (SerialisedContent item in DTO.Flow.GetContent)
+                {
+                    switch (item.Items[0].ClassName)
+                    {
+
+                        case "Video":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/video.cshtml"), new { Model = DTO })
+                            break;
+                        case "ImageBox":
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/image-box.cshtml"), new { Model = DTO, ImageBoxes = item.Items })
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            </div>
+
+            <div class="col-md-12 col-sm-12 zero-margin-all zero-pad-left">
+                @foreach (SerialisedContent item in DTO.Flow.GetContent)
+                {
+                    switch (item.Items[0].ClassName)
+                    {
+                        case "AccordionContent":
+                            <br/>
+                            <br/>
+                            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/partials/accordion.cshtml"), new { Model = DTO })
+                            break;
+                    }
+                }
+            </div>
+        }
+    </div>
+

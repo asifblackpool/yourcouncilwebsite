@@ -1,0 +1,44 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Top Menu - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 09/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Zengenti.Search;
+
+@{
+    
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                            ContensisClientKeys.CLIENT_ID,
+                            ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+    var query = new Zengenti.Search.Query(
+        Zengenti.Search.Op.Contains("title", "HeadStart")
+    );
+
+    //query.OrderBy.Add("-releaseDate");
+    query.PageIndex = 1;
+    query.PageSize = 50;
+    query.Fields = new[] {"title"};
+
+    // Execute the search
+    var results = client.Entries.Search(query);
+   
+
+}

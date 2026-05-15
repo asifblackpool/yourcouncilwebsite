@@ -1,0 +1,88 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Top Menu - used in head start page
+    // License: Blackpool council
+    // Date: 16/01/2018
+}
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using System.Collections;
+
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+
+
+@{
+    string cms = System.Configuration.ConfigurationManager.AppSettings.Get("CMS_URL");
+    string api = System.Configuration.ConfigurationManager.AppSettings.Get("Blackpool_Root_API_URL");
+
+    string RazorViewHeadStartPath = String.Format("{0}/{1}",ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH, "/headstart/");
+  
+    var client = Zengenti.Contensis.Delivery
+        .ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, 
+                                ContensisClientKeys.CMS_URL, 
+                                ContensisClientKeys.CLIENT_ID, 
+                                ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+    // Get all entries with specified paging options
+    var list = client
+       .Entries
+       .List<HeaderStart>(new Zengenti.Contensis.Delivery.EntryListOptions
+       {
+           ContentTypeId = ContensisClientKeys.HEADSTART_CONTENTTYPE,
+           LinkDepth = 2
+       });
+
+    List<HeaderStart> topmenu = new List<HeaderStart>();
+    HeaderStart homeItem = null;
+    HeaderStart currentItem = null;
+    string alias = string.Empty;
+
+    HeaderStart footerContent = null;
+  
+    if (list != null)
+    {
+        List<HeadStartContent> content = null;
+        homeItem = list.Items.Find(x => x.PageType == "Home");
+        currentItem = homeItem;
+        content = homeItem.PageContent;
+        topmenu = list.Items.FindAll(x => x.MenuType == "Top" && x.IsActive == true);
+        alias = (!String.IsNullOrEmpty(Request.QueryString["alias"])) ? Request.QueryString["alias"].Replace(".aspx", String.Empty) : "";
+        topmenu.Sort(new HeaderStartSort());
+
+        if (list.Items.Find(x => x.Alias.ToLower() == alias.ToLower()) != null)
+        {
+            currentItem = list.Items.Find(x => x.Alias.ToLower() == alias.ToLower());
+        }
+      
+        footerContent = list.Items.Find(x => x.MenuType == "Footer");
+	}
+}
+<div id="container" class="gutter clearfix" style="max-width: 1920px; border: solid 0px pink; margin: auto;">
+    @RenderPage(String.Format("{0}{1}", RazorViewHeadStartPath, "global/topmenu.cshtml"), new { TopMenu = topmenu, HomeItem = homeItem, Alias = alias })
+    @RenderPage(String.Format("{0}{1}", RazorViewHeadStartPath, "global/imagebanner.cshtml"), new { Content = currentItem })
+	<div class="homepage-root-outer-container move clearfix content" style="margin: 0px; padding: 0px;">
+		<div id="root-container" class="homepage-max-width clearfix" style="margin-top: 0px; background-color: #fff;">
+			<div id="dynamic-html-content" class="row zero-pad-left zero-pad-right clearfix">
+                @RenderPage(String.Format("{0}{1}", RazorViewHeadStartPath, "content.cshtml"), new { ContentList =  list.Items, Alias = alias, RazorPath = RazorViewHeadStartPath })
+			</div>
+		</div>
+	</div>
+    @RenderPage(String.Format("{0}{1}", RazorViewHeadStartPath, "global/footer.cshtml"), new { Content = footerContent })
+</div>
+<script type='text/javascript'>
+$(document).ready(function () {
+window.commonservices.init('@cms','@api');
+});
+</script>@*<control name="headstart razor template" showInMenu="true" category="Favourites" viewingGroup="2" />*@

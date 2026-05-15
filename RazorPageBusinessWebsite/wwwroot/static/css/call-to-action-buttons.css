@@ -1,0 +1,46 @@
+﻿:root {
+    /* Main brand colors */
+    --corporate-green-color: #B3bd00;
+    --corporate-purple-color: #830065;
+    --corporate-dark-blue-color: #041c2c;
+    --corporate-grey-color: #e6e6e6;
+    --corporate-yellow-color: #ffd800
+}
+
+a.call-to-action, a.cta-button {
+    display: inline-block
+}
+
+btn-cta, a.call-to-action, a.cta-button {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.btn-cta, a.call-to-action, a.cta-button {
+    background-color: var(--corporate-green-color);
+    color: var(--corporate-dark-blue-color);
+    width: initial;
+    white-space: normal;
+    text-transform: lowercase;
+    border-radius: 0;
+    border: 0 solid red;
+    margin: 1em 0;
+    padding: 9px 12px
+}
+
+a.cta-button {
+    background-color:var(--corporate-yellow-color);
+}
+
+.btn-cta::first-letter, 
+ a.call-to-action::first-letter,
+a.cta-button:first-letter {
+    text-transform: uppercase
+}
+
+.btn-cta:hover, a.call-to-action:hover,
+a.cta-button:hover {
+    color: var(--corporate-dark-blue-color);
+    background-color: var(--corporate-grey-color);
+    border-color: #adadad;
+}

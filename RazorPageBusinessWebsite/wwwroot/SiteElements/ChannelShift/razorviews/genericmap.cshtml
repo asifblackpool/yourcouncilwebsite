@@ -1,0 +1,75 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Load Google Map - used in Adult Learning Pages
+    // License: Blackpool council
+    // Date: 11/10/2021
+}
+
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+@using Blackpool.Zengenti.CMS.Models.NewsAndEvents;
+@using Zengenti.Contensis.Delivery;
+@using Blackpool.Zengenti.CMS.Helpers.ContentTypes;
+
+@{
+
+    string apiKey                   = System.Web.Configuration.WebConfigurationManager.AppSettings["GoogleApiKey"];
+    string Lat                      = string.empty;
+    string Lon                      = string.empty;
+    VenueHelper venueHelper         = null;
+
+     var items = Properties.MapDetails;
+    foreach (var item in items)
+    {
+        Lat = item.Lat;
+        Lon = item.Lon;
+        height = item.Height;
+        break;
+    }
+
+    venueHelper = new VenueHelper(null, apiKey);
+   
+}
+
+@if (apiKey != null)
+{
+
+    <div id="map" @string.Format("style='width:100%;height:{0}px;background:yellow'", height)></div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            googlemapservices.map('@Lat', '@Lon', "map", 17);
+        });
+    </script>
+    <script src="@venueHelper.Googlemap_JS_API_URL"></script>
+}
+
+@*<control name="channel shift Generic Map" showInMenu="true" category="favourites" viewingGroup="1">
+ <properties>
+    <category name="Map Builer">
+      <instruction label="Configurable Top Tasks">
+        Example 	: Blackpool Tower 
+        
+        			lat	  : 53.815884, 
+              lon   : -3.055291
+        			height : 650 (this will be in px)
+      </instruction>
+     
+      <repeater name="MapDetails" min="1" max="1">  
+        <text name="Lat" />
+        <text name="Lon" />
+        <text name="Height" />
+      </repeater>
+    </category>
+  </properties>
+</control>*@

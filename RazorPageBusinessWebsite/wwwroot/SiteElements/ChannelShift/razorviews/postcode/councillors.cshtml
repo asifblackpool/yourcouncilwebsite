@@ -1,0 +1,174 @@
+﻿<div id="postcode-search" class="input-group" style="margin:20px 0px 20px 0px;">
+    <label for="find-postcode-input" class="sr-only">Search</label>
+    <input id="find-postcode-input" class="form-control accessibility-tab" type="text" maxlength="8" placeholder="FY1 1NA" size="18" name="postcode" /> 
+    <span class="input-group-btn"> <button id="find-postcode-button" class="btn btn-default" type="button">GO</button> </span>
+</div>
+
+<!-- democracy html content placeholder -->
+<div id="democray-content">
+<div id="councillor-loading-indicator" style="position: relative; left: 40%; top: 50%; margin-top: 10px; display: none;"><strong><img alt="" height="44" width="44" src="/SiteElements/ChannelShift/Content/images/gif.gif"> ... Loading</strong></div>
+<div class="councillor-placeholder" style="display:none;"></div>
+</div>
+
+
+<style type="text/css">
+
+    .sr-only{
+    position:absolute;
+    left:-10000px;
+    top:auto;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    }
+    
+    #find-postcode-button {
+    color: #fff;
+    background-color: #830065;
+    border-width: 0;
+    border: 1.5px solid #830065;
+    position:relative;
+    top:-1px;
+}
+
+    #find-postcode-input {
+        border: 2px solid #830065;
+    }
+
+@@media (min-width: 768px) {
+    .dl-horizontal dt {
+        width: 75px !important;
+        text-align:left !important;
+    }
+
+    .dl-horizontal dd {
+        margin-left: 75px !important;
+    }
+}
+  
+</style>
+<!-- add services script -->
+<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/services/yourareaservices.js"></script>
+
+<!-- javascript call -->
+
+<script type="text/javascript">
+
+
+$(document).ready(function () {
+
+    var getPostCodeData = function () {
+  
+        var myAreaValue = $("#find-postcode-input").val().trim();
+        var errorMessage = window.utilities.validateUKPostCode(myAreaValue);
+        $("#find-services_error").html(errorMessage);
+        if (errorMessage === "") {
+
+            $.ajax({
+                url: window.commonservices.Config().pollingStationUrl + 'ValidatePostCode?postcode=' + myAreaValue,
+                type: 'GET',
+                success: function (data) {
+
+                    if (data.indexOf("OK") > -1) {
+                        window.cookieservices.CreateCookie("myareapostcode", myAreaValue, 30);
+                        runPostCode();
+                    }
+                    else {
+                        $("#find-services_error").html('This post code is not valid for blackpool council');
+                    }
+                }
+            }).fail(function (jqXHR, textStatus, error) {
+                $("#find-services_error").html('Oops an error occured validating the post code');
+            });
+        }
+    };
+
+
+    var postCodeClick = function () {
+        console.log('post code click call');
+        $('#find-postcode-button').click(function (e) {
+            getPostCodeData();
+            e.preventDefault();
+        });
+    };
+
+    var runPostCode = function () {
+        var savedCookieValue = window.cookieservices.ReadCookie('myareapostcode');
+        if (savedCookieValue !== null) {
+            $(".your-current-postcode").html(savedCookieValue);
+            $("#find-postcode-input").val(savedCookieValue);
+        }
+        else {
+            savedCookieValue = "FY1 1NA"
+        }
+
+        $(".your-current-postcode").html(savedCookieValue);
+      
+        window.democracy.init(savedCookieValue, "councillor-postcode-template");
+        $(".councillor-placeholder").fadeIn(1000, function() {
+
+        });
+
+    };
+    postCodeClick();
+    runPostCode();
+
+});
+
+
+</script>
+
+
+<!-- your councillor templates -->
+<script id="councillor-postcode-template" type="text/x-handlebars-template">
+
+    {{#if this.apidata.length}}
+    <h3>Your council ward area is <strong>{{ wardTitle }}</strong></h3>
+    <span>Your councillors are </span>
+        <div class="row">
+        {{#each apidata}}
+            <div class="col-md-6 col-sm-12">
+                <span class="media-left">
+                    <iframe id="councillor_{{math index}}" name="councillor_{{math index }}" frameborder="0" scrolling="no" width="90" height="136" src="{{ photosmallurl }}"></iframe>
+                </span>
+                <div>
+                    <strong>{{ fullusername }}</strong><br />
+                    <span>{{ politicalpartytitle }}</span><br /><br />
+                    <dl class="dl-horizontal">
+                        <dt><strong>Surgery:&nbsp;</strong></dt><dd>{{ surgerydetails.line1 }}</dd>
+                        {{#checkIf this.workaddress.phone.length '>' 0 '||'  this.homeaddress.phone.length '>' 0 }}
+                            <dt><strong>Tel:</strong></dt>
+                        {{/checkIf}}
+                        <dd>
+                            {{#if this.workaddress.phone.length}}
+                                {{ workaddress.phone }}&nbsp;&nbsp;
+                            {{/if}}
+                            {{#if this.homeaddress.phone.length}}
+                                {{ homeaddress.phone }}
+                            {{/if}}
+                        </dd>
+                        {{#checkIf this.workaddress.mobile.length '>' 0 '||'  this.homeaddress.mobile.length '>' 0 }}
+                        <dt><strong>Mobile</strong></dt>
+                        {{/checkIf}}
+                        <dd>
+                            {{#if this.workaddress.mobile.length}}
+                            {{ workaddress.mobile }}&nbsp;&nbsp;
+                            {{/if}}
+                            {{#if this.homeaddress.mobile.length}}
+                            {{ homeaddress.mobile }}
+                            {{/if}}
+                        </dd>
+                        <dt><strong>Email:&nbsp;</strong></dt>
+                        <dd><a href="{{mailto workaddress.email}}">{{ workaddress.email }}</a></dd>
+                    </dl>
+                </div>
+            </div>
+        {{/each}}
+        </div>
+    {{else}}
+    <strong>No councillor information can be found for the post code entered</strong>
+    {{/if}}
+</script>
+@*<control name="channel shift councillors post code search" showInMenu="true" category="favourites" viewingGroup="1">
+</control>
+    *@

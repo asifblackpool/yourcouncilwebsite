@@ -1,0 +1,79 @@
+﻿#last-modified {
+    font-size: 16px;
+}
+
+#last-modified {
+    color: #041c2c;
+    position: relative;
+    top:-10px;
+}
+
+#pdf-print-links {
+    position: relative;
+    border-bottom: dashed 1px silver;
+    height: 50px;
+    margin:0px;
+    padding-top:30px;
+
+}
+
+.zero-pad-all {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+
+ul#print-links-ul {
+    height: 25px;
+    margin-bottom: 0;
+}
+
+ul#print-links-ul li {
+    width: 30px;
+    height: 30px;
+    list-style-type: none;
+    display: inline;
+    margin-right: 0;
+}
+
+a.icon-pdf, a.icon-printer {
+    text-decoration: none;
+}
+
+a.icon-pdf {
+    background: url(/SiteElements/ChannelShift/content/images/landing-pages/pdf-icon.svg) no-repeat;
+    background-size: 20px 20px;
+    height: 25px;
+    width: 30px;
+    position: relative;
+    top: -30px;
+    left: 0;
+    display: inline-block;
+    outline: 0 !important;
+    font-size: 0;
+}
+
+
+a.icon-pdf, a.icon-printer {
+    text-decoration: none;
+}
+
+a.icon-printer {
+    background: url(/SiteElements/ChannelShift/content/images/landing-pages/printer-icon.svg) no-repeat;
+    background-size: 20px 20px;
+    height: 25px;
+    width: 30px;
+    position: relative;
+    top: -30px;
+    left: 0;
+    display: inline-block;
+    outline: 0 !important;
+    font-size: 0;
+}
+
+@media screen and (max-width: 640px) {
+    ul#print-links-ul li:first-child 
+    {
+        display: none;
+    }
+}

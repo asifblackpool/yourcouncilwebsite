@@ -1,0 +1,141 @@
+<!--templates. -->
+
+<script id="councillor-template" type="text/x-handlebars-template">
+
+    {{#if this.apidata.length}}
+        <div class="row">
+            <div class="md-12 text-center councillor-title-placeholder"><h3><strong>Ward </strong>{{ wardTitle }}</h3></div>
+        </div>
+        <div class="row">
+            <div class="md-12 councillor-placeholder" style=" margin:5px;">
+                <h4><strong>Councillors</strong></h4>
+                {{#each apidata}}
+                <table class="table responsive">
+                    <tr>
+                        <td colspan="2">
+                            <img class="pull-left" src="{{ photosmallurl }}" title="{{ fullusername }}" alt="{{ fullusername }}" width="100" style="padding-right:10px;">
+                            <h4><strong>{{ fullusername }}</strong><br />({{ politicalpartytitle }})</h4>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Surgery</strong></td>
+                        <td>{{ surgerydetails.line1 }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tel</strong></td>
+                        <td>{{ workaddress.phone }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email</strong></td>
+                        <td><a href="{{mailto workaddress.email}}">{{ workaddress.email }}</a></td>
+                    </tr>
+                </table>
+                {{/each}}
+            </div>
+        </div>
+    {{else}}
+        <strong>No councillor information can be found for the post code entered</strong>
+    {{/if}}
+
+</script>
+
+<script id="bin-template" type="text/x-handlebars-template">
+    {{#each apidata}}
+    <p><strong>{{ WasteServiceName }}</strong><br /> The next collection day is on {{ CollectionDay }} {{ NextCollectionDate }}</p>
+    {{/each }}
+
+    {{#greaterthanzero count}}
+        <h4><strong>When to present your&nbsp;waste for collection</strong></h4>
+        <ul>
+            <li>Please ensure your wheeled bins are presented by <strong>7.30am</strong> on your collection day</li>
+            <li>Please ensure your lilac sacks are presented by <strong>7.00am</strong> on your collection day</li>
+            <li>Please label your bins with your address</li>
+        </ul>
+    {{else}}
+        <strong>Collection times cannot be found for the post code entered</strong>
+    {{/greaterthanzero}}
+
+</script>
+
+<script id="park-template" type="text/x-handlebars-template">
+  
+    {{#if this.apidata.length}}
+        {{#each this.apidata}}<p><strong>{{ name }}</strong><br /> The park can be found at {{ vicinity }}</p>{{/each }} 
+    {{else}}
+        <strong>No park can be found (within the area) for the post code entered</strong>
+    {{/if}}
+
+</script>
+
+<script type="text/javascript">
+
+    // Register useful handlebar helpers 
+    Handlebars.registerHelper('capitalize', function (str) {
+        // str is the argument passed to the helper when called
+        str = str || '';
+        return str.slice(0, 1).toUpperCase() + str.slice(1);
+    });
+
+    Handlebars.registerHelper('mailto', function (str) {
+        str = str || '';
+        return "mail" + "to:" + str
+    });
+
+    Handlebars.registerHelper('greaterthanzero', function (val, options) {
+        var fnTrue = options.fn, fnFalse = options.inverse;
+        return val > 0 ? fnTrue() : fnFalse();
+    });
+
+    Handlebars.registerHelper('compare', function (lvalue, operator, rvalue, options) {
+
+        var operators, result;
+
+        if (arguments.length < 3) {
+            throw new Error("Handlerbars Helper 'compare' needs 2 parameters");
+        }
+
+        if (options === undefined) {
+            options = rvalue;
+            rvalue = operator;
+            operator = "===";
+        }
+
+        operators = {
+            '==': function (l, r) { return l == r; },
+            '===': function (l, r) { return l === r; },
+            '!=': function (l, r) { return l != r; },
+            '!==': function (l, r) { return l !== r; },
+            '<': function (l, r) { return l < r; },
+            '>': function (l, r) { return l > r; },
+            '<=': function (l, r) { return l <= r; },
+            '>=': function (l, r) { return l >= r; },
+            'typeof': function (l, r) { return typeof l == r; }
+        };
+
+        if (!operators[operator]) {
+            throw new Error("Handlerbars Helper 'compare' doesn't know the operator " + operator);
+        }
+
+        result = operators[operator](lvalue, rvalue);
+
+        if (result) {
+            return options.fn(this);
+        } else {
+            return options.inverse(this);
+        }
+
+    });
+
+    Handlebars.registerHelper("debug", function (optionalValue) {
+        console.log("Current Context");
+        console.log("====================");
+        console.log(this);
+
+        if (optionalValue) {
+            console.log("Value");
+            console.log("====================");
+            console.log(optionalValue);
+        }
+    });
+
+</script>

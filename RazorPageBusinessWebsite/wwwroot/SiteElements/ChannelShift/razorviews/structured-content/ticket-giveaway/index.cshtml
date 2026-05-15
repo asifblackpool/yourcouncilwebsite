@@ -1,0 +1,102 @@
+﻿@{
+
+// Name: Channel Shift - Structured Content (Content types)
+// Developer: Asif Nissar
+// License: Blackpool council
+// Date: 27/02/2020
+}
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.Tickets;
+
+@{
+    String error = string.Empty;
+    TicketGiveAway TicketGiveAwayModel = null;
+    String footer = string.Empty;
+    String title = string.Empty;
+    try {
+
+        var client = Zengenti.Contensis.Delivery
+        .ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID,
+                                ContensisClientKeys.CMS_URL,
+                                ContensisClientKeys.CLIENT_ID,
+                                ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+        // Get all entries with specified paging options
+        TicketGiveAwayModel = client
+            .Entries
+            .List<TicketGiveAway>(new EntryListOptions { ContentTypeId = ContensisClientKeys.TICKETS_GIVE_AWAY, LinkDepth = 1 }).Items.First();
+        footer = TicketGiveAwayModel.FooterText;
+
+        title = AppContext.Current.Page.Title.UpperCaseFirstCharacter();
+
+    }
+    catch (Exception e)
+    {
+        error = e.Message;
+    }
+
+}
+@if (!String.IsNullOrEmpty(error))
+{
+    <strong style="font-size:24px; color:darkred">@error</strong><br/>
+}
+<div class="making-blackpool-better">
+    <div class="row zero-pad-left zero-pad-right clearfix">
+        <div class="col-md-12 col-sm-12 zero-pad-left zero-pad-right clearfix">
+            <img src="@TicketGiveAwayModel.HeaderGraphicUrl" class="header-image" alt="@TicketGiveAwayModel.HeaderGraphic.Caption" />
+        </div>
+    </div>
+    <div class="col-md-12 zero-pad-all ">
+        <h1><strong>@title.Replace("-", " ")</strong></h1>
+    </div>
+    <div class="row zero-pad-left zero-pad-right clearfix">
+        <div class="col-md-12 col-sm-12 zero-pad-left zero-pad-right clearfix">@Html.Raw(TicketGiveAwayModel.IntroText)</div>
+    </div>
+
+    @foreach (var item in TicketGiveAwayModel.Components)
+    {
+        if (item.Active)
+        {
+            <div class="row component-container zero-pad-left zero-pad-right clearfix">
+                <div class="col-md-6 col-sm-12 col-xs-12 zero-pad-left zero-pad-right clearfix intro-text-container">
+                    <h2 class="section-title">@item.Title</h2>
+                    @Html.Raw(item.Introduction)
+                    @if (item.CallToActionLink != null)
+                    {
+                        <button class="section-button" onclick="window.location.href='@item.CallToActionLink'">More</button>
+                    }
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12 zero-pad-left zero-pad-right clearfix">
+                    <img src="@item.SectionIcon.Asset.Uri" class="section-image" alt="@item.SectionIcon.Caption" />
+                </div>
+            </div>
+        }
+    }
+
+
+
+    <div class="row row-section zero-pad-left zero-pad-right clearfix">
+        <div class="col-md-12 col-sm-12 zero-pad-left zero-pad-right clearfix">@Html.Raw(footer)</div>
+    </div>
+    <div class="row row-section zero-pad-left zero-pad-right clearfix">
+        <br />
+       </div>
+</div>
+
+<link href="/SiteElements/ChannelShift/content/styles/better-blackpool/index.css" rel="stylesheet" />
+@{
+
+    AppContext.Current.Page.Scripts.Add("/SiteElements/ChannelShift/scripts/jquery/bootstrap.validator.js", ScriptLocation.BodyEnd);
+
+}
+
+
+

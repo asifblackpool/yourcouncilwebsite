@@ -1,0 +1,238 @@
+﻿@{
+
+    // Death of Royal Banner
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date 19/09/2018
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.DeathOfARoyal;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+
+@{
+
+    Zengenti.Data.PageOptions options = new PageOptions(0, 10000);
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                           ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+    Zengenti.Data.PagedList<DeathRoyal> list = client.Entries.List<DeathRoyal>(new EntryListOptions
+    {
+        ContentTypeId = ContensisClientKeys.DEATH_OF_A_ROYAL,
+        LinkDepth = 1,
+        PageOptions = options
+
+    });
+
+    String DeathOfARoyalPath = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/death-of-a-royal";
+    ImageHeaderBox ihb = null;
+    ContentBox cb = null;
+    CTALink cta = null;
+    string ImageUrl = "";
+    string BaseImageUrl = Request.Url.AbsoluteUri.Contains("localhost") ? "http://preview.blackpool.gov.uk" : string.Empty;
+    DeathRoyal RoyalModel = null;
+
+    try
+    {
+        RoyalModel = list.Items.Where(x => x.IsActive == true).First();
+    }
+    catch
+    {
+        RoyalModel = null;
+    }
+
+    if (RoyalModel != null)
+    {
+        var components = RoyalModel.GetSerialisedContent();
+        foreach (var item in components.Items)
+        {
+            if (item.ClassType == typeof(ImageHeaderBox))
+            {
+                ihb = JsonConvert.DeserializeObject<ImageHeaderBox>(item.Content);
+                ImageUrl = (ihb != null && ihb.Image != null && ihb.Image.Asset != null)
+                            ? String.Format("{0}{1}", BaseImageUrl, ihb.Image.Asset.Uri) : ImageUrl;
+
+            }
+            if (item.ClassType == typeof(ContentBox))
+            {
+                cb = JsonConvert.DeserializeObject<ContentBox>(item.Content);
+            }
+
+            if (item.ClassType == typeof(CTALink))
+            {
+                cta = JsonConvert.DeserializeObject<CTALink>(item.Content);
+            }
+        }
+    }
+}
+
+
+@if (RoyalModel != null)
+{
+    <div class="overflow-container">
+    <div class="royal-container clearfix" style="display:block">
+        @if (RoyalModel.IsOverlay)
+        {
+            @RenderPage(String.Format("{0}{1}", DeathOfARoyalPath, "/overlay.cshtml"), new { Model = RoyalModel, ContentBox = cb, ImageUrl = ImageUrl, CtaLink = cta })
+        }
+        else
+        {
+            <div id="death-of-a-royal-box" class="row width-container zero-pad-all">
+                <div style="height:40px; width:100%; text-align:right;"><a href="#" class="round-button">X</a></div>
+                <div class="col-md-12 zero-pad-all">
+                    <h2 style="color:black;"><strong>@RoyalModel.Name</strong></h2>
+                    <h3 style="color:black;"><strong>@String.Format("{0: d MMMM, yyyy} - {1:d MMMM, yyyy}", RoyalModel.BirthDeathDate.From, RoyalModel.BirthDeathDate.To)</strong></h3>
+                    <br />
+                </div>
+            </div>
+            <div class="royal-overlay width-container row zero-pad-all" style="display:none;">
+                <div class="col-md-6 col-sm-12 zero-pad-all">
+                    <img src="@ImageUrl" title="@RoyalModel.Name" alt="@RoyalModel.Name" style="width:95%; margin-left:10px;" />
+                </div>
+                <div class="col-md-6 col-sm-12 zero-pad-all">
+                    @Html.Raw(String.Format("{0}", cb != null ? cb.Markup : string.Empty))
+                </div>
+                @if (cta != null)
+                {
+                    string Url = (cta.LinkedContentPage != null) ? "not-set" : cta.ExternalURL;
+                    int maxwidth = (cta.ButtonText.Length > 20) ? 330 : 210;
+                    <div class="col-md-12 col-sm-12 zero-pad-all" style="margin-top:30px;">
+                        <a class="cta-link-button" onclick="window.location.href='@string.Format("{0}", Url)'" style='@string.Format("text-decoration:none;max-width:{0}px;", maxwidth)'>@cta.ButtonText</a>
+                    </div>
+                }
+            </div>
+            <br />
+        }
+
+    </div>
+    </div>
+
+    <style type="text/css">
+        .royal-container {
+            max-width: 1170px;
+            margin: auto;
+            border: solid 12px black;
+            background-color: #D9D9D9;
+            overflow: hidden;
+        }
+
+        .width-container {
+            max-width:1170px;
+            margin:auto;
+        }
+
+        div#death-of-a-royal-box {
+            text-align: center;
+            margin: auto;
+        }
+
+        .round-button {
+            display: block;
+            width: 45px;
+            height: 45px;
+            line-height: 44px;
+            border: 1px solid #f5f5f5;
+            border-radius: 50%;
+            color: black;
+            text-align: center;
+            text-decoration: none;
+            background: #fff;
+            box-shadow: 0 0 3px grey;
+            font-size: 25px;
+            font-weight: bold;
+            float: right;
+            position: relative;
+            top: 10px;
+            left: -20px;
+            z-index: 99999;
+        }
+
+            .round-button:hover {
+                background: gray;
+                text-decoration: none;
+            }
+
+        a.cta-link-button {
+            cursor: pointer;
+            display: block;
+            border: solid 0px #830065;
+            max-width: 160px;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            padding: 5px;
+            margin: auto;
+            font-size: 24.12px !important;
+            font-weight: 700;
+            text-transform: capitalize;
+            background-color: #B3bd00;
+            color: #041c2c;
+            height: 45px;
+        }
+
+            a.cta-link-button:hover {
+                font-weight: bold;
+                text-decoration: none;
+                color: #041c2c;
+                background-color: #e6e6e6;
+                border-color: #adadad;
+            }
+    </style>
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('.mobile-search-icon').hide();
+        //window.cookieservices.EraseCookie("overlayhome");
+        var closeOverlay = function() {
+
+            $("div.royal-overlay").css("min-height",0)
+                    .slideToggle("slow", function() {
+                    var icon = $("a.round-button").html();
+                    icon = (icon =="X") ? "+" : "X";
+                    $("a.round-button").html(icon);
+            });
+            //$('.royal-overlay').fadeOut("2000", function () {
+            window.cookieservices.CreateCookie("overlayhome", true, 30);
+            //});
+            $('.mobile-search-icon').show();
+        };
+        scrollerservice.ScrollToByClass('royal-overlay',null);
+        var showOverlay = window.cookieservices.ReadCookie('overlayhome');
+        console.log("overlay cookie: " + showOverlay);
+        if (showOverlay != null)
+        {
+            $("div.royal-overlay").show();
+            closeOverlay();
+        } else
+        {
+            $("div.royal-overlay").show();
+
+        }
+
+        $(document).on("click", "a.round-button", function (e) {
+            closeOverlay();
+            e.preventDefault();
+            return false;
+        });
+
+        $(document).keyup(function(e) {
+            if (e.keyCode == 27) { closeOverlay(); }
+        });
+    });
+    </script>
+
+}@*<control name="death of a royal box" showInMenu="true" category="favourites" viewingGroup="1">
+</control>*@

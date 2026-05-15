@@ -1,0 +1,214 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Timetable services for Family Hub Events
+    // License: Blackpool council
+    // Date: 09/10/2023
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+
+<div class="row">
+    <div class="col-md-12 col-sm-12">
+        <div class="dropdown" style="display:inline;">
+            <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown">Locations &nbsp;&nbsp;<span class="caret"></span></button>
+            <ul id="ddl-location" class="dropdown-menu"></ul>
+        </div>
+      
+        <div class="dropdown" style="display:inline;">
+            <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown">Title&nbsp;&nbsp;<span class="caret"></span></button>
+            <ul id="ddl-class" class="dropdown-menu"></ul>
+        </div>
+
+        <div class="dropdown" style="display:inline;">
+            <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown">Day &nbsp;&nbsp;<span class="caret"></span></button>
+            <ul id="ddl-day" class="dropdown-menu"></ul>
+        </div>
+    </div>
+   
+</div>
+<br/>
+<table id="familyhubtimetable" class="display" style="width:100%">
+    <caption class="visiibility-hidden">Class Timetable </caption>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Event</th>
+            <th>Location</th>
+            <th>Time</th>
+            <th>Day</th>
+            <th>DayId</th>
+            <th>More info</th>
+            <th>Booking details</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Booking</th>
+        </tr>
+    </thead>
+</table>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="transform:translate(0,15%);">
+            <div class="modal-header bkg-red-color">
+            <button type="button" class="close red-color" data-dismiss="modal" style="outline:none;">&times;</button>
+            <h4 class="modal-title bkg-red-color">Event Information</h4>
+        </div>
+            <div class="modal-body">
+                <section class="center-modal">
+                    <div class="row">
+                        <div class="column zero-pad-all">
+                            <strong class="modal-heading">Start Date:</strong><span class="modal-data">{0}</span>&nbsp;&nbsp;&nbsp;
+                            <strong class="modal-heading">End Date:</strong><span class="modal-data">{1}</span><br />
+                            <strong class="modal-heading">Day:</strong><span class="modal-data">{2}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <strong class="modal-heading">Time:</strong><span class="modal-data">{3}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <strong class="modal-heading">Term Time:</strong><span class="modal-data">{4}</span><br /><br />
+                            <strong class="modal-heading">Location:</strong><span class="modal-data">{5}</span>
+                        </div>
+
+                    </div>
+                    <div class="row clearfix" style="margin-top:0px">
+                        <div class="col-md-10 col-sm-10 zero-pad-all font-16 clearfix">
+                            <strong class="modal-heading">Address</strong>
+                            <p>{6}</p>
+                        </div>
+                      
+                    </div>
+                    <div class="row clearfix" style="margin-top:0px">
+                        <div class="col-md-10 col-sm-10 zero-pad-all font-16 clearfix">
+                            <p>{7}</p>
+                        </div>
+                        <div class="col-md-2 col-sm-2 zero-pad-all font-24 clearfix" style="text-align:center; display:block;">
+                            <button class="class-booking bkg-red-color" onclick="window.location.href = window.commonservices.Config().sportWebBookingUrl; return false;" style="top:10px;">Book</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="load-message" class="overlay" style="width: 100%;border: solid 2px purple">
+    <a class="closebtn" href="javascript:void(0)">&times;</a>
+    <div class="overlay-content">
+        <div style="position: relative; left:0%; top:-50%; min-height:300px; display:block;" id="loading-indicator">
+            <strong><img alt="" height="44" width="44" src="/SiteElements/ChannelShift/Content/images/gif.gif" /> ... Loading</strong><br /><br />
+            <p class="overlay-message">Loading timetable data ... please wait thank you!.</p>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    var closeOverlay = function () {
+        commonsportblackpoolservices.overlay("load-message", 0, "");
+        commonsportblackpoolservices.hide('loading-indicator');
+    };
+    var bindEscapeKey = function () {
+        $(document).on('keydown', function (e) { if (e.keyCode === 27) { closeOverlay(); } });
+
+        $(document).on('click', "a.closebtn", function (e) {
+            e.preventDefault();
+            closeOverlay();
+        });
+    };
+    bindEscapeKey();
+</script>
+
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/bootstrap.min.css" />
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/bootstrap.select.min.css" />
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/jquery/jquery-ui.css" />
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/jquery/jquery.datatables.min.css" />
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/jquery/jquery-datepicker.css" />
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/jquery/bootstrap.validator.min.css" />
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/jquery/responsive.min.css" />
+<link type="text/css" rel="stylesheet" href="/SiteElements/ChannelShift/content/styles/familyhubevents/timetable.css" />
+<script type="text/javascript">
+    $(document).ready(function () {
+        logger.disableLogger();
+        window.timetableservices.init(window.commonservices, window.dateservices, window.commonsportblackpoolservices, 'load-message');
+    });
+</script>
+<style type="text/css">
+    table.dataTable tbody tr.group-start {
+        background-color: #B94366;
+        color: #000;
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    table.dataTable tbody tr.odd {
+        background-color: #fff !important;
+        color: #000;
+        border: none;
+    }
+
+    table.dataTable tbody tr.even {
+        background-color: #FADBE4 !important;
+        color: #000;
+    }
+
+    table.dataTable thead {
+        background-color: #830065;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+        table.dataTable thead .sorting {
+            background-image: none;
+            border: none;
+        }
+
+
+    element.style {
+    }
+
+    table.dataTable.display tbody td,
+    table.dataTable.display tbody th,
+    table.dataTable.row-border tbody td,
+    table.dataTable.row-border tbody th {
+        border: none;
+        text-align: left;
+        padding: 5px 5px;
+    }
+
+    ul#ddl-class {
+        overflow:auto;
+        max-height:300px;
+    }
+</style>
+
+
+<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/jquery-ui.min.js"></script>
+<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/jquery/jquery.dataTables.min.js"></script>
+<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/jquery/jquery.dataTables.fixedcolumns.min.js?"></script>
+<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/jquery/jquery.dataTables.rowgroup.min.js?"></script>
+<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/jquery/jquery.dataTables.responsive.min.js?"></script>
+<script  type="text/javascript" src="/SiteElements/ChannelShift/Scripts/common/common.js"></script>
+<script  type="text/javascript" src="/SiteElements/ChannelShift/scripts/services/tableservices.js"></script>
+<script  type="text/javascript" src="/SiteElements/ChannelShift/Scripts/services/familyhubevents/timetableservices.js"></script>
+<script  type="text/javascript" src="/SiteElements/ChannelShift/Scripts/services/sportblackpool/commonsportblackpoolservices.js"></script>
+
+	
+
+
+
+
+

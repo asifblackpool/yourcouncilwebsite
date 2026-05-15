@@ -1,0 +1,226 @@
+﻿#searchbox-outer-container {
+    background-color: var(--main-blue-color);
+    position: relative;
+    border: 0 solid #00f;
+}
+
+#search-box-inner {
+    width: 100%;
+    background: var(--main-blue-color) 0 0 no-repeat padding-box;
+    opacity: 1;
+    height: 160px;
+    padding-bottom: 0px !important;
+    border: solid 0px blue;
+}
+
+#search-box-inner .row {
+    min-height: 75px;
+    top: 0px;
+}
+
+h1.top-menu-title {
+    font-family: 'Montserrat' !important;
+    text-align: center;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: transparent;
+    color: #fff;
+    font: normal normal 900 40px/48px Montserrat;
+    letter-spacing: 0.8px;
+    opacity: 1;
+    margin-top: 20px;
+}
+
+span.home-span-link {
+    width: 5%;
+    height: 60%;
+    display: inline-block;
+    position: relative;
+    top: 25px;
+    left:11px;
+}
+
+span.home-span-link > a {
+    border: solid 0px red;
+    display: block;
+}
+
+ul.gateway-links {
+    width: 100%;
+    list-style-type: none;
+    overflow: hidden;
+    padding-left: 0px;
+    margin-top: 15px;
+    max-height: 35px;
+}
+
+ul.gateway-links > li {
+    float: left;
+    margin-right: 110px;
+}
+
+ul.gateway-links > li:first-child {
+}
+
+ul.gateway-links > li:nth-child(2) {
+}
+
+ul.gateway-links > li:nth-child(3) {
+}
+
+ul.gateway-links > li:nth-child(4) {
+}
+
+ul.gateway-links > li:nth-child(6) {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+ul.gateway-links > li > a {
+    display: block;
+    padding: 16px 0px 16px 0px;
+    text-decoration: none;
+    text-align: center;
+    font: normal normal bold 19px/12px Calibri;
+    letter-spacing: 0.38px;
+    color: #FFFFFF;
+    opacity: 1;
+}
+
+ul.gateway-links > li:last-child > a {
+    text-align: right;
+}
+
+ul.gateway-links > li > a:hover {
+    background-color: transparent;
+}
+
+
+a.add-arrow {
+    text-decoration: none !important;
+}
+
+a.add-arrow:after {
+    position: relative; /* Prevent underline of arrow */
+    padding-left: 20px; /* Add a little space between text and arrow */
+    content: "\25bc"; /* Unicode hex for &raquo; */
+    text-decoration: none;
+    top: 1px;
+}
+
+
+ul.menu-sub-items {
+    display: none;
+    padding-bottom: 0px;
+    position: relative;
+}
+
+li.top-menu-link:hover {
+    border-bottom: solid 2px #FFC70F;
+    z-index: 9999999999999;
+}
+
+li.top-menu-link:hover > ul.menu-sub-items {
+    border: solid 2px transparent;
+    display: inline-block;
+    position: absolute;
+    top: 40px;
+    z-index: 9999999999999;
+    height: auto;
+    min-height: 100px;
+    background-color: var(--main-blue-color);
+    min-width: 300px;
+    width: max-content;
+    padding-bottom:30px
+   
+}
+
+ul.menu-sub-items > li::before {
+    content: "";
+    color: transparent;
+    font-weight: bold;
+    display: inline-block;
+    margin-left: 0px;
+    width: 0px;
+    left: 0px;
+    position: relative;
+}
+
+ul.menu-sub-items > li::marker {
+    color:transparent;
+}
+
+ul.menu-sub-items > li {
+    padding-left: 2px;
+    margin-top: 10px;
+    padding-right: 8px;
+    min-width: 330px;
+    height: 35px;
+}
+
+ul.menu-sub-items > li > a {
+    font: normal normal bold 19px/12px Calibri;
+    letter-spacing: 0.38px;
+    color: #fff;
+    font-weight: bold;
+    position: relative;
+    left: 20px;
+    top: 10px;
+}
+
+@media (max-width: 1124px) and (min-width: 300px) {
+
+    ul.gateway-links > li {
+        float: left;
+        margin-right: 80px;
+    }
+
+    span.home-span-link {
+        top: -47px;
+        display: none;
+    }
+}
+
+
+@media (max-width: 1024px) and (min-width: 300px) {
+    span.home-span-link {
+        top:-47px;
+        display:none;
+    }
+
+    ul.sidr-class-menu-sub-items {
+        padding-left: 20px;
+    }
+
+    ul.sidr-class-menu-sub-items > li {
+        padding: 12px 0px;
+    }
+
+    ul.sidr-class-menu-sub-items > li > a {
+        color: #fff;
+        font: normal normal bold 24px/10px Calibri;
+        letter-spacing: 0.6px;
+    }
+
+}
+
+@media (max-width: 496px) and (min-width: 300px) {
+
+   
+    h1.top-menu-title {
+        font: normal normal 900 30px/36px Montserrat;
+        letter-spacing: 0.6px;
+        color: #FFFFFF;
+        opacity: 1;
+        text-align: left;
+        margin-left: 5px;
+    }
+
+    span.home-span-link {
+        top: -45px;
+        left:-14px;
+        display:none;
+    }
+}
+

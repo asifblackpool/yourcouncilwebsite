@@ -1,0 +1,125 @@
+﻿#footer-top-outer-container {
+    background-color: #ccd2d5;
+}
+#footer-bottom-outer-container {
+    background-color: #041c2c;
+}
+.footer-top {
+    background-color: #ccd2d5;
+    min-height: 90px;
+    padding-top: 5px;
+}
+.footer-top a {
+    padding-right: 8px;
+}
+.footer-top a img {
+    margin-top: 25px;
+    padding-right: 12px;
+    width: 37px;
+    height: 30px;
+}
+.footer-top .social-network {
+    position: relative;
+    top: 15px;
+    padding-right: 15px;
+    color: #031e2f;
+}
+.footer-bottom {
+    background-color: #041c2c;
+    color: #fff;
+    font-size: 1.143em;
+}
+.footer-bottom a {
+    color: #fff;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+.footer-bottom a:hover {
+    text-decoration: underline;
+    color: #fff;
+}
+.footer-bottom p.footer-links {
+    margin-top: 10px;
+}
+.footer-bottom p.footer-links {
+    margin-top: 10px;
+    font-size: 19.2px;
+    color: #000;
+}
+
+/* footer site map navigation */
+ .footer-bottom > div > strong {
+        padding-left: 0px;
+        color: #B3BD00;
+        font-weight: bold;
+        display:block;
+        margin: 1em 0em 0.5em 0em;
+        line-height: 1.2em;
+        font-size:24px;
+    }
+
+    h3.footer-header i {
+        display:none;
+    } 
+
+    ul.footer-site-links { padding-left:0px;}
+
+
+   @media screen and (max-width: 768px) {
+       .footer-bottom > div > h3 { padding-left:10px;}
+       h3.footer-header { border-bottom: dashed 1px #fff; padding:10px 10px 10px 0px; text-align:left; cursor:pointer; padding-left:0px;}
+       ul.footer-site-links { display:none;  padding-left:10px;}
+       ul.footer-site-links li { text-align:left;}
+       h3.footer-header i {
+           width:30px;
+           height:30px;
+           display:block;
+           background-color:#fff;
+       }
+       .icon-footer-arrow-up {
+            background: url("/SiteElements/ChannelShift/content/images/landing-pages/arrowup.svg");
+            background-repeat: no-repeat;
+            background-color: #fff;
+            background-position: 5px 7px;
+            background-size: 20px 20px;
+            height: 45px;
+            position: relative;
+            top: -3px;
+            left: 0px;
+        }
+
+        .icon-footer-arrow-down {
+            background: url("/SiteElements/ChannelShift/content/images/landing-pages/arrowdown.svg");
+            background-repeat: no-repeat;
+            background-color: #fff;
+            background-position: 5px 7px;
+            background-size: 20px 20px;
+            height: 45px;
+            position: relative;
+            top: -3px;
+            left: 0px;
+        }  
+    }
+
+@media (max-width: 480px) {
+    .footer-top,
+    .footer-bottom {
+        text-align: center;
+    }
+    .footer-bottom p.footer-links {} .footer-bottom a {} .footer-bottom p.footer-links span.text {
+        width: 100%;
+        display: block;
+        margin: auto;
+        text-align: center;
+    }
+    .footer-bottom p.footer-links span.links {
+        text-align: center;
+        display: block;
+        width: 100%;
+        margin: auto;
+        padding: 10px 0 10px 0px;
+    }
+    .footer-bottom p.footer-links span.first {
+        display: none;
+    }
+}

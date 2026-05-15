@@ -1,0 +1,155 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Gallery Image - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+    BlackpoolAdultLearningDTO DTO = Page.Model;
+    Form form = null;
+
+
+
+    SerialisedItem serialisedItem = null;
+    if (DTO.Flow != null)
+    {
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            var list = item.Items.FindAll(x => x.ClassType == typeof(Form));
+            if (list != null && list.Count > 0)
+            {
+                serialisedItem = list[0];
+                form = SerializeHelper.Deseralize(serialisedItem) as Form;
+
+            }
+        }
+    }
+}
+@if (form != null)
+{
+    @RenderPage("/SiteElements/ChannelShift/razorviews/global/formrenderer.cshtml", new { formContentId = form.FormId })
+     <script type="text/javascript" >
+
+        (function (dropdownervices, $, undefined) { 
+
+            var buildDropDownList = function () {
+                var x, i, j, l, ll, selElmnt, a, b, c;
+
+                x = document.getElementsByClassName("FormDropDown");
+                l = x.length;
+                for (i = 0; i < l; i++) {
+                    selElmnt = x[i].getElementsByTagName("select")[0];
+                    ll = selElmnt.length;
+                    /*for each element, create a new DIV that will act as the selected item:*/
+                    a = document.createElement("DIV");
+                    a.setAttribute("class", "select-selected");
+                    a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+                    x[i].appendChild(a);
+                    /*for each element, create a new DIV that will contain the option list:*/
+                    b = document.createElement("DIV");
+                    b.setAttribute("class", "select-items select-hide");
+                    for (j = 1; j < ll; j++) {
+                        /*for each option in the original select element,
+                        create a new DIV that will act as an option item:*/
+                        c = document.createElement("div");
+                        c.innerHTML = selElmnt.options[j].innerHTML;
+                        c.addEventListener("click", function (e) {
+                            /*when an item is clicked, update the original select box,
+                            and the selected item:*/
+                            var y, i, k, s, h, sl, yl;
+                            s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+                            sl = s.length;
+                            h = this.parentNode.previousSibling;
+                            for (i = 0; i < sl; i++) {
+                                if (s.options[i].innerHTML == this.innerHTML) {
+                                    s.selectedIndex = i;
+                                    h.innerHTML = this.innerHTML;
+                                    y = this.parentNode.getElementsByClassName("same-as-selected");
+                                    yl = y.length;
+                                    for (k = 0; k < yl; k++) {
+                                        y[k].removeAttribute("class");
+                                    }
+                                    this.setAttribute("class", "same-as-selected");
+                                    break;
+                                }
+                            }
+                            h.click();
+                        });
+                        b.appendChild(c);
+                    }
+                    x[i].appendChild(b);
+                    a.addEventListener("click", function (e) {
+                        /*when the select box is clicked, close any other select boxes,
+                        and open/close the current select box:*/
+                        e.stopPropagation();
+                        closeAllSelect(this);
+                        this.nextSibling.classList.toggle("select-hide");
+                        this.classList.toggle("select-arrow-active");
+                    });
+                }
+                function closeAllSelect(elmnt) {
+                    /*a function that will close all select boxes in the document,
+                    except the current select box:*/
+                    var x, y, i, xl, yl, arrNo = [];
+                    x = document.getElementsByClassName("select-items");
+                    y = document.getElementsByClassName("select-selected");
+                    xl = x.length;
+                    yl = y.length;
+                    for (i = 0; i < yl; i++) {
+                        if (elmnt == y[i]) {
+                            arrNo.push(i)
+                        } else {
+                            y[i].classList.remove("select-arrow-active");
+                        }
+                    }
+                    for (i = 0; i < xl; i++) {
+                        if (arrNo.indexOf(i)) {
+                            x[i].classList.add("select-hide");
+                        }
+                    }
+                }
+
+                document.addEventListener("click", closeAllSelect);
+            };
+
+            dropdownervices.init = function () {
+                console.log('drown services init');
+                buildDropDownList();
+            };
+
+        })(window.dropdownervices = window.dropdownervices || {}, jQuery);
+
+        $(document).ready(function () {
+            function appendCheckboxes() {
+                $(".checkbox-container").find("span").each(function () {
+                    var innerHtml = $(this).html() + "<span class='checkmark'></span>";
+                    console.log(innerHtml);
+                    $(this).html(innerHtml);
+                });
+            }
+            setTimeout(function () {
+                appendCheckboxes();
+                dropdownervices.init();
+            }, 500);
+        });
+    </script>
+   
+}
+

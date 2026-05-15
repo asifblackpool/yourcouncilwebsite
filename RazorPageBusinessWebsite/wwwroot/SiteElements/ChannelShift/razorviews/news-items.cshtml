@@ -1,0 +1,107 @@
+﻿@{
+
+// Name: Channel Shift - News Item using News Story Content types
+// Developer: Asif Nissar
+// Name: News Stories Home (used in the homepage for blackpool council)
+// License: Blackpool council
+// Date: 13/10/2022
+}
+
+@using System;
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Helpers.Standard;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+@using Blackpool.Zengenti.CMS.Models.NewsStory;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Data;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+
+
+@{
+
+    Zengenti.Data.PageOptions options = new PageOptions(0, 200);
+    string currentUrl = this.Request.RawUrl.ToLower();
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                            ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+    List<NewsStory> stories = null;
+    int count = 0;
+    Config config = null;
+
+
+    try
+    {
+
+        config = new Config()
+        {
+            SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.NewsStoryKey }
+        };
+
+        string newsUrl = config.SeoUrlList.UrlPath + config.SeoUrlList.DefaultPage;
+        String pagePath = config.SeoUrlList.UrlPath + "{0}.aspx?date={1}";
+
+
+        Zengenti.Data.PagedList<NewsStory> list = client.Entries.List<NewsStory>(new EntryListOptions
+        {
+            ContentTypeId = ContensisClientKeys.NEWS_STORY,
+            LinkDepth = 1,
+            PageOptions = options
+
+        });
+
+        stories = list.Items.Where(x => x.Published == true).ToList().OrderByDescending(y => y.DatePublished).Take<NewsStory>(2).ToList();  //get the last two items only
+
+    }
+    catch { }
+
+    <div class="latest-news clearfix">
+        <strong class="home-h3">Latest News</strong>
+        <div class="row clearfix latest-news-wrapper">
+
+            @foreach (NewsStory item in stories)
+            {
+                /*var title = dr["PROPERTY_Title"];
+                var imagePath = dr["PROPERTY_ImageUrl"];
+                var path = dr["Property_FullPath"];
+
+                */
+                var cls = "figure-wrapper pull-right";
+                var cls2 = "thirty-pad-right news-items";
+                String pagePath = config.SeoUrlList.UrlPath + "{0}.aspx?date={1}";
+                var linkNewStory = String.Format(pagePath, item.Slug, StringUtility.DateSlug(item.DatePublished));
+                string imagePath = (item.ThumbnailImage != null && item.ThumbnailImage.Asset != null)
+                 ? string.Format("{0}{1}", UrlHelper.GetBaseUrl(true, currentUrl), item.ThumbnailImage.Asset.Uri) : "/SiteElements/ChannelShift/Content/images/placeholders/600x380.png";
+
+                ++count;
+                try
+                {
+
+                    if (count == 3) { break; }
+                    if (count > 0) { cls2 = "zero-pad-right news-item"; }
+
+                    <div class="col-xs-12 col-sm-6 col-md-6 zero-pad-left @cls2">
+                        <a href="@linkNewStory" title="link description: @item.Title" class="accessibility-tab">
+                            <figure class="figure-wrapper">
+                                <div class="icon-wrapper"><img src="@imagePath" alt="@item.Title" /></div>
+                                <figcaption> <h4 style="color:#000; font-size:22px;">@item.Title</h4></figcaption>
+                            </figure>
+                        </a>
+                    </div>
+                }
+                catch (Exception e)
+                {
+                    Response.Write(" error " + e + " <br />");
+                }
+            }
+        </div>
+    </div>
+    }@*<control name="channel shift news item" showInMenu="true" category="favourites" viewingGroup="1">
+</control>*@

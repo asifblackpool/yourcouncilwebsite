@@ -1,0 +1,159 @@
+﻿@{
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Load Google Map - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Models.Venues;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Constants;
+
+@{
+    SportBlackPoolDTO DTO = Page.Model;
+}
+
+<br />
+<div class="row" style="display:none;">
+    <div class="col-md-12 col-sm-12">
+        <div class="dropdown" style="display:inline;">
+            <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown">Locations &nbsp;&nbsp;<span class="caret"></span></button>
+            <ul id="ddl-location" class="dropdown-menu"></ul>
+        </div>
+
+        <div class="dropdown" style="display:inline;">
+            <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown">Title&nbsp;&nbsp;<span class="caret"></span></button>
+            <ul id="ddl-class" class="dropdown-menu"></ul>
+        </div>
+
+        <div class="dropdown" style="display:inline;">
+            <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown">Day &nbsp;&nbsp;<span class="caret"></span></button>
+            <ul id="ddl-day" class="dropdown-menu"></ul>
+        </div>
+    </div>
+
+</div>
+<br />
+<table id="swimtimetable" class="display" style="width:100%;display:none;" >
+        <caption class="visiibility-hidden">siwm timetable </caption>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Session</th>
+            <th>Location</th>
+            <th>Lanes</th>
+            <th>Time</th>
+            <th>Day</th>
+            <th>DayId</th>
+            <th>More info</th>
+            <th>Pools</th> 
+            <th>Description</th>
+            <th>Public Swimming</th>
+            <th>OpenTime</th>
+        </tr>
+    </thead>
+</table>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="transform:translate(0,15%);">
+            <div class="modal-header bkg-light-blue-color">
+                <button type="button" class="close" data-dismiss="modal" style="outline:none;">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <section class="center-modal">
+                    <div class="row">
+                        <div class="column">
+                            <strong class="modal-heading">Location:</strong><span class="modal-data">{0}</span><br/>
+                            <strong class="modal-heading">Lanes:</strong><span class="modal-data">{1}</span><br />
+                            <strong class="modal-heading">Pool Area:</strong><span class="modal-data">{2}</span>
+                        </div>
+                        <div class="column">
+                            <strong class="modal-heading">Day:</strong><span class="modal-data">{3}</span><br/>
+                            <strong class="modal-heading">Time:</strong><span class="modal-data">{4}</span>
+                        </div>
+                    </div>
+                    <div class="row clearfix" style="margin-top:0px">
+                        <div class="column clearfix">
+                            <strong class="modal-heading">Public Swimming</strong>
+                            <span class="modal-data">{5}</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        logger.disableLogger();
+        $('#load-message').hide();
+        //window.swimtimetableservices.init(window.commonsportblackpoolservices, 'load-message');
+    });
+ </script>
+<style type="text/css">
+  
+    table.dataTable tbody tr.group-start {
+        background-color: lightblue;
+        color: #000;
+        font-weight:bold;
+        font-size:16px;
+    }
+
+    table.dataTable tbody tr.odd {
+        background-color: #fff;
+        color:#000;
+        border:none;
+    }
+
+    table.dataTable tbody tr.even {
+        background-color:aliceblue;
+        color:#000;
+    }
+    table.dataTable thead {
+        background-color: #00A6CB;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+    }
+        table.dataTable thead .sorting {
+            background-image: none;
+            border: none;
+        }
+
+
+    element.style {
+    }
+
+    table.dataTable.display tbody td,
+    table.dataTable.display tbody th,
+    table.dataTable.row-border tbody td,
+    table.dataTable.row-border tbody th {
+        border: none;
+        text-align: left;
+        padding: 5px 5px;
+    }
+
+    ul#ddl-class {
+        overflow: auto;
+        max-height: 300px;
+    }
+
+</style>
+
+
+

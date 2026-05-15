@@ -1,0 +1,158 @@
+﻿@{
+  
+  String sourceUrl = Properties.chatbotUrl;
+
+}
+
+
+
+
+<br />
+<div class="chat-bot-icon row" style="min-height:50px; display:block;">
+    <strong>Need help ... talk to us</strong> &nbsp;&nbsp;<img src="/SiteElements/ChannelShift/Content/Images/chatbot/chat-bubble.png" alt="Chat bot" class="chat-bot-image" />
+</div>
+<div id="blackpool-chatbot" class="row clearfix" style="margin-top: 20px; padding: 25px; border: 1px dashed grey; display:none; clear:both;">
+    <button class="chatbot-close" style="float:right;">&nbsp;</button>
+    <div>
+        <div id="webchat" role="main">
+          <iframe src="@sourceUrl" frameborder="0" style="width: 100%; height:400px;"></iframe>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+
+    div.chat-bot-icon {
+        text-align: right;
+        float: right;
+        padding-top: 10px;
+        cursor: pointer;
+        min-height: 50px;
+        position: fixed;
+        bottom: 30px;
+        right: 20px;
+        z-index: 999;
+        background-color: yellow;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    div#blackpool-chatbot {
+        position: fixed;
+        bottom: 30px;
+        right: 10px;
+        z-index: 999;
+        background-color: #041c2c;
+        padding-left: 10px;
+        padding-right: 10px;
+        width: 65%;
+        max-width: 650px;
+    }
+
+    div#webchat { 
+        max-height:650px;
+        overflow-y:auto;
+        display: flex;
+        flex-direction: column-reverse;
+        background-color: lightgray;
+    }
+
+    div.chat-bot-icon > img {
+        height: 45px;
+        width: 45px;
+        float: right;
+        position: relative;
+        top: -3px;
+    }
+
+    button.chatbot-close {
+        border-radius: 50%;
+        padding: 0.5em;
+        width: 30px;
+        height: 30px;
+        border: 2px solid black;
+        color: black;
+        position: relative;
+        right: -20px;
+        top: -20px;
+    }
+
+        button.chatbot-close::before {
+            content: " ";
+            position: absolute;
+            display: block;
+            background-color: black;
+            width: 2px;
+            left: 12px;
+            top: 5px;
+            bottom: 5px;
+            transform: rotate( 45deg );
+        }
+
+        button.chatbot-close::after {
+            content: " ";
+            position: absolute;
+            display: block;
+            background-color: blue;
+            height: 2px;
+            top: 12px;
+            left: 5px;
+            right: 5px;
+            transform: rotate( 45deg );
+        }
+
+    @@media screen and (max-width:968px) {
+
+        div#blackpool-chatbot {
+            width: 80%;
+        }
+    }
+
+    @@media screen and (max-width:792px) {
+
+        div#blackpool-chatbot {
+            width: 90%;
+        }
+    }
+
+    @@media screen and (max-width:600px) {
+
+        div#blackpool-chatbot {
+            width: 100%;
+        }
+    }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+   
+        $('.chat-bot-icon').click(function (e) {
+            $(".chat-bot-icon").hide();
+            $("#blackpool-chatbot").slideDown(400, function () {
+                $("html, body").animate({ scrollTop: $("#blackpool-chatbot").offset().top - 300 }, 200);
+
+            });
+            e.preventDefault();
+        });
+
+        $('.chatbot-close').click(function (e) {
+            $("#blackpool-chatbot").slideUp(400, function () {
+                $("html, body").animate({ scrollTop: $(".chat-bot-icon").offset().top }, 200);
+                $(".chat-bot-icon").show();
+            });
+
+            e.preventDefault();
+        });
+    });
+</script>
+
+@*<control name="channel shift chat bot" showInMenu="true" category="favourites" viewingGroup="1">
+ <properties>
+    <category name="Chat Bot">
+      <instruction label="Configurable Chat Bot">
+          Instructions to go here
+      </instruction>
+       <text name="chatbotUrl" label="Add IFrame Src" default="" />
+    </category>
+  </properties>
+</control>*@

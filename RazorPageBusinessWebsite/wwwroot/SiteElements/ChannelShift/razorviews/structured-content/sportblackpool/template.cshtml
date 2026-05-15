@@ -1,0 +1,155 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Template (used for sportsblackpool)
+    // License: Blackpool council
+    // Date: 22/05/2018
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+
+@{
+
+    Zengenti.Data.PageOptions options = new PageOptions(0, 200);
+    Boolean isError = false;
+    SportBlackPoolDTO DTO = null;
+    String RazorViewSportBlackpoolPath = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/sportBlackpool";
+    String RazorViewDeathOfaRoyalPath = ContensisClientKeys.STRUCTURED_CONTENT_RAZOR_PATH + "/death-of-a-royal";
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.SportBlackPoolKey }
+    };
+
+    string currentUrl = this.Request.RawUrl.ToLower();
+
+    if (currentUrl.Contains("/sport-blackpool.aspx/offers"))
+    {
+        Response.Redirect("http://www.sport.blackpool.gov.uk/offers");
+    }
+    if (currentUrl.Contains("/sport-blackpool.aspx/swimoffers"))
+    {
+        Response.Redirect("https://sport.blackpool.gov.uk//splash");
+    }
+
+
+
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                           ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+
+    try
+    {
+        Zengenti.Data.PagedList<SportBlackpool> list = client.Entries.List<SportBlackpool>(new EntryListOptions
+        {
+            ContentTypeId = ContensisClientKeys.SPORT_BLACKPOOL_CONTENTTYPE,
+            LinkDepth = 1,
+            PageOptions = options
+
+        });
+
+
+        list.Items = list.Items.FindAll(x => x.IsActive == true);
+
+        string alias = (!String.IsNullOrEmpty(Request.QueryString["alias"])) ? Request.QueryString["alias"].Replace("-", " ") : "";
+        SportBlackpool currentItem = null;
+        currentItem = list.Items.Find(x => x.PageType == SportBlackpoolKeys.TOP_LEVEL);
+        if (list != null && alias != string.Empty)
+        {
+
+            if (list.Items.Find(x => x.Alias.ToLower().Trim() == alias.ToLower().Trim()) != null)
+            {
+                currentItem = list.Items.Find(x => x.Alias.Trim().ToLower() == alias.Trim().ToLower() && x.IsActive == true);
+            }
+        }
+
+
+        DTO = new SportBlackPoolDTO()
+        {
+            Config = config,
+            List = list,
+            CurrentItem = currentItem,
+            BaseImageUrl = Request.Url.AbsoluteUri.Contains("localhost") ? "https://preview-blackpool.cloud.contensis.com" : string.Empty,
+            RazorViewPath = RazorViewSportBlackpoolPath
+        };
+
+
+        SerialisedContent RawContent = currentItem.GetSerialisedContent();
+        ContentSorter sorter = new ContentSorter();
+        DTO.Flow = sorter.sortByGroup(RawContent);
+        DTO.NoImageUrl = "/SiteElements/ChannelShift/Content/Images/sport-blackpool/no-imagebox.png";
+
+        CurrentContext.Page.Title = currentItem.Alias;
+
+    }
+    catch
+    {
+        isError = true;
+    }
+
+}
+<div id="container" class="gutter clearfix" style="max-width:100%; border: solid 0px pink; margin: auto;">
+    <a class="blackpooluk-skip-link" href="#mainbar">Skip to main content</a>
+    @if (!isError)
+    {
+        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/topmenu.cshtml"), new { Model = DTO })
+        @RenderPage(String.Format("{0}{1}", RazorViewDeathOfaRoyalPath, "/banner.cshtml"), new { })
+        <div class="homepage-root-outer-container move clearfix content" style="margin: 0px; padding: 0px;">
+            <div id="root-container" class="homepage-max-width clearfix" style="margin-top: 0px; background-color: #fff;">
+                <div id="dynamic-html-content" class="zero-pad-left zero-pad-right clearfix zero-margin-all" style="border:solid 0px black">
+                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/timetable.cshtml"), new { Model = DTO })
+                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/headerboxImage.cshtml"), new { Model = DTO })
+                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/content.cshtml"), new { Model = DTO })
+                </div>
+            </div>
+        </div>
+
+        if (DTO.CurrentItemPageType == SportBlackpoolPageTypes.TopLevel)
+        {
+            @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/reviews.cshtml"), new { Model = DTO })
+        }
+        @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/footer.cshtml"), new { Model = DTO })
+    }
+    else
+    {
+        Response.Redirect("/Errors/404-Error.aspx?error=sb");
+    }
+</div>
+<!-- chat bot removed -->
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(function () {
+            var $body = $(document);
+            $body.bind('scroll', function () {
+                // "Disable" the horizontal scroll.
+                if ($body.scrollLeft() !== 0) {
+                    $body.scrollLeft(0);
+                }
+            });
+        });
+
+        $(function() {
+                $("a", "div#mainbar").addClass("accessibility-tab");
+        });
+    });
+</script>
+

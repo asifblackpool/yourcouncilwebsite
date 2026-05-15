@@ -1,0 +1,88 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Template (used for sportsblackpool)
+    // License: Blackpool council
+    // Date: 22/10/2018
+}
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+
+@using System.Data
+@using Contensis.Core.Utilities.DataAccess;
+
+@{
+    
+    string currentUrl       = Request.RawUrl.ToLower();
+    Config config           = null;
+    string redirectPath     = string.Empty;
+
+    // redirect to Anchorsholme Survey 
+    if (currentUrl.Contains("brexit")){
+        Response.Redirect(String.Format("{0}", "https://www.blackpool.gov.uk/Campaigns/Brexit.aspx"));
+    }
+    if (currentUrl.Contains("ArmedForcesChampion")){
+        Response.Redirect(String.Format("{0}", "https://www.blackpool.gov.uk/Your-Council/The-Council/Armed-forces-champion.aspx"));
+    }
+    if (currentUrl.Contains("parksurvey")){
+        Response.Redirect(String.Format("{0}", "https://wh1.snapsurveys.com/s.asp?k=160328809822"));
+    }
+    if (currentUrl.Contains("/christmas")){
+        Response.Redirect(String.Format("{0}", "https://www.blackpool.gov.uk/Campaigns/Christmas-opening-times-and-bin-collections.aspx"));
+    }
+    if (currentUrl.Contains("/climateemergency")){
+        Response.Redirect(String.Format("{0}", "https://www.blackpool.gov.uk/Residents/Planning-environment-and-community/Climate-emergency/Climate-emergency.aspx"));
+    }
+    if (currentUrl.Contains("/t2lrsg") || (currentUrl.Contains("/t3lrsg"))){
+        Response.Redirect(String.Format("{0}", "https://www.blackpool.gov.uk/Residents/Benefits/LCAL3-Open-Local-Restriction-Support-Grant.aspx"));
+    }
+    if (currentUrl.Contains("/bigthankyou")){
+        Response.Redirect(String.Format("{0}", "https://forms.office.com/Pages/ResponsePage.aspx?id=d-HjnrK5wEOwskgzxqGtXZy6nFq8twhLuAu6lWCCq8BUNDBCQjBYVFBPTzA2UkREQ0hESFdXR0pPSy4u"));
+    }
+
+    config = new Config() { SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.HeadStartKey } };
+    if (currentUrl.Contains(config.SeoUrlList.UrlPath.ToLower())){
+        var SeoUrl = config.SeoUrlList;
+        redirectPath = String.Format("{0}", SeoUrl.UrlPath + SeoUrl.DefaultPage);
+        Response.Redirect(currentUrl);
+    }
+
+ 
+    config = null;
+    config = new Config(){SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.SportBlackPoolKey }};
+    if (currentUrl.Contains(config.SeoUrlList.UrlPath.ToLower())) {
+        var SeoUrl = config.SeoUrlList;
+        redirectPath =  String.Format("{0}", SeoUrl.UrlPath + SeoUrl.DefaultPage);
+        Response.Redirect(currentUrl);
+    }
+
+    config = null;
+    config = new Config(){SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.BlackpoolCentralKey }};
+    if (currentUrl.Contains(config.SeoUrlList.UrlPath.ToLower())) {
+        var SeoUrl = config.SeoUrlList;
+        redirectPath =  String.Format("{0}", SeoUrl.UrlPath + SeoUrl.DefaultPage);
+        Response.Redirect(currentUrl);
+    }
+
+     config = null;
+    config = new Config(){SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.BlackpoolSendiasKey }};
+    if (currentUrl.Contains(config.SeoUrlList.UrlPath.ToLower())) {
+        var SeoUrl = config.SeoUrlList;
+        redirectPath =  String.Format("{0}", SeoUrl.UrlPath + SeoUrl.DefaultPage);
+        Response.Redirect(currentUrl);
+    }
+  
+}

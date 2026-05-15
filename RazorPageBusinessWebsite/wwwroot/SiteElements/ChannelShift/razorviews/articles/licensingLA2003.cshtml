@@ -1,0 +1,27 @@
+﻿@*<control name="Channel Shift Licensing Contact Article LA2003 " showInMenu="true" category="Favourites" viewingGroup="1">
+</control>*@@{
+
+    // Name: Channel Shift - Lincesing Control
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date:24/02/2016
+}
+
+@{
+  
+  String Title = "Licensing service";
+  String Telephone = "01253 478572";
+  String Email = "licensing.la2003@blackpool.gov.uk";
+  String Address = "Municipal buildings, Corporation Street, Blackpool, FY1 1NF";
+
+ 
+}
+
+<div id="contact-details" class="row clearfix">
+ <div id="contact-wrapper" class="clearfix">
+  <div class="col-md-12 zero-pad-all"><h4>@Title</h4></div>
+  <div id="contact-address" class="col-md-12 zero-pad-all">@Address</div>
+  <div id="contact-tel" class="col-md-12 zero-pad-all"><strong>Telephone&nbsp;</strong>@Telephone</div>
+  <div id="contact-email" class="col-md-12 zero-pad-all"><strong>Email&nbsp;</strong><a href="mailto:@Email">@Email</a></div>
+ </div>
+</div>

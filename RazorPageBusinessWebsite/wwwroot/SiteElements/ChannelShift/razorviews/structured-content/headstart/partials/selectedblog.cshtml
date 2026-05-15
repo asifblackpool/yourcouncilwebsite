@@ -1,0 +1,56 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - render the selected blog page
+    // License: Blackpool council
+    // Date: 21/02/2018
+
+}
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+
+@{
+    HeaderStart model = Page.Content as HeaderStart;
+    List<Blog> bloglist = model.PageContent[0].Blogs; //Passed Model
+    bloglist.Sort(new BlogSort());
+}
+
+<div class="row equal clearfix" style="margin:0px;">
+    @if (bloglist.Count > 0)
+    {
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 col-lg-push-9 col-md-push-9 col-sm-push-9 zero-pad-all">
+            <ul class="blog-links">
+                @foreach (var blog in bloglist)
+                {
+                    <li><a style="text-decoration:none;" onmouseover="this.style='text-decoration:underline;'" onmouseout="this.style='text-decoration:none;'" href="@string.Format("{0}/{1}/{2}/{3}.aspx", model.BaseUrlPath , model.Alias.ToLower(), blog.DateOfPostSlug, blog.TitleSlug)">@blog.Title</a></li>
+                }
+            </ul>
+        </div>
+        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-lg-pull-3 col-md-pull-3 col-sm-pull-3 zero-pad-all">
+            <div class="wrapper-blog clearfix">
+
+                @if (Page.SelectedBlog.Image.Length > 0)
+                {
+                    <div class="right-image"><img src="@Page.SelectedBlog.Image[0].Asset.Uri" alt="@Page.SelectedBlog.Image[0].Caption" class="img-responsive"></div>
+                }
+                <div class="content-blog clearfix">
+                    @Html.Raw(Page.SelectedBlog.Post)
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <strong>There are no current Blogs at this moment. Please try again later.</strong>
+    }
+</div>

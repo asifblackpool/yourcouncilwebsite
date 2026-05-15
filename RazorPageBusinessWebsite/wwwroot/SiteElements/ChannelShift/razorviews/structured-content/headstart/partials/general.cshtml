@@ -1,0 +1,107 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - render the general (generic) page
+    // License: Blackpool council
+    // Date: 21/02/2018
+
+}
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+
+@{
+    HeadStartContent model = Page.Content.PageContent[0]; //Passed Model
+    String path = Page.RazorPath;
+    string formPosted = Request.QueryString["post"];
+}
+
+@if (model.Video != null && model.Video.SelectedPosition == "top")
+{
+    @RenderPage(String.Format("{0}{1}", path, "partials/video.cshtml"), new { Video = model.Video });
+}
+
+<div class="row equal clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 zero-pad-all">@Html.Raw(model.BodyContent)</div>
+</div>
+
+@if (model.Video != null && model.Video.SelectedPosition == "bottom")
+{
+    @RenderPage(String.Format("{0}{1}", path, "partials/video.cshtml"), new { Video = model.Video });
+}
+
+
+
+@if (model.Forms != null)
+{
+    <div class="row equal clearfix">
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 zero-pad-all">
+
+            @if (!string.IsNullOrEmpty(formPosted))
+            {
+                <p style="color:red;"><strong>Your details have been successfully submitted thank you. </strong></p>
+            }
+            else
+            {
+                @RenderPage("/SiteElements/ChannelShift/razorviews/global/formrenderer.cshtml", new { formContentId = model.Forms[0].FormId })
+                
+                //hack for checkboxes 
+                <script>
+
+                    $(document).ready(function () {
+
+                        var checkboxChanged = function () {
+                            $('.checkrequired').change(function () {
+
+                                var val = this.checked;
+                                if (val) {
+                                    $(".chkbox-error").remove();
+                                }
+                                else {
+                                    checkboxMessage(false);
+                                }
+                            });
+                        };
+
+                        var checkboxMessage = function (state) {
+                            if (state === false) {
+                                $("<p class='chkbox-error sys_cms-form-error'><strong>Checkbox needs to be checked to submit form.</strong></p>").insertBefore(".checkrequired");
+                            }
+                        };
+
+                        var validateConfirm = function () {
+                            checkboxChanged();
+                            var checked = $('.checkrequired').prop('checked');
+                            $(".chkbox-error").remove();
+                            checkboxMessage(checked);
+                            return checked;
+                        };
+                        document.getElementById("btnSubmitForm_51918").addEventListener("click", validateConfirm);
+
+                    });
+          
+                </script>
+            }
+
+        </div>
+    </div>
+}
+
+
+
+
+<style type="text/css">
+    #dynamic-html-content {
+        max-width: 773px;
+    }
+    ul.sys_cms-form-validationsummary { display:none;}
+</style>

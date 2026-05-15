@@ -1,0 +1,65 @@
+﻿@*<control name="Person Razor" showInMenu="true" viewingGroup="1">
+  <properties>
+    <category name="Person">
+      <text name="Title">
+        <options>
+          <option label="Mr" value="Mr" />
+          <option label="Mrs" value="Mrs" />
+          <option label="Miss" value="Miss" />
+          <option label="Ms" value="Ms" />
+          <option label="Dr" value="Dr" />
+          <option label="Legend" value="Legend" />
+        </options>
+      </text>
+      <text name="Forename" />
+      <text name="Surname" />
+      <number name="Age" />
+      <text name="Interests">
+        <options>
+          <option label="Cricket" value="Cricket" />
+          <option label="Football" value="Football" />
+          <option label="Chips" value="Chips" />
+          <option label="Beer" value="Beer" />
+        </options>
+      </text>
+      <boolean name="IsBrilliant" />
+    </category>                      
+          
+    <category name="Pictures">
+      <node name="MainImage">
+        <parameters>
+          <parameter name="ContentTypes" value="2" />
+        </parameters>
+        </node>
+        <node name="Images">
+          <parameters>
+            <parameter name="ContentTypes" value="2" />
+           </parameters>
+        </node>
+       <node name="SVGImages">
+          <parameters>
+            <parameter name="ContentTypes" value="1000" />
+           </parameters>
+        </node>                                 
+        <node name="FilteredImages" editor="dataFilter" />
+    </category>      
+ 
+    <category name="Colleagues">
+      <repeater name="Colleagues" min="1" max="5">
+        <text name="Title">
+          <options>
+            <option label="Mr" value="Mr" />
+            <option label="Mrs" value="Mrs" />
+            <option label="Miss" value="Miss" />
+            <option label="Ms" value="Ms" />
+            <option label="Dr" value="Dr" />
+            <option label="Legend" value="Legend" />
+          </options>
+        </text>
+        <text name="Forename" />
+        <text name="Surname" />
+      </repeater>
+    </category>
+ 
+  </properties>
+</control>*@

@@ -1,0 +1,140 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Top Level Children Grid - used in blackpool adult learning pages
+    // License: Blackpool council
+    // Date: 19/11/2021
+}
+
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+
+@using Zengenti.Contensis.Delivery;
+
+@{
+    BlackpoolAdultLearningDTO DTO = Page.Model;
+    List<SerialisedContent> sc = new List<SerialisedContent>();
+    List<String> titles = new List<string>();
+    List<String> slugs = new List<String>();
+    int counter = 0;
+
+    if (DTO.ChildItems != null && DTO.ChildItems.Count > 0)
+    {
+        foreach (var item in DTO.ChildItems)
+        {
+            titles.Add(item.Title);
+            sc.Add(item.GetSerialisedContent());
+            slugs.Add(DTO.Config.SeoUrlList.UrlPath + item.SiteViewSlug + ".aspx");
+        }
+    }
+
+    List<ImageBox> gallery = new List<ImageBox>();
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.BlackpoolAdultLearningKey }
+    };
+
+
+    if (DTO.Flow != null)
+    {
+
+        foreach (var item in DTO.Flow.GetContent)
+        {
+            List<SerialisedItem> SerailisedList = item.Items.FindAll(x => x.ClassType == typeof(ImageBox) && x.ContainerType == ComponentKeys.IMAGE_BOX);
+            if (SerailisedList != null)
+            {
+                foreach (SerialisedItem si in SerailisedList)
+                {
+                    ImageBox temp = SerializeHelper.Deseralize(si) as ImageBox;
+                    gallery.Add(temp);
+                }
+            }
+        }
+    }
+
+
+    if (gallery.Count > 0)
+    {
+
+        <div class="row equal gallery zero-margin-all clearfix pad-bot-40 max-height-265 marg-bot-lg">
+            @foreach (var item in gallery)
+            {
+                string linkedHref = "#";
+                string ImageUrl = DTO.NoImageUrl;
+                string altText = "";
+                try
+                {
+                    linkedHref = slugs[counter];
+                    if (item.Image != null && item.Image.Asset != null)
+                    {
+                        ImageUrl = item.Image.Asset.Uri.ToString();
+                        altText = item.Image.AltText;
+                    }
+
+                    linkedHref = String.IsNullOrEmpty(item.ExternalURL) ? linkedHref : item.ExternalURL;
+                    ImageUrl = DTO.IsLocal ? string.Format("{0}{1}", DTO.BaseImageUrl, ImageUrl) : ZenUtilities.ImageUriToCachedImageUri(string.Format("{0}{1}", DTO.BaseImageUrl, ImageUrl), 370, 245);
+
+
+
+                }
+                catch (Exception ex)
+                {
+                    linkedHref = string.Empty;
+                }
+
+                if (linkedHref != string.Empty)
+                {
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 zero-pad-all gallery-margin" style="display:inline-block">
+                        <div class="gallery-container gallery-click">
+                            <div class="image-gallery">
+                                <a href="@string.Format("{0}", linkedHref)" class="gallery-link pseudo-link-click" style="cursor:pointer; text-decoration:none;">
+                                    <img src="@ImageUrl" class="img-responsive" alt="@altText" />
+                                </a>
+                                <div class="middle">
+                                    <div class="text gallery-title">@item.Title</div>
+                                    <div class="text">@item.Information</div>
+                                </div>
+                            </div>
+                            <div class="text-gallery">&nbsp;</div>
+                            <h2 class="text-overlay" style="@String.Format("{0}", item.Title.Length > 36 ? "top:100px;": "text-decoration:none;")">
+                                <a href="@string.Format("{0}", linkedHref)"
+                                   class="hover-white accessibility-tab"
+                                   style="text-decoration:none;">
+                                    <strong style='display:inline-block;@string.Format("{0}",item.Title.Length > 30 ? "top:2px;" : "")'>@item.Title</strong>
+                                </a>
+                            </h2>
+                        </div>
+                    </div>
+                }
+                counter++;
+            }
+
+            <script type="text/javascript">
+
+                $(document).on("click", "div.gallery-click", function (e) {
+
+                    var link = $(this).find("a.pseudo-link-click");
+                    var href = link.attr('href');
+                    console.log("clicked tile " + href);
+                    window.location = href;
+                    e.preventDefault();
+                    return false;
+                });
+            </script>
+        </div>
+    }
+
+}
+
+

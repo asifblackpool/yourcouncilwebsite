@@ -1,0 +1,33 @@
+﻿/* original file has been replaced with /SiteElements/ChannelShift/content/thirdparty/webfonts/ from fonts/ */
+@import url("https://fast.fonts.net/t/1.css?apiType=css&projectid=265b48fa-4f01-4b74-bc28-f3171d0e888a");
+@font-face{
+font-family:"Calibri W01 Light";
+src:url("/SiteElements/ChannelShift/content/thirdparty/webfonts/3bf8ead2-2902-446a-af57-fcf4e5da22db.eot?#iefix");
+src:url("/SiteElements/ChannelShift/content/thirdparty/webfonts/3bf8ead2-2902-446a-af57-fcf4e5da22db.eot?#iefix") format("eot"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/52f16f8c-2868-43ee-a2ca-378b097a3580.woff2") format("woff2"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/9cb02ba8-d928-43f5-a1bd-32fb78238194.woff") format("woff"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/1cc9eda5-6732-4a23-ad69-782421f8c81b.ttf") format("truetype"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/bf08ac41-3def-4da6-976b-7f125842a2c3.svg#bf08ac41-3def-4da6-976b-7f125842a2c3") format("svg");
+}
+@font-face{
+font-family:"Calibri W01 Light Italic";
+src:url("/SiteElements/ChannelShift/content/thirdparty/webfonts/443c8ba0-016c-4a11-af5c-58f3c01f635c.eot?#iefix");
+src:url("/SiteElements/ChannelShift/content/thirdparty/webfonts/443c8ba0-016c-4a11-af5c-58f3c01f635c.eot?#iefix") format("eot"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/aa102de4-ec9f-42ac-b628-6c30e83d0d93.woff2") format("woff2"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/b67d06e6-0656-41da-a1f4-e700d786580b.woff") format("woff"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/ed45e86a-ab65-4c27-9c41-b4b3d13bc2c6.ttf") format("truetype"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/301a0a5a-16af-4dae-84e6-c032da865cac.svg#301a0a5a-16af-4dae-84e6-c032da865cac") format("svg");
+}
+@font-face{
+font-family:"Calibri W01 Regular_904604";
+src:url("/SiteElements/ChannelShift/content/thirdparty/webfonts/d4acc8cd-67f2-4139-80be-d669bb2564d7.eot?#iefix");
+src:url("/SiteElements/ChannelShift/content/thirdparty/webfonts/d4acc8cd-67f2-4139-80be-d669bb2564d7.eot?#iefix") format("eot"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/367341fc-4cc6-4a79-89ad-d6c61561611e.woff2") format("woff2"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/1ff86dd4-d3b2-4325-89bc-c6eb493cedba.woff") format("woff"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/aa6b4b64-5ce0-48fd-887a-bece037cd9c9.ttf") format("truetype"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/59b6060c-d311-413e-b351-d79aaf982f7a.svg#59b6060c-d311-413e-b351-d79aaf982f7a") format("svg");
+}
+@font-face{
+font-family:"Calibri W01 Italic_904613";
+src:url("/SiteElements/ChannelShift/content/thirdparty/webfonts/f5fb4de8-efeb-47a8-94a7-50b825a6966a.eot?#iefix");
+src:url("/SiteElements/ChannelShift/content/thirdparty/webfonts/f5fb4de8-efeb-47a8-94a7-50b825a6966a.eot?#iefix") format("eot"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/e1cc7218-de20-4af1-a27c-6f325a4b0f0f.woff2") format("woff2"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/cac25ebb-269d-41e9-8ee5-78589746706e.woff") format("woff"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/6a4b5dab-ebbd-4741-80c7-3b30cd46e05d.ttf") format("truetype"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/318af76f-0012-4791-a785-d241f2613955.svg#318af76f-0012-4791-a785-d241f2613955") format("svg");
+}
+@font-face{
+font-family:"Calibri W01 Bold_904607";
+src:url("/SiteElements/ChannelShift/content/thirdparty/webfonts/26989e0d-2435-46c9-ab53-ae63e1816b99.eot?#iefix");
+src:url("/SiteElements/ChannelShift/content/thirdparty/webfonts/26989e0d-2435-46c9-ab53-ae63e1816b99.eot?#iefix") format("eot"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/3ded7064-503f-4fa0-853b-9f7a2cf55f20.woff2") format("woff2"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/4e7b2126-77d3-4e53-810d-7ccfde46450a.woff") format("woff"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/dcb27c78-fcd6-43bb-ab8b-9152bcfeb336.ttf") format("truetype"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/ab531dcb-6916-45d8-9326-ab3e33d75ef3.svg#ab531dcb-6916-45d8-9326-ab3e33d75ef3") format("svg");
+}
+@font-face{
+font-family:"Calibri W01 Bold Italic_904610";
+src:url("/SiteElements/ChannelShift/content/thirdparty/webfonts/c0f723f3-c373-4abc-9043-0fb0b460b8dc.eot?#iefix");
+src:url("/SiteElements/ChannelShift/content/thirdparty/webfonts/c0f723f3-c373-4abc-9043-0fb0b460b8dc.eot?#iefix") format("eot"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/fe969ae7-f9ce-40b2-93cc-9cc7138809a2.woff2") format("woff2"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/e43fbe67-bdec-48c3-b305-e4f021d8e755.woff") format("woff"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/7cf1f907-81f8-4b27-8ae5-986118860da1.ttf") format("truetype"),url("/SiteElements/ChannelShift/content/thirdparty/webfonts/d5b3dbd1-291d-4354-bdcd-216ef956c562.svg#d5b3dbd1-291d-4354-bdcd-216ef956c562") format("svg");
+}
+

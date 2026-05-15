@@ -1,0 +1,63 @@
+﻿/* Base message panel styling */
+.service-message {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 20px 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header with dynamic color */
+.message-header {
+    padding: 16px 20px;
+    /* Use the Color property value here */
+    background-color: var(--message-color, #e20032 );
+    color: white;
+}
+
+.message-title {
+    margin: 0;
+    font-size: 2.25rem;
+    font-weight: 600;
+}
+
+/* Message body */
+.message-body {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.message-content {
+    margin-bottom: 20px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* CTA Button styling */
+.cta-button {
+    display: inline-block;
+    padding: 10px 24px;
+    background-color: var(--message-color, #007bff);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.cta-button:hover {
+    background-color: var(--message-color-dark, #0056b3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Optional: For accessibility */
+.cta-button:focus {
+    outline: 2px solid var(--message-color, #007bff);
+    outline-offset: 2px;
+}

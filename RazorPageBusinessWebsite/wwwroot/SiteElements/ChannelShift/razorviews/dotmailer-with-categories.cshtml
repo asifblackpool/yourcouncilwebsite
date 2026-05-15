@@ -1,0 +1,250 @@
+﻿
+<div id="email-panel" class="panel panel-default">
+    <div class="panel-heading"><h3>Email sign-up </h3></div>
+    <div class="panel-body">
+        <div role="form" id="dotmailer-categories">
+            <p>Receive our e-version of Your Blackpool with information on developments, leisure activities, news and events in Blackpool.</p>
+            <form name="signup-cat" id="signup-cat" action="https://blackpoolcouncil.org/signup.ashx" method="post" style="display:block;">
+                <input type="hidden" name="addressbookid" value="1095870" />
+                <input type="hidden" name="userid" value="74179" />
+                <input type="hidden" name="ReturnURL" value="https://www.blackpool.gov.uk/SiteElements/Forms/Your-Blackpool-thanks.aspx">
+                <div class="form-group">
+						<label for="Email">Email:</label><br />
+						<input type="text" class="form-control" id="Email" name="Email" value="" onkeyup="clearError('email-error')" />
+						<span id="email-error" class="error"></span>
+					
+                </div>
+                <div class="form-group">
+				   
+                    <label for="cd_FIRSTNAME" >First name:</label>
+                    <input type="text" class="form-control" id="cd_FIRSTNAME" name="cd_FIRSTNAME" value="" onkeyup="clearError('firstname-error')" />
+                    <span id="firstname-error" class="error"></span>
+				  
+                </div>
+                <div class="form-group">
+				   
+                    <label for="cd_LASTNAME">Last name:</label>
+                    <input type="text" class="form-control" id="cd_LASTNAME" name="cd_LASTNAME" value="" onkeyup="clearError('lastname-error')" />
+                    <span id="lastname-error" class="error"></span>
+				  
+                </div>     
+                <h3>Your interests</h3>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Business:</legend><br/>
+                    <label class="radio-inline"><input type="radio" name="cd_BUSINESS_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_BUSINESS_radio" value="n">No</label>
+				  </fieldset>
+                </div>
+                <div class="form-group">
+				  <fieldset>
+                    <legend class="form-legend">Crime:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_CRIME_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_CRIME_radio" value="n">No</label>
+				  </fieldset>
+                </div>
+                <div class="form-group">
+                    <fieldset class="form-legend">
+                        <legend class="form-legend">Children:</legend><br />
+                        <label class="radio-inline"><input type="radio" name="cd_EDUCATIONANDCHILDREN_radio" value="y">Yes</label>
+                        <label class="radio-inline"><input type="radio" name="cd_EDUCATIONANDCHILDREN_radio" value="n">No</label>
+                    </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Democracy:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_ELECTIONS_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_ELECTIONS_radio" value="n">No</label>
+				   </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Environmental:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_ENVIRON_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_ENVIRON_radio" value="n">No</label>
+				  </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Family events:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_FAMILYEVENTS_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_FAMILYEVENTS_radio" value="n">No</label>
+				  </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Health:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_HEALTH_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_HEALTH_radio" value="n">No</label>
+				  </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Housing:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_HOUSING_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_HOUSING_radio" value="n">No</label>
+				  </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Leader's blog:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_LEADERBLOG_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_LEADERBLOG_radio" value="n">No</label>
+				  </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Money advice:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_MONEYADVICE_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_MONEYADVICE_radio" value="n">No</label>
+				   </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Older people:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_OLDERPEOPLE_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_OLDERPEOPLE_radio" value="n">No</label>
+				  </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Parking:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_PARKING_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_PARKING_radio" value="n">No</label>
+				  </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Parks:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_PARKS_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_PARKS_radio" value="n">No</label>
+				  </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Recycling:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_RECYCLING_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_RECYCLING_radio" value="n">No</label>
+				  </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Regeneration:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_REGENERATION_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_REGENERATION_radio" value="n">No</label>
+				  </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Sport:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_SPORTANDLEISURE_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_SPORTANDLEISURE_radio" value="n">No</label>
+				   </fieldset>
+                </div>
+                <div class="form-group">
+				   <fieldset>
+                    <legend class="form-legend">Transport:</legend><br />
+                    <label class="radio-inline"><input type="radio" name="cd_TRANSPORT_radio" value="y">Yes</label>
+                    <label class="radio-inline"><input type="radio" name="cd_TRANSPORT_radio" value="n">No</label>
+				   </fieldset>
+                </div>
+                    <input type="button" class="btn btn-defualt" value="Subscribe" onclick="dotmailerCategoriesFormServices.proxySubmit();" />
+            </form>
+        </div>
+        <!-- End of signup -->
+        <style type="text/css">
+
+           legend.form-legend {
+                margin-bottom: -20px !important;  
+                border-bottom:0px !important;
+                font-weight:bold;  
+            }
+
+            div#dotmailer-categories input.form-control {
+                border: 1px solid #830065;
+                border-radius: 0;
+            }
+
+            div#dotmailer-categories input[type=radio] {
+                top: 3px;
+            }
+
+            div.form-group span {
+                margin-right: 20px;
+                display: inline-block;
+                min-width: 130px;
+            }
+
+          .checkbox-inline, .radio-inline {
+             padding-left:30px
+          }
+        </style>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function (dotmailerFormServices, $, undefined) {
+
+        var _utility = null;
+
+        dotmailerFormServices.proxySubmit = function () {
+
+            var form = document.getElementById('signup');
+            var firstname = $('#cd_FIRSTNAME').val();
+            var secondname = $('#cd_LASTNAME').val();
+            var email = $('#Email').val();
+            var messages = dotmailerFormServices.submitform(email, firstname, secondname);
+
+            if (messages.email === '' && messages.firstname === '' && messages.secondname === '') {
+                $('form[name="signup-cat"]').submit();
+                var frm = document.getElementById('form1') || null;
+                frm.action = "https://blackpoolcouncil.org/signup.ashx";
+                $('#__VIEWSTATE').val('');
+                frm.submit();
+                return true;
+            }
+            else {
+                $("#email-error").html(messages.email);
+                $("#firstname-error").html(messages.firstname);
+                $("#lastname-error").html(messages.secondname);
+                return false;
+            }
+        };
+
+        dotmailerCategoriesFormServices.init = function (ut) {
+            _utility = ut;
+            //addFormTemplate();
+        };
+
+        dotmailerCategoriesFormServices.submitform = function (email, firstname, secondname) {
+
+            var message = '';
+            var errorMessages = { email: '', postcode: '', firstname: '', secondname: '' };
+
+            if (firstname === "") {
+                errorMessages.firstname = 'You have not entered a first name.'
+            }
+            if (secondname === "") {
+                errorMessages.secondname = 'You have not entered a second name.'
+            }
+
+            message = _utility.validateEmailAddress(email);
+            if (message !== "") {
+                errorMessages.email = message;
+                message = '';
+            }
+
+            /* submit proxy form */
+            return errorMessages;
+        };
+
+
+    })(window.dotmailerCategoriesFormServices = window.dotmailerCategoriesFormServices || {}, jQuery);
+
+    $(document).ready(function () {
+        console.log('start page services');
+   
+        dotmailerCategoriesFormServices.init(window.utilities);
+    });
+
+</script>@*<control name="Dot Mailer with categories" showInMenu="true" category="Favourites" viewingGroup="2"/>*@

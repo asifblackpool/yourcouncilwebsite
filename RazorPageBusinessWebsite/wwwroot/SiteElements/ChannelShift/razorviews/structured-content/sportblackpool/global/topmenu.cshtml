@@ -1,0 +1,218 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Top Menu - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 09/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+@{
+    SportBlackPoolDTO DTO = Page.Model;
+    Zengenti.Data.PagedList<SportBlackpool> list = DTO.List;
+    SportBlackpoolHelper helper = new SportBlackpoolHelper(list.Items);
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = Blackpool.Zengenti.CMS.Constants.SeoKeys.SportBlackPoolKey }
+    };
+
+    DTO.Config = config;
+
+    string path = DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath;
+    string homepageHref = String.Format("{0}{1}", DTO.Config.SeoUrlList.Website + DTO.Config.SeoUrlList.UrlPath, DTO.Config.SeoUrlList.DefaultPage);
+    List<MenuLink> topLinks = new List<MenuLink>();
+    topLinks = (from item in list.Items
+                where (item.IsActive) && (item.PageType == SportBlackpoolKeys.TOP_LEVEL
+                        || item.PageType == SportBlackpoolKeys.SECOND_LEVEL)
+                select new MenuLink()
+                {
+                    Href = helper.NavigationBuilder(item, path),
+                    Text = item.Alias,
+                    Order = item.MenuOrder,
+                    Level = item.PageType,
+                    ChildMenu = (item.PageType == SportBlackpoolKeys.TOP_LEVEL) ? null : helper.GetChildLinks(list.Items, item, path)
+                }
+    ).ToList();
+
+    topLinks.OrderBy(x => x.Order);
+    topLinks = topLinks.OrderBy(x => x.Order).ToList();
+
+    <nav id="navbar" class="row zero-margin-all">
+        <div class="col-lg-12 col-md-12 col-sm-12 zero-pad-all">
+            <!-- desktop view -->
+            
+            <div id="navbar-inner" class="content-space navbar-desktop clearfix">
+                <div class="title"><span style="float:left; position:relative; top:-4px;" class="accessibility-tab">Active Blackpool</span></div>
+                <div class="btn-holder"><button class="button nav-font web-booking accessibility-tab">BOOK</button></div>
+                <div class="btn-holder"><button class="button nav-font web-join accessibility-tab">JOIN</button></div>
+                <div class="search-holder" style="overflow:visible">
+                    <label for="search-active-blackpool" style="visibility:hidden; width:0px; position:absolute;">search:</label>
+                    <input id="search-active-blackpool" name="search-active-blackpool" class="search-text desktop-text nav-font accessibility-tab" type="text" placeholder="Search" style="outline:none;" />
+                    <button type="submit" title="search active blackpool" aria-label="description" class="search-button desktop-click accessibility-tab" ><i class="fa fa-search"></i></button>
+                    <span class="circle-close"><i class="fa fa-times-circle"></i></span>
+                </div>
+                <div class="menu-holder">
+                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/navigation.cshtml"), new { Model = DTO })
+                </div>
+            </div>
+            <!-- tablet view -->
+            <div id="navbar-inner" class="navbar-tablet clearfix">
+                <div class="title"><span>Active Blackpool</span></div>
+                <div class="btn-holder"><button class="button nav-font web-booking accessibility-tab" >BOOK</button></div>
+                <div class="btn-holder"><button class="button nav-font web-join accessibility-tab" >JOIN</button></div>
+
+                <div class="menu-holder">
+                    <span class="search-icon-holder"><i class="fa fa-search tablet" style="cursor:pointer;float:right; top:10px; left:-10px;"></i></span>
+                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/navigation.cshtml"), new { Model = DTO })
+                </div>
+
+                <div id="search-tablet" style="float:left; width:100%;padding-top:10px;display:none;">
+                    <div class="search-holder" style="overflow:visible">
+                        <label for="search-active-blackpool-tablet" style="visibility:hidden; width:0px; position:absolute;">search:</label>
+                        <input id="search-active-blackpool-tablet" class="search-text tablet-text nav-font accessibility-tab" type="text" placeholder="Search" style="outline:none;" />
+                        <button type="submit" class="search-button tablet-click" aria-label="search button" ><i class="fa fa-search"></i></button>
+                    </div>
+                    <div class="close-holder"><span class="circle-close"><i class="fa fa-times-circle tablet"></i></span></div>
+                </div>
+                <span class="tablet-close"><i class="fa fa-times-circle mobile"></i></span>
+            </div>
+            <!-- mobile view -->
+            <div id="navbar-inner" class="navbar-mobile clearfix">
+                <div class="title"><span>Active Blackpool</span></div>
+         
+                <div class="menu-holder">
+                    <span class="search-icon-holder"><i class="fa fa-search mobile" style="cursor:pointer;float:left;"></i></span>
+                    @RenderPage(String.Format("{0}{1}", DTO.RazorViewPath, "/global/navigation.cshtml"), new { Model = DTO })
+                </div>
+
+                <div id="search-mobile" style="float:left; width:100%;padding-top:10px; padding-bottom:5px;display:none;">
+                    <div class="search-holder" style="overflow:visible; width:95%; float:left;">
+                        <label for="search-active-blackpool-mobile" style="visibility:hidden; width:0px; position:absolute;">search:</label>
+                        <input id="search-active-blackpool-mobile" class="search-text mobile-text nav-font accessibility-tab" type="text" placeholder="Search" style="outline:none;" />
+                        <button type="submit" class="search-button mobile-click" aria-label="search button"><i class="fa fa-search"></i></button>
+                    </div>
+                    <div class="close-holder" style="float:right; width:5%;"><span class="circle-close"><i class="fa fa-times-circle mobile"></i></span></div>
+                </div>
+                <div class="btn-holder"><button class="button nav-font web-booking accessibility-tab">BOOK</button></div>
+                <div class="btn-holder"><button class="button nav-font button-join web-join accessibility-tab">JOIN</button></div>
+                <span class="mobile-close"><i class="fa fa-times-circle mobile"></i></span>
+            </div>
+        </div>
+    </nav>
+
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(document).on("click", "span.show-tertiary", function (e) {
+            var txtcls = "glyphicon glyphicon-{0}-sign show-tertiary";
+            var p = $(this);
+            var ul = (p.parent())[0];
+            var tertiaryUl = $(ul.nextElementSibling); //get the children
+            $(tertiaryUl).slideToggle("fast", function () {
+                var txt = $(p).hasClass("glyphicon-plus-sign") ? "minus" : "plus";
+                $(p).attr("class", txtcls.replace('{0}', txt));
+            });
+        });
+        $(document).on("click", "div.title", function (e) {
+            window.location.href = '@homepageHref';
+            return false;
+        });
+        $(document).on("click", "button.web-booking", function (e) {
+            window.location.href = window.commonservices.Config().sportWebBookingUrl;
+            return false;
+        });
+         $(document).on("click", "button.web-join", function (e) {
+             window.location.href = window.commonservices.Config().sportWebBookingJoinUrl;
+             return false;
+        });
+
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(document).on("click", ".search-icon-holder i.tablet", function (e) {
+            $("#search-tablet").slideDown("slow", function () { });
+        });
+        $(document).on("click", "span.circle-close i.tablet", function (e) {
+            $("#search-tablet").slideUp("slow", function () { });
+        });
+        $(document).on("click", ".search-icon-holder i.mobile", function (e) {
+            $("#search-mobile").slideDown("slow", function () { });
+        });
+        $(document).on("click", "span.circle-close i.mobile", function (e) {
+            $("#search-mobile").slideUp("slow", function () { });
+        });
+
+        $(document).on("click", "a.menu-text", function (e) {
+
+            $("span.mobile-close").css({ 'display': 'block' });
+            $("span.tablet-close").css({ 'display': 'block' });
+            $("nav ul ul li").css('width', 325);
+            $("nav ul ul li:first-child").css('width', 150);
+            $("nav ul li > ul").fadeIn(1000);
+            return false;
+        });
+
+        $(document).on("click", "span.mobile-close", function (e) {
+            $("nav ul li > ul").fadeOut(1000);
+            $("span.mobile-close").css({ 'display': 'none' });
+            $("span.tablet-close").css({ 'display': 'none' });
+
+            return false;
+        });
+
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var runsearch = function (txt) {
+            if (txt !== null && txt.length > 0) {
+                var path = '@path';
+                document.location.href = path + 'search.aspx?keyword_search=' + txt;
+            }
+        };
+
+        $(document).on("click", "button.desktop-click", function (e) {
+            runsearch($("input.desktop-text").val());
+            e.preventDefault();
+            return false;
+        });
+
+        $(document).on("click", "button.tablet-click", function (e) {
+            runsearch($("input.tablet-text").val());
+            e.preventDefault();
+            return false;
+        });
+
+        $(document).on("click", "button.mobile-click", function (e) {
+            runsearch($("input.mobile-text").val());
+            e.preventDefault();
+            return false;
+        });
+
+        $(document).on('keypress', ':input:not(textarea):not([type=submit])', function (e) {
+            if (e.which == 13) {
+                runsearch($("input.desktop-text").val());
+                runsearch($("input.tablet-text").val());
+                runsearch($("input.mobile-text").val());
+                e.preventDefault();
+            }
+        });
+    });
+</script>

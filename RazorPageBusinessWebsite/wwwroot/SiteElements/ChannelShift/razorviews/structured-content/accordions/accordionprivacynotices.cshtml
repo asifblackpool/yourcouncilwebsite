@@ -1,0 +1,144 @@
+﻿@{
+
+    // Name: Channel Shift - Accordions for Privacy Notices (New)
+    // Developer: Asif Nissar
+    // License: Blackpool council
+    // Date:05/09/2025
+}
+
+@using System;
+@using System.Text;
+@using Zengenti.Data;
+@using Zengenti.Contensis.Delivery;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Helpers.Connector;
+@using Blackpool.Zengenti.CMS.Models.PrivacyNotice;
+@using Blackpool.Zengenti.CMS.Models.Fields;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Newtonsoft.Json;
+
+
+
+@functions {
+
+
+}
+
+
+@{
+
+    string baseUrl = UrlHelper.GetBaseAddressUrl(Request.Url.ToString());
+
+    if (!UrlHelper.IsLocal(baseUrl))
+    {
+        baseUrl = baseUrl.Replace("http", "https");
+    }
+
+    //------------------------------------------------------------------------------------------------------------------------------
+    //Create the Connector to retrieve Accordion data
+
+    var list = ContensisConnector<PrivacyNoticeNew>.Entries(ContensisClientKeys.PRIVACY_NOTICES_NEW, new PageOptions(0, 1000));
+    //Grab configurable data
+    String privacySearchValue = Properties.Value.ToLower();
+    String accordionTitle = Properties.Title;
+
+
+    List<PrivacyNoticeNew> notices = (list != null & list.Items.Count > 0) ? list.Items.Where(x => x.Section == privacySearchValue).ToList() : null;
+    List<AccordionContent> accordionList = new List<AccordionContent>();
+
+    if (notices != null && notices.Count > 0)
+    {
+        bool marginSet = false;
+        string format = string.Empty;
+        foreach (var item in notices)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (!string.IsNullOrEmpty(item.WhoIsResponsibleForYourData))
+            {
+                format = (marginSet) ? "<h3>{0}</h3>" : "<h3 style='margin-top:-30px;'>{0}</h3>";
+                sb.Append(string.Format(format, "Who is responsible for your data"));
+                sb.Append(item.WhoIsResponsibleForYourData);
+                marginSet = true;
+            }
+            if (!string.IsNullOrEmpty(item.WhyDoWeCollectYourInformation))
+            {
+                format = (marginSet) ? "<h3>{0}</h3>" : "<h3 style='margin-top:-30px;'>{0}</h3>";
+                sb.Append(string.Format(format, "Why do we collect your information"));
+                sb.Append(item.WhyDoWeCollectYourInformation);
+                marginSet = true;
+            }
+            if (!string.IsNullOrEmpty(item.WhatIsOurLawfulBasis))
+            {
+                format = (marginSet) ? "<h3>{0}</h3>" : "<h3 style='margin-top:-30px;'>{0}</h3>";
+                sb.Append(string.Format(format, "What is our lawful basis"));
+                sb.Append(item.WhatIsOurLawfulBasis);
+                marginSet = true;
+            }
+            if (!string.IsNullOrEmpty(item.WhatTypesOfInformationDoWeCollect))
+            {
+                format = (marginSet) ? "<h3>{0}</h3>" : "<h3 style='margin-top:-30px;'>{0}</h3>";
+                sb.Append(string.Format(format, "What types of information do we collect"));
+                sb.Append(item.WhatTypesOfInformationDoWeCollect);
+                marginSet = true;
+            }
+            if (!string.IsNullOrEmpty(item.AutomatedDecisionMaking))
+            {
+                format = (marginSet) ? "<h3>{0}</h3>" : "<h3 style='margin-top:-30px;'>{0}</h3>";
+                sb.Append(string.Format(format, "Automated decision making"));
+                sb.Append(item.AutomatedDecisionMaking);
+                marginSet = true;
+            }
+            if (!string.IsNullOrEmpty(item.WhoDoWeShareYourInformationWith))
+            {
+                format = (marginSet) ? "<h3>{0}</h3>" : "<h3 style='margin-top:-30px;'>{0}</h3>";
+                sb.Append(string.Format(format, "Who do we share your information with"));
+                sb.Append(item.WhoDoWeShareYourInformationWith);
+                marginSet = true;
+            }
+
+            accordionList.Add(new AccordionContent() { Title = item.Title, Body = sb.ToString() });
+            marginSet = false;
+        }
+    }
+
+    int counter = 1;
+}
+
+
+<h2 id="@string.Format("privacy-title-{0}", accordionTitle)" class="privacy-header"><a id="@accordionTitle.Replace(" ", "-")">@accordionTitle</a></h2>
+<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default-@accordionTitle">
+    @foreach (var item in accordionList)
+    {
+        if (!string.IsNullOrEmpty(item.Body))
+        {
+            <div class="govuk-accordion__section">
+                <div class="govuk-accordion__section-header">
+                    <h3 class="govuk-accordion__section-heading">
+                        <span class="govuk-accordion__section-button" id="accordion-default-heading-@accordionTitle-@counter">
+                            @item.Title
+                        </span>
+                    </h3>
+                </div>
+                <div id="accordion-default-content-1" class="govuk-accordion__section-content">
+                    <div class="govuk-body">@Html.Raw(item.Body)</div>
+                </div>
+            </div>
+            counter++;
+        }
+
+    }
+</div>
+
+
+
+@*<control name="Channel Shift Accordion Privacy Notices" showInMenu="true" category="Favourites" viewingGroup="2">
+     <properties>
+       <category name="Accordion (Privacy Notice)">
+        <text name="Value" label="Add the label value you want to search, Example:adult-services" />
+        <text name="Title" label="Add the title you want for the Accordion" />
+       </category>
+      </properties>
+    </control>*@

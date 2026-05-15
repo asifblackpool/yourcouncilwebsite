@@ -1,0 +1,368 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: HTML Mak up for Parks and Greenspaces
+    // License: Blackpool council
+    // Date: 12/11/2022
+}
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.ParksAndGreenSpaces
+@using Blackpool.Zengenti.CMS.Models.Components.ParksAndGreenspaces;
+
+@{
+    ParksAndGreenSpacesDTO DTO = Page.Model;
+    ParkFacility parkFacility = null;
+    ParkImages parkImages = null;
+    ParkTypeDetails parkDetails = null;
+    AddressWithLocation addressLocation = null;
+    string apiKey = System.Web.Configuration.WebConfigurationManager.AppSettings["GoogleApiKey"];
+    string ImageUrl = DTO.NoImageUrl;
+
+
+    Config config = DTO.Config;
+
+    string img_no_icon = "/SiteElements/ChannelShift/Content/images/parks-and-greenspaces/icons/no-icon.png";
+
+    ParkFacilitisCollection parkfacilitiesCollection = new ParkFacilitisCollection();
+
+
+    foreach (SerialisedContent item in DTO.Flow.GetContent)
+    {
+        string className = item.Items[0].ClassName;
+        switch (className)
+        {
+            case "ParkTypeDetails":
+                parkDetails = (SerializeHelper.Deseralize(item.Items[0])) as ParkTypeDetails;
+                break;
+            case "ParkFacility":
+                parkFacility = (SerializeHelper.Deseralize(item.Items[0])) as ParkFacility;     //a list of park features
+                break;
+            case "ParkImages":
+                parkImages = (SerializeHelper.Deseralize(item.Items[0])) as ParkImages;
+                break;
+            case "AddressWithLocation":
+                addressLocation = (SerializeHelper.Deseralize(item.Items[0])) as AddressWithLocation;
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    List<string> facilities = parkFacility.ListingsOfFacilities;
+}
+
+
+@if (parkFacility != null && parkFacility.ParkFeatures != null && parkFacility.ParkFeatures.Count > 0)
+{
+    <div id="park-features-icon" class="row">
+        <div class="col-md-12">
+            <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel" data-interval="1000">
+                <div class="MultiCarousel-inner">
+                    @foreach (var item in parkFacility.ParkFeatures)
+                    {
+                        Zengenti.Contensis.Delivery.Image img = (item.FeatureIcon != null) ? item.FeatureIcon : new Zengenti.Contensis.Delivery.Image(null, item.Feature);
+                        <div class="item">
+                            <div class="pad15">
+                                <img alt="@item.Feature" src="@String.Format("{0}", img.Asset != null ? img.Asset.Uri : img_no_icon)" />
+                                <span class="item-span">@item.Feature</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <button class="btn leftLst"><img class="left-arrow" src="~/SiteElements/ChannelShift/Content/images/parks-and-greenspaces/polygon.png" alt="left-arrow" /></button>
+                <button class="btn rightLst"><img class="right-arrow" src="~/SiteElements/ChannelShift/Content/images/parks-and-greenspaces/polygon-right.png" alt="right-arrow" /></button>
+            </div>
+        </div>
+    </div>
+}
+
+@if (parkDetails != null)
+{
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Park information</h2>
+            @Html.Raw(parkDetails.Description)
+            <br />
+            <h3>Location</h3>
+            <div id="map" style="width:100%;height:650px;background:yellow"></div>
+        </div>
+        <div class="col-md-4">
+            <div id="faclitiies-listing">
+                <h3>On site facilities</h3>
+                @if (facilities != null && facilities.Count > 0)
+                {
+            <ul class="park-facilities">
+                @foreach (string txt in facilities)
+                {
+                    var item = parkfacilitiesCollection.getFacility(txt);
+                    if (item != null && item.Image != string.Empty)
+                    {
+                        <li class="park-item-facility">@txt<span class="icon-placeholder"><img class="icon" src="@item.Image" alt="@txt" /></span></li>
+                    }
+                    else
+                    {
+                        <li class="park-item-facility">@txt</li>
+                    }
+
+                }
+
+            </ul>
+                }
+
+            </div>
+            <div id="parking-container">
+                <h3 style="color:#041C2C;">Parking</h3>
+                <dl>
+                    <dt>@parkDetails.ParkingInformation</dt>
+                </dl>
+                <dl>
+                    <dt>@addressLocation.AddressLine1</dt>
+                    <dt>@addressLocation.TownCity</dt>
+                    <dd>@addressLocation.PostCode</dd>
+                </dl>
+                <h3 style="color:#041C2C;">Public transport information</h3>
+                <dl>
+                    <dt>@parkDetails.PublicTransportInformation</dt>
+                </dl>
+            </div>
+            <div id="parking-hightlight" style="padding-top:20px;">
+                <p>@parkDetails.HighlightLine</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+$(document).ready(function () {
+
+    window.setTimeout(function () {
+        window.googlemapservices.map('@addressLocation.Map.Lat', '@addressLocation.Map.Lon', "map", 17);
+    }, 1000);
+
+});
+
+
+    </script>
+    <script type="text/javascript" src="@GoogleApiHelper.GoogleMapUrl(apiKey)"></script>
+    <style type="text/css">
+        .MultiCarousel {
+            float: left;
+            overflow: hidden;
+            padding: 0px 15px;
+            width: 100%;
+            position: relative;
+            top:-20px;
+        }
+
+        .MultiCarousel .MultiCarousel-inner {
+            transition: 1s ease all;
+            float: left;
+        }
+
+        .MultiCarousel .MultiCarousel-inner .item {
+            float: left;
+        }
+
+        .MultiCarousel .MultiCarousel-inner .item > div {
+            text-align: center;
+            padding: 10px;
+            margin: 10px;
+            background: transparent;
+            color: #666;
+        }
+
+        .MultiCarousel .leftLst, .MultiCarousel .rightLst {
+            position: absolute;
+            border-radius: 50%;
+            top: calc(50% - 20px);
+        }
+
+        .MultiCarousel .leftLst {
+            left: 0;
+            background-color: transparent;
+            outline: none !important;
+        }
+
+        .MultiCarousel .rightLst {
+            right: 0;
+            background-color: transparent;
+            outline: none !important;
+        }
+
+        .MultiCarousel .leftLst.over, .MultiCarousel .rightLst.over {
+            pointer-events: none;
+            background: transparent;
+            outline: none !important;
+        }
+
+        img.left-arrow {
+            position: relative;
+            left: -15px;
+            top: -10px;
+        }
+
+        img.right-arrow {
+            position: relative;
+            right: -15px;
+            top: -10px;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var itemsMainDiv = ('.MultiCarousel');
+            var itemsDiv = ('.MultiCarousel-inner');
+            var itemWidth = "";
+
+            $('.leftLst, .rightLst').click(function (e) {
+                var condition = $(this).hasClass("leftLst");
+                if (condition)
+                    click(0, this);
+
+                else
+                    click(1, this);
+
+                e.preventDefault();
+                e.stopPropagation();
+            });
+
+            ResCarouselSize();
+
+
+
+
+            $(window).resize(function () {
+                ResCarouselSize();
+            });
+
+            //this function define the size of the items
+            function ResCarouselSize() {
+                var incno = 0;
+                var dataItems = ("data-items");
+                var itemClass = ('.item');
+                var id = 0;
+                var btnParentSb = '';
+                var itemsSplit = '';
+                var sampwidth = $(itemsMainDiv).width();
+                var bodyWidth = $('body').width();
+                $(itemsDiv).each(function () {
+                    id = id + 1;
+                    var itemNumbers = $(this).find(itemClass).length;
+                    btnParentSb = $(this).parent().attr(dataItems);
+                    itemsSplit = btnParentSb.split(',');
+                    $(this).parent().attr("id", "MultiCarousel" + id);
+
+
+                    if (bodyWidth >= 1200) {
+                        incno = itemsSplit[3];
+                        itemWidth = sampwidth / incno;
+                    }
+                    else if (bodyWidth >= 992) {
+                        incno = itemsSplit[2];
+                        itemWidth = sampwidth / incno;
+                    }
+                    else if (bodyWidth >= 768) {
+                        incno = itemsSplit[1];
+                        itemWidth = sampwidth / incno;
+                    }
+                    else {
+                        incno = itemsSplit[0];
+                        itemWidth = sampwidth / incno;
+                        if (itemWidth > 300) {
+                            itemWidth = 190;
+                        }
+                        console.log("item width is " + itemWidth)
+                    }
+                    $(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers });
+                    $(this).find(itemClass).each(function () {
+                        $(this).outerWidth(itemWidth);
+                    });
+
+                    $(".leftLst").addClass("over");
+                    $(".rightLst").removeClass("over");
+
+                });
+            }
+
+
+            //this function used to move the items
+            function ResCarousel(e, el, s) {
+                var leftBtn = ('.leftLst');
+                var rightBtn = ('.rightLst');
+                var translateXval = '';
+                var divStyle = $(el + ' ' + itemsDiv).css('transform');
+                var values = divStyle.match(/-?[\d\.]+/g);
+                var xds = Math.abs(values[4]);
+                if (e == 0) {
+                    translateXval = parseInt(xds) - parseInt(itemWidth * s);
+                    $(el + ' ' + rightBtn).removeClass("over");
+
+                    if (translateXval <= itemWidth / 2) {
+                        translateXval = 0;
+                        $(el + ' ' + leftBtn).addClass("over");
+                    }
+                }
+                else if (e == 1) {
+                    var itemsCondition = $(el).find(itemsDiv).width() - $(el).width();
+                    translateXval = parseInt(xds) + parseInt(itemWidth * s);
+                    $(el + ' ' + leftBtn).removeClass("over");
+
+                    if (translateXval >= itemsCondition - itemWidth / 2) {
+                        translateXval = itemsCondition;
+                        $(el + ' ' + rightBtn).addClass("over");
+                    }
+                }
+                $(el + ' ' + itemsDiv).css('transform', 'translateX(' + -translateXval + 'px)');
+            }
+
+            //It is used to get some elements from btn
+            function click(ell, ee) {
+                var Parent = "#" + $(ee).parent().attr("id");
+                var slide = $(Parent).attr("data-slide");
+                ResCarousel(ell, Parent, slide);
+                console.log("click called");
+                return false;
+            }
+
+        });
+    </script>
+
+}
+
+
+@if (parkImages != null && parkImages.MultipleImage != null && parkImages.MultipleImage.Count > 0) 
+{ 
+<div class="row grid-container clearfix" style="padding-top:40px;">
+
+    @foreach (var item in parkImages.MultipleImage)
+    {
+        string altText = "";
+        if (item != null && item.Asset != null)
+        {
+            ImageUrl = item.Asset.Uri.ToString();
+            altText = item.AltText;
+        }
+
+        ImageUrl = DTO.IsLocal ? string.Format("{0}{1}", DTO.BaseImageUrl, ImageUrl) : ZenUtilities.ImageUriToCachedImageUri(string.Format("{0}{1}", DTO.BaseImageUrl, ImageUrl), 400, 300);
+        <div class="col-lg- col-md-4 col-sm-4 col-xs-12 zero-pad-all gallery-margin" style="display:inline-block">
+            <div class="gallery-container">
+                <div class="image-gallery">
+                    <img src="@ImageUrl" class="img-responsive" alt="@altText" style="height:250px" />
+                </div>
+            </div>
+        </div>
+            }
+
+    </div>
+}
+
+

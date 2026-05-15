@@ -1,0 +1,610 @@
+﻿@{
+
+    // Name: Channel Shift - News Item using News Story Content types
+    // Developer: Asif Nissar
+    // Name: News Item
+    // License: Blackpool council
+    // Date: 11/10/2022
+}
+
+
+@using System;
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Constants;
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Helpers.Standard;
+@using Blackpool.Zengenti.CMS.Helpers.Components;
+@using Blackpool.Zengenti.CMS.Models.NewsStory;
+@using Blackpool.Zengenti.CMS.Models.Components;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using System.Data;
+@using Blackpool.Zengenti.CMS.Helpers;
+
+
+@{
+
+    string pagePath = Page.PagePath;
+    Zengenti.Data.PageOptions options = new PageOptions(0, 1000);
+    string currentUrl = this.Request.RawUrl.ToLower();
+    var client = Zengenti.Contensis.Delivery.ContensisClient.Create(ContensisClientKeys.BLACKPOOL_PROJECTID, ContensisClientKeys.CMS_URL,
+                           ContensisClientKeys.CLIENT_ID,
+                            ContensisClientKeys.SECRET_ID, VersionStatus.Published);
+
+    NewsStory defaultNewsStory = null;
+    String richTextContent = string.Empty;
+    List<NewsStory> stories = null;
+    SerialisedContent articleContent = null;
+    string linkNewStory = string.Empty;
+    string cardTextContent = string.Empty;
+    Config config = null;
+
+
+    string newsUrl = string.Empty;
+    string searchTerm = Request.Form["news-story-search"];
+    string categoryTerm = Request.Form["category-select"];
+    string dateTerm = Request.Form["month"];
+    string formDateTerm = dateTerm;
+    bool filterResultsFound = false;
+    bool showNowResultsMessage = false;
+    string noResultsMessage = string.Empty;
+    string resultsfoundMessage = string.Empty;
+    int resultCount = 0;
+    int storyCounter = 1;
+
+
+    try
+    {
+
+        config = new Config()
+        {
+            SeoUrlList = new SeoFriendlyUrlElement() { Key = SeoKeys.NewsStoryKey }
+        };
+
+        newsUrl = config.SeoUrlList.UrlPath + config.SeoUrlList.DefaultPage;
+
+
+        Zengenti.Data.PagedList<NewsStory> list = client.Entries.List<NewsStory>(new EntryListOptions
+        {
+            ContentTypeId = ContensisClientKeys.NEWS_STORY,
+            LinkDepth = 1,
+            PageOptions = options
+
+        });
+
+        stories = list.Items.Where(x => x.Published == true).ToList().OrderByDescending(y => y.DatePublished).ToList();
+        defaultNewsStory = (stories != null & stories.Count > 0) ? stories[0] : null;
+        articleContent = (defaultNewsStory != null) ? defaultNewsStory.ArticleContent : articleContent;
+
+        if (articleContent != null)
+        {
+            var temp = articleContent.Items.Where(x => x.ContainerType == "richText").ToList().FirstOrDefault();
+            richTextContent = new RichTextHelper(temp).RichText;
+            linkNewStory = String.Format(pagePath, defaultNewsStory.Slug, StringUtility.DateSlug(defaultNewsStory.DatePublished));
+            cardTextContent = StringUtility.CutString(HTMLParser.ReplaceTagWith(HTMLParser.StripHTML(richTextContent)), 100, true);
+
+        }
+
+        //get search stories
+
+        if (stories != null)
+        {
+            //sanity check
+
+
+            searchTerm = (searchTerm != null) ? searchTerm.ToLower().Trim() : string.Empty;
+            if (!string.IsNullOrEmpty(dateTerm))
+            {
+                var splitDate = dateTerm.Split(new char[] { '-' });
+                try{
+                    if (splitDate.Length > 0)
+                    {
+                        int month = Convert.ToInt32(splitDate[0]);
+                        dateTerm = string.Format("{0}-{1}", StringUtility.DateTextMonth(Convert.ToInt32(splitDate[0])), splitDate[1]).ToLower().Trim();
+                    }
+                }
+
+                catch{}
+
+                if (!string.IsNullOrEmpty(searchTerm) && (!string.IsNullOrEmpty(categoryTerm)) && (!string.IsNullOrEmpty(dateTerm)))
+                {
+                    stories = list.Items.Where(x => x.Published == true &&
+                           x.Title.ToLower().Contains(searchTerm.ToLower().Trim()) &&
+                           x.DateMonthYear.ToLower() == dateTerm.ToLower() &&
+                           x.Categories.Contains(categoryTerm)).OrderByDescending(z => z.DatePublished).ToList();
+                    filterResultsFound = (stories != null && stories.Count > 0);
+                    resultCount = (filterResultsFound) ? stories.Count : 0;
+                    showNowResultsMessage = (resultCount < 1);
+                    noResultsMessage = string.Format("No results returned for category {0}, date month {1} and search term {2} please ammend your search", categoryTerm,dateTerm,searchTerm);
+                    resultsfoundMessage = string.Format("The following {0} results have been found for category <strong>{1}</strong>, date month <strong>{1}</strong> and search term <strong>{2}</strong>", resultCount, categoryTerm, dateTerm,searchTerm);
+
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(categoryTerm) && (!string.IsNullOrEmpty(dateTerm)))
+                    {
+                        stories = list.Items.Where(x => x.Published == true &&
+                           x.DateMonthYear.ToLower() == dateTerm.ToLower() && x.Categories.Contains(categoryTerm)).OrderByDescending(z => z.DatePublished).ToList();
+                        filterResultsFound = (stories != null && stories.Count > 0);
+                        resultCount = (filterResultsFound) ? stories.Count : 0;
+                        showNowResultsMessage = (resultCount < 1);
+                        noResultsMessage = string.Format("No results returned for category {0} and date month term {1} please ammend your search", categoryTerm, dateTerm);
+                        resultsfoundMessage = string.Format("The following {0} results have been found for category <strong>{1}</strong> and date month <strong>{2}</strong>", resultCount, categoryTerm, dateTerm);
+
+                    }
+                    else if (!string.IsNullOrEmpty(searchTerm) && (!string.IsNullOrEmpty(dateTerm)))
+                    {
+                        stories = list.Items.Where(x => x.Published == true &&
+                           x.Title.ToLower().Contains(searchTerm) && x.DateMonthYear.ToLower() == dateTerm).OrderByDescending(z => z.DatePublished).ToList();
+                        filterResultsFound = (stories != null && stories.Count > 0);
+                        resultCount = (filterResultsFound) ? stories.Count : 0;
+                        showNowResultsMessage = (resultCount < 1);
+                        noResultsMessage = string.Format("No results returned for date month {0} and search term {1} please ammend your search", dateTerm, searchTerm);
+                        resultsfoundMessage = string.Format("The following {0} results have been found for date month <strong>{1}</strong> and search term <strong>{2}</strong>", resultCount, dateTerm, searchTerm);
+
+                    }
+                    else
+                    {
+                        stories = list.Items.Where(x => x.Published == true &&
+                           x.DateMonthYear.ToLower() == dateTerm).OrderByDescending(z => z.DatePublished).ToList();
+                        filterResultsFound = (stories != null && stories.Count > 0);
+                        resultCount = (filterResultsFound) ? stories.Count : 0;
+                        showNowResultsMessage = (resultCount < 1);
+                        noResultsMessage = string.Format("No results returned for date month year {0} please ammend your search", dateTerm);
+                        resultsfoundMessage = string.Format("The following {0} results have been found for the date month <strong>{1}</strong>", resultCount, dateTerm);
+
+                    }
+                }
+            }
+
+
+            if (string.IsNullOrEmpty(dateTerm))
+            {
+                if (!string.IsNullOrEmpty(searchTerm) && (!string.IsNullOrEmpty(categoryTerm)))
+                {
+                    stories = list.Items.Where(x => x.Published == true &&
+                            x.Title.ToLower().Contains(searchTerm) && x.Categories.Contains(categoryTerm)).OrderByDescending(z => z.DatePublished).ToList();
+                    filterResultsFound = (stories != null && stories.Count > 0);
+                    resultCount = (filterResultsFound) ? stories.Count : 0;
+                    showNowResultsMessage = (resultCount < 1);
+                    noResultsMessage = string.Format("No results returned for category {0} and search term {1} please ammend your search", categoryTerm, searchTerm);
+                    resultsfoundMessage = string.Format("The following {0} results have been found for category <strong>{1}</strong> and search term <strong>{2}</strong>", resultCount, categoryTerm, searchTerm);
+                }
+                else if (string.IsNullOrEmpty(searchTerm) && (!string.IsNullOrEmpty(categoryTerm)))
+                {
+                    stories = list.Items.Where(x => x.Published == true && x.Categories.Contains(categoryTerm)).OrderByDescending(z => z.DatePublished).ToList();
+                    filterResultsFound = (stories != null && stories.Count > 0);
+                    resultCount = (filterResultsFound) ? stories.Count : 0;
+                    showNowResultsMessage = (resultCount < 1);
+                    noResultsMessage = string.Format("No results returned for category {0} please ammend your search", categoryTerm, searchTerm);
+                    resultsfoundMessage = string.Format("The following {0} results have been found for category <strong>{1}</strong>", resultCount, categoryTerm);
+                }
+                else if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    stories = list.Items.Where(x => x.Published == true && x.Title.ToLower().Contains(searchTerm)).OrderByDescending(y => y.DatePublished).ToList();
+                    filterResultsFound = (stories != null && stories.Count > 0);
+                    resultCount = (filterResultsFound) ? stories.Count : 0;
+                    showNowResultsMessage = (resultCount < 1);
+                    noResultsMessage = string.Format("No results returned for search term {0} please ammend your search", searchTerm);
+                    resultsfoundMessage = string.Format("The following {0} results have been found for search term <strong>{1}</strong>", resultCount, searchTerm);
+                }
+            }
+
+
+        }
+
+
+        searchTerm = (searchTerm == null) ? string.Empty : searchTerm;
+        categoryTerm = (categoryTerm == null) ? string.Empty : categoryTerm;
+        dateTerm = (dateTerm == null) ? string.Empty : dateTerm;
+
+
+
+
+    }
+    catch (Exception ex)
+    {
+        richTextContent = ex.Message;
+    }
+
+}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<style type="text/css">
+        .add-border {
+            border: solid 0px red;
+            min-height: 400px;
+        }
+
+        .card {
+            position: relative;
+        }
+
+        .card.event {
+            width: 100%;
+            border: 1px solid #CCC;
+            border-top: 0px;
+            height: 100%;
+            margin-bottom: 0;
+        }
+
+        .card:last-child {
+            margin-right: 0px;
+        }
+
+        .card:first-child {
+            margin-left: 0px;
+        }
+
+        .card {
+            width: 100%;
+            background: #fff;
+            position: relative;
+            float: left;
+            margin: 0 10px;
+            margin-bottom: 40px;
+        }
+
+        .card .card-date {
+            /* background: #F6BF35; */
+            background: #b3bd00;
+            text-align: center;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 0.1875rem;
+            min-width: 50px;
+        }
+
+        .card .card-date .date {
+            width: 100%;
+            display: block;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .card .card-date .month {
+            width: 100%;
+            display: block;
+        }
+
+        .card .card-badge {
+            background: none;
+            width: 120px;
+            font-size: 20px;
+            text-align: center;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            margin-left: -60px;
+            padding: 0.1875rem;
+            color: transparent;
+        }
+
+        .card.event .card-badge {
+            left: auto;
+            right: 0px;
+            margin-left: 0;
+        }
+
+        .card .card-image {
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-color: #E3E1E1;
+            width: 100%;
+            height: 181px;
+        }
+
+        .card-text {
+            position: absolute;
+            z-index: 999;
+            padding: 15px;
+            bottom: 0px;
+            color: #fff;
+            background-color: transparent;
+        }
+
+        d.card-text > div > a {
+            color: #333 !important;
+            font-weight: bold;
+            text-decoration: none !important;
+        }
+
+        .card-text-content {
+            color: #333;
+            margin-top: 10px;
+        }
+
+        div.featured .card-text > div > a {
+            color: #fff !important;
+            font-weight: bold;
+            text-decoration: none !important;
+        }
+
+        div.featured .card-text-content {
+            color: #fff;
+        }
+
+        .card.featured .gradient {
+            background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.74) 100%);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .card-location {
+            display: block;
+            margin-top: 10px;
+            font-size: 20px;
+            color: #757575;
+        }
+
+        .card-text-title > a:hover {
+            text-decoration: underline !important;
+        }
+
+        .btn-green {
+            background-color: #b3bd00;
+            color:#041c2c;
+        }
+
+        .btn-grey {
+            background-color:lightgray;
+            color:black;
+        }
+
+        /*input form control override*/
+
+        input.form-control, input.monthPicker:focus {
+            border: 1px solid #ccc;
+        }
+
+
+        /* date callendar overrides*/
+
+        .ui-datepicker select.ui-datepicker-year {
+            width: 50%;
+        }
+
+        .ui-datepicker .ui-datepicker-title select {
+            font-size: 0.8em;
+        }
+
+        ui-widget {
+            font-size:0.8em;
+            font-family:inherit !important;
+        }
+
+
+
+
+
+</style>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var currentYear     = (new Date).getFullYear();
+        var currentMonth    = (new Date).getMonth() + 1;
+        var currentDay      = (new Date).getDate();
+        $(".monthPicker").datepicker({
+            dateFormat: 'mm-yy',
+            changeMonth: true,
+            changeYear: true,
+            showButtonPanel: true,
+            maxDate: new Date(currentYear, currentMonth, currentDay),
+            minDate: new Date(2020, 11, 31),
+            onClose: function (dateText, inst) {
+                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).val($.datepicker.formatDate('mm-yy', new Date(year, month, 1)));
+            }
+        });
+
+        $(".monthPicker").focus(function () {
+            $(".ui-datepicker-calendar").hide();
+            $("#ui-datepicker-div").position({
+                my: "center top",
+                at: "center bottom",
+                of: $(this)
+            });
+        });
+
+        //set dropdown value
+        setTimeout(function () {
+            $("#category-select").val('@categoryTerm');
+            $('.monthPicker').val('@formDateTerm');
+        }, 200);
+
+
+    });
+</script>
+
+
+
+<div class="row" style="">
+    <div class="col-md-8 col-lg-8 add-border">
+        <div class="card event featured">
+            <div class="gradient"></div>
+            <span class="card-date">
+                <span class="month">@string.Format("{0}", StringUtility.DateTextMonthShort(defaultNewsStory.DatePublished))</span>
+                <span class="date">@string.Format("{0}", StringUtility.DateTextDay(defaultNewsStory.DatePublished))</span>
+            </span>
+            <span class="card-badge">News</span>
+            @{
+                string defaultImgUrl = (defaultNewsStory.ThumbnailImage != null && defaultNewsStory.ThumbnailImage.Asset != null)
+                    ? string.Format("{0}{1}", UrlHelper.GetBaseUrl(false, currentUrl), defaultNewsStory.ThumbnailImage.Asset.Uri) : "/SiteElements/ChannelShift/Content/images/placeholders/600x380.png";
+            }
+
+            <div class="card-image" style="height:400px;background-size:cover;background-repeat:no-repeat;@string.Format("background-image: url('{0}'", defaultImgUrl)"></div>
+            <div class="card-text">
+                <div class="card-text-title"><a href="@string.Format("{0}",linkNewStory)">@HTMLParser.StripHTML(Html.Raw(defaultNewsStory.Title).ToString())</a></div>
+                <p class="card-text-content">@Html.Raw(cardTextContent) </p>
+                <span class="card-location" style="color:#fff;">@string.Format("{0} {1}", StringUtility.DateTextDayOfTheWeekShort(defaultNewsStory.DatePublished), StringUtility.DateTextFull(defaultNewsStory.DatePublished))</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-4 add-border">
+        <h2 style="margin-top:0px;">Filter news stories</h2>
+        <form name="news-story-form" action="@newsUrl">
+            <div class="form-group">
+                <label for="category-select">Choose a category</label>
+                <select id="category-select" name="category-select" class="form-control">
+                    <option value="">-- Please selecte a category --</option>
+                    <option value="Awards and accreditations">Awards and accreditations</option>
+                    <option value="Business">Business</option>
+                    <option value="Council and democracy">Council and democracy</option>
+                    <option value="Education and learning">Education and learning</option>
+                    <option value="Environment">Environment</option>
+                    <option value="Health and social care">Health and social care</option>
+                    <option value="Housing">Housing</option>
+                    <option value="Employment">Employment</option>
+                    <option value="Planning">Planning</option>
+                    <option value="Planning">Planning</option>
+                    <option value="Sport">Sport</option>
+                    <option value="Transport and streets">Transport and streets</option>
+                    <option value="Regeneration">Regeneration</option>
+                    <option value="Elections">Elections</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="month">Choose a date</label>
+                <input type="text" id="month" name="month" class="monthPicker form-control" />
+            </div>
+            <div class="form-group">
+                <label for="month">Choose a keyword</label>
+                <input id="news-story-search" name="news-story-search" type="text" class="form-control" placeholder="search news stories" value="@searchTerm" style="border: 1px solid #ccc;" />
+            </div>
+            <button type="submit" class="btn btn-green" value="go">Go</button>&nbsp;&nbsp;&nbsp;<button type="button" value="reset" onclick="window.location.href='@newsUrl'" class="btn btn-grey">Reset</button>
+        </form>
+    </div>
+</div>
+
+
+@if (!filterResultsFound)
+{
+
+    if (showNowResultsMessage)
+    {
+        <div class="row" style="margin-top:20px; height:100px;">
+            <strong>@noResultsMessage</strong>
+        </div>
+    }
+
+    <div class="row" style="margin-top:20px; height:500px;">
+        @foreach (var item in stories.Skip(1).Take(3))
+        {
+            articleContent = (item != null) ? item.ArticleContent : articleContent;
+            linkNewStory = String.Format(pagePath, item.Slug, StringUtility.DateSlug(item.DatePublished));
+
+            richTextContent = string.Empty;
+            if (articleContent != null)
+            {
+                var temp = articleContent.Items.Where(x => x.ContainerType == "richText").ToList().FirstOrDefault();
+                richTextContent = new RichTextHelper(temp).RichText;
+                cardTextContent = StringUtility.CutString(HTMLParser.ReplaceTagWith(HTMLParser.StripHTML(richTextContent)), 100, true);
+
+            }
+            string imgUrl = (item.ThumbnailImage != null && item.ThumbnailImage.Asset != null)
+                ? string.Format("{0}{1}", UrlHelper.GetBaseUrl(false, currentUrl), item.ThumbnailImage.Asset.Uri)
+                : "/SiteElements/ChannelShift/Content/images/placeholders/600x380.png";
+            <div class="col-md-4 col-lg-4 add-border" style="height:inherit;">
+                <div class="card event clearfix">
+                    <span class="card-date">
+                        <span class="month">@string.Format("{0}", StringUtility.DateTextMonthShort(item.DatePublished))</span>
+                        <span class="date">@string.Format("{0}", StringUtility.DateTextDay(item.DatePublished))</span>
+                    </span>
+                    <span class="card-badge">News</span>
+                    <div class="card-image" style="background-size:100%;background-repeat:no-repeat;@string.Format("background-image: url('{0}'", imgUrl)"></div>
+                    <div class="card-text" style="position:unset;">
+                        <div class="card-text-title"><a class="news-link" style="color:#333; font-weight:bold; text-decoration:none;" href="@linkNewStory"> @Html.Raw(item.Title)</a></div>
+                        <p class="card-text-content">@Html.Raw(cardTextContent)</p>
+                        <span class="card-location">@string.Format("{0} {1}", StringUtility.DateTextDayOfTheWeekShort(item.DatePublished), StringUtility.DateTextFull(item.DatePublished))</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row" style="margin-top:20px; height:500px;">
+        @foreach (var item in stories.Skip(4).Take(3))
+        {
+            articleContent = (item != null) ? item.ArticleContent : articleContent;
+            richTextContent = string.Empty;
+            string linkToArticle = string.Empty;
+            if (articleContent != null)
+            {
+                var temp = articleContent.Items.Where(x => x.ContainerType == "richText").ToList().FirstOrDefault();
+                richTextContent = new RichTextHelper(temp).RichText;
+                cardTextContent = StringUtility.CutString(HTMLParser.ReplaceTagWith(HTMLParser.StripHTML(richTextContent)), 100, true);
+                linkToArticle = String.Format("{0}{1}.aspx", config.SeoUrlList.UrlPath, UrlHelper.MakeUrlFriendly(item.Slug));
+
+            }
+            string imgUrl = (item.ThumbnailImage != null && item.ThumbnailImage.Asset != null)
+             ? string.Format("{0}{1}", UrlHelper.GetBaseUrl(false, currentUrl), item.ThumbnailImage.Asset.Uri)
+             : "/SiteElements/ChannelShift/Content/images/placeholders/600x380.png";
+            <div class="col-md-4 col-lg-4 add-border" style="height:inherit;">
+                <div class="card event clearfix">
+                    <span class="card-date">
+                        <span class="month">@string.Format("{0}", StringUtility.DateTextMonthShort(item.DatePublished))</span>
+                        <span class="date">@string.Format("{0}", StringUtility.DateTextDay(item.DatePublished))</span>
+                    </span>
+                    <span class="card-badge">News</span>
+                    <div class="card-image" style="background-size:100%;background-repeat:no-repeat;@string.Format("background-image: url('{0}'", imgUrl)"></div>
+                    <div class="card-text" style="position:unset;">
+                        <div class="card-text-title"><a class="news-link" style="color:#333; font-weight:bold; text-decoration:none;" href="@linkToArticle"> @Html.Raw(item.Title)</a></div>
+                        <p class="card-text-content">@Html.Raw(cardTextContent) </p>
+                        <span class="card-location">@string.Format("{0} {1}", StringUtility.DateTextDayOfTheWeekShort(item.DatePublished), StringUtility.DateTextFull(item.DatePublished))</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div style="margin-top:30px; margin-bottom:30px;">@Html.Raw(resultsfoundMessage)</div>
+    <ul class="results">
+        @foreach (var item in stories)
+        {
+            string linkToArticle = String.Format("{0}{1}.aspx", config.SeoUrlList.UrlPath, UrlHelper.MakeUrlFriendly(item.Slug));
+            string imgUrl = (item.MainImage != null && item.MainImage.Asset != null)
+                ? string.Format("{0}{1}", UrlHelper.GetBaseUrl(false, currentUrl), item.MainImage.Asset.Uri) : "/SiteElements/ChannelShift/Content/images/placeholders/600x380.png";
+            <li>
+                <span class="story-counter">@storyCounter.</span>
+                <span class="image-span"><img src="@imgUrl" alt="@item.Title" style="height:50px; width:80px" /></span>
+                <span class="link-span"><a class="news-link" style="color:#333; font-weight:bold; text-decoration:none;" href="@linkToArticle"> @Html.Raw(item.Title)</a></span>
+            </li>
+            storyCounter++;
+        }
+    </ul>
+
+
+    <style type="text/css">
+        .story-counter {
+            display: inline-block;
+            width: 30px;
+        }
+
+        .image-span {
+            display: inline-block;
+            height: 60px;
+            width: 60px
+        }
+
+        .link-span {
+            display: inline-block;
+            padding-left: 30px;
+        }
+
+        ul.results {
+            list-style-type: none;
+        }
+    </style>
+}

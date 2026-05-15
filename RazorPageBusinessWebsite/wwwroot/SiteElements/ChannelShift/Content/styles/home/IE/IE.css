@@ -1,0 +1,57 @@
+﻿.home-icon > .col-xs-4 
+{
+    
+}
+
+#search-button > input 
+{
+  background-position-x: -10px;
+}
+
+.row 
+{ 
+    padding-left:0px; 
+    padding-right:0px;
+
+}
+
+
+/* where is my nearset image */
+.my-area-search-container div.img-placeholder 
+{
+    background-image: url("/SiteElements/ChannelShift/content/images/your-area/yourareaicon.svg");
+    background-repeat: no-repeat;
+    background-color: transparent;
+    background-position-x:10px;
+    background-position-y:10px;
+    top:0px;
+    left:0px;
+    background-size:85% 85%;
+    background-attachment:scroll
+}
+
+.twitter-logo {
+    background-image: url('/SiteElements/ChannelShift/content/images/twitterfeed/twitter-logo.svg');
+    background-size: inherit;
+    background-repeat: no-repeat;
+    background-size: 85% 85%;
+    background-position-x: 27px;
+    background-position-y: 10px;
+    top:0px;
+    left:0px;
+
+}
+
+
+/* up and down arrows */
+
+.mobile-services-down-icon, 
+.mobile-services-up-icon  
+{ 
+  top:6px;
+}
+
+#search-button > input {
+  border:solid 0px blue;
+  left: 10px;
+}

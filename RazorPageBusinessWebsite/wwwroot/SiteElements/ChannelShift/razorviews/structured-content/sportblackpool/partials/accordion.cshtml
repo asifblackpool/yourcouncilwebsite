@@ -1,0 +1,92 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: Accordion Content - used in sports blackpool pages
+    // License: Blackpool council
+    // Date: 11/06/2018
+}
+
+
+@using System;
+@using System.Collections;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+
+@using Blackpool.Zengenti.CMS.Common;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.BlackpoolSport;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+
+    SportBlackPoolDTO DTO = Page.Model;
+    List<AccordionContent> accordion = new List<AccordionContent>();
+    SportBlackpoolHelper helper = new SportBlackpoolHelper(null);
+
+    Config config = new Config()
+    {
+        SeoUrlList = new SeoFriendlyUrlElement() { Key = Blackpool.Zengenti.CMS.Constants.SeoKeys.SportBlackPoolKey }
+    };
+
+    DTO.Config = config;
+
+    config = DTO.Config;
+    Boolean accordionFound = false;
+    int counter = 0;
+    
+
+    if (DTO.Flow != null) { 
+    foreach (var item in DTO.Flow.GetContent)
+    {
+        List<SerialisedItem> SerailisedList = item.Items.FindAll(x => x.ClassType == typeof(AccordionContent));
+        if (SerailisedList != null && counter >= DTO.CurrentFlowPosition )
+        {
+            foreach (SerialisedItem si in SerailisedList)
+            {
+                AccordionContent temp = SerializeHelper.Deseralize(si) as AccordionContent;
+                accordion.Add(temp);
+                accordionFound = true; 
+            }
+        }
+
+        counter++;
+        if (accordionFound){
+            DTO.CurrentFlowPosition = counter;
+            break;
+        }
+
+    }
+  }
+
+ int accCount = 1;
+ 
+ }  
+    
+@if (accordion.Count > 0){
+ 
+ <div class="accordion clearfix">
+    <ul id="accordion-ul" class="outer-ul">
+        @foreach (var item in accordion) { 
+        
+        <li class="head">
+            <a id="@String.Format("link-head-{0}", @accCount)" class="link-head open" href="#"><h2 class="clearfix" style="color:#fff;"><span class="pull-left"><i title="Open or close" class="icon-arrow-down"></i></span><span class="pull-left">@item.Title</span></h2></a>
+            <div class="accordion-togglable" style="background-color: rgb(255, 255, 255); display: none;">
+                <div class="row zero-margin-all">
+                    <div class="col-md-12 col-sm-12 col-xs-12 zero-pad-all" style="background-color:#fff; margin: 20px 0px 20px 0px; padding: 0px 5px; font-size:16px; max-width:745px;">
+                          @Html.Raw(item.Body)
+                    </div>
+                </div>
+             </div>
+        </li>
+          accCount++;
+        }  
+    </ul>
+</div>
+    
+}
+ 

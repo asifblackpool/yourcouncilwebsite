@@ -1,0 +1,80 @@
+﻿
+@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: footer razor view - render the homepage
+    // License: Blackpool council
+    // Date: 21/02/2018
+
+}
+
+@using System;
+@using Contensis.Framework.Web
+@using Newtonsoft.Json
+@using Zengenti.Contensis.Delivery;
+@using Zengenti.Data;
+@using Blackpool.Zengenti.CMS.Modules.Configuration;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.HeadStart;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+
+@{
+    HeadStartContent model = Page.Content.PageContent[0]; //Passed Model
+}
+
+<div class="intro-text">@Html.Raw(model.BodyContent)</div>
+<div class="row equal zero-margin-all">
+    <div class="col-md-7 col-sm-7 col-xs-12 zero-pad-all clearfix" style="margin-bottom:20px; margin-left:0px; margin-right:0px;">
+        <!--start of video -->
+        <div id="video" class="editor">
+            <div class="iframe-wrapper" style="text-align:center; margin:auto; min-height:320px;">
+                <iframe id="iframe" src="@model.Video.Url" frameborder="0"></iframe>
+            </div>
+        </div>
+        <!--end of video -->
+    </div>
+    <div class="col-md-5 col-sm-5 col-xs-12 clearfix" style="padding-right:0px; padding-left:0px; margin-bottom:20px;">
+        <div id="twitter-container">
+            <div class="twitter-inner-container">
+                <div class="twitter-header">
+                    <img src="/siteElements/channelShift/content/images/headstart/global/twitter-feed-header.png" alt="" />
+                </div>
+                <div class="twitter-message">
+                    <div class="col-container">
+                        <div class="twitter-feed-image-container col"><img class="twitter-feed-image" src="/siteElements/channelShift/content/images/headstart/global/twitter-feed-image.jpg" alt="twitter headstart" /></div>
+                        <div class="twitter-feed-message-container col"><span id="twitter-message"></span></div>
+                    </div>
+                </div>
+                <div id="twitter-links">
+                    <ul style="margin:0px;">
+                        <li class="likes"><span id="twitter-likes">5</span></li>
+                        <li class="retweet"><span id="twitter-retweet">2</span></li>
+                        <li><a id="share-link" href="#" style="text-decoration:none; color:#fff;">share</a></li>
+                    </ul>
+                    <div class="share-panel" style="display:none;">
+
+                        <br />
+                        <div class="close-button">
+                            <a href="#" class="close-share-panel" style="text-decoration:none;"><img src="/SiteElements/ChannelShift/Content/Images/headstart/global/close-circle-small.png" alt="close-panel" /></a>
+                        </div>
+                        <a id="share-google" style="text-decoration:none;" href="https://plus.google.com/share?url={URL}" onclick="javascript:window.open(this.href,'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;">
+                            <span>Share with Google</span>
+                        </a><br />
+                        <a id="share-twitter" style="text-decoration:none;" href="http://twitter.com/home?status=[TITLE]+[URL]"
+                           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank" title="Share on Facebook">
+                            <span>Share with Twitter</span>
+                        </a><br />
+                        <a id="share-fb" style="text-decoration:none;" href="https://www.facebook.com/sharer/sharer.php?u=URLENCODED_URL&t=TITLE"
+                           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank" title="Share on Facebook">
+                            <span>Share with Facebook</span>
+                        </a>
+                        <script type="text/javascript">document.getElementById("share-fb").setAttribute("href", "https://www.facebook.com/sharer/sharer.php?u=" + document.URL);</script>
+                        <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

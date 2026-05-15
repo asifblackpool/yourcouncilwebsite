@@ -1,0 +1,49 @@
+﻿.toggle-search {
+    width: 100%;
+    padding: 0 10px 10px 0px;
+    background-color: #7d0063;
+}
+.toggle-search div.form-wrapper {
+    padding-top: 0px;
+    margin: 0 10px 0 10px;
+    position: relative;
+    height: 60px;
+    top: 7px;
+}
+.toggle-search {
+    border: 0;
+    margin: 0 auto;
+    max-width: 460px;
+    position: relative;
+    padding-bottom: 10px;
+}
+.toggle-search .field,
+find-service .field {
+    -webkit-appearance: none;
+    background-color: #fff;
+    border-radius: 0;
+    box-sizing: border-box;
+    color: #2c3136;
+    height: 46px;
+    display: block;
+    position: relative;
+    width: 100%;
+    z-index: 10;
+}
+.toggle-search .mv-search {
+    background: #e98300;
+    border: 1px solid #e98300;
+    border-radius: 0;
+    color: #fff;
+    display: inline-block;
+    height: 45px;
+    width: 46px;
+    margin: 0px 0px 0px 0px;
+    padding: 0 0px 0 0px;
+    position: absolute;
+    right: 0px;
+    top: 1px;
+    z-index: 20;
+    background: #e98300 url('/SiteElements/ChannelShift/content/images/mobile/mag-glass-white.svg') 7px 0px no-repeat;
+    background-size: 29px 43px;
+}

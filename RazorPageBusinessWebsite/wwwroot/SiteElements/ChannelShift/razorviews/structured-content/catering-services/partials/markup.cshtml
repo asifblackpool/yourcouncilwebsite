@@ -1,0 +1,48 @@
+﻿@{
+
+    // Name: Channel Shift - Structured Content (Content types)
+    // Developer: Asif Nissar
+    // Name: HTML Mak up for Catering pages
+    // License: Blackpool council
+    // Date: 09/12/2023
+}
+
+
+@using System;
+@using Blackpool.Zengenti.CMS.Helpers;
+@using Blackpool.Zengenti.CMS.Models.GenericTypes;
+@using Blackpool.Zengenti.CMS.Models.Components;
+
+@{
+    CateringDTO DTO = Page.Model;
+    List<SerialisedItem> SerialisedMarkup = Page.Markup;
+    List<ContentBox> HtmlMarkup = new List<ContentBox>();
+
+    Config config = DTO.Config;
+
+
+    if (SerialisedMarkup != null)
+    {
+        foreach (var item in SerialisedMarkup)
+        {
+            HtmlMarkup.Add(SerializeHelper.Deseralize(item) as ContentBox);
+        }
+    }
+
+}
+
+
+
+@if (HtmlMarkup != null && HtmlMarkup.Count > 0)
+{
+
+    foreach (var item in HtmlMarkup)
+    {
+<section class="markup-section">
+    @Html.Raw(String.Format("{0}", item != null ? item.Markup.Replace("/catering/", DTO.Config.SeoUrlList.UrlPath) : string.Empty))
+</section>
+    }
+}
+
+
+
