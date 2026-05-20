@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RazorPageBusinessWebsite.Components.Extensions;
+using Zengenti.Contensis.Delivery;
 
 
 namespace RazorPageBusinessWebsite.Components.WebForms
@@ -12,11 +14,11 @@ namespace RazorPageBusinessWebsite.Components.WebForms
 
             if (frm != null)
             {
-              
-                    return View(frm);
-                
+             
+                return View(ViewComponentExtensions.GetViewPath("WebForms"), frm);
+
             }
-            return View(null);
+            return View(ViewComponentExtensions.GetViewPath("WebfFroms"));
         }
     }
 

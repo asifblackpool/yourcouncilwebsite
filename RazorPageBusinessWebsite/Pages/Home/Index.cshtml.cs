@@ -1,32 +1,44 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using RazorPageBusinessWebsite.Models;
 using RazorPageBusinessWebsite.Services.Interfaces;
-using RazorPageBusinessWebsite.Services.Breadcrumb;
-using RazorPageBusinessWebsite.Core.Models;
+using RazorPageBusinessWebsite.Constants;
 using RazorPageBusinessWebsite.Core.Interfaces;
-using Content.Modelling.Models.Templates;
 
-namespace RazorPageBusinessWebsite.Pages;
-
-public class IndexModel : BasePageModel<BGStandard>
+namespace RazorPageBusinessWebsite.Pages.Home
 {
-
-    public IndexModel(ILogger<BasePageModel<BGStandard>> logger,
-                      IDataService<BGStandard> dataService,
-                      IContentRepository contentRepository, BreadcrumbService breadcrumb) : base(logger, dataService, contentRepository, breadcrumb) { }
-
-
-    public override async Task OnGetAsync() // Default handler
+    public class IndexModel : PageModel
     {
-        ViewData["Title"] = "Homepage";
-      
+        private readonly IContentRepository _contentRepo;
+        private readonly ICmsViewModelFactory _viewModelFactory;
 
-        await base.OnGetAsync();
-        Items = Items.Take(1).ToList();
-    
-      LogAction("Getting Business data loaded");
+        public IndexModel(IContentRepository contentRepo, ICmsViewModelFactory viewModelFactory)
+        {
+            _contentRepo = contentRepo;
+            _viewModelFactory = viewModelFactory;
+        }
+
+        public object ViewModel { get; private set; }
+        public string ViewName { get; private set; }
+
+        public async Task OnGetAsync(string slug)
+        {
+            // Build the Contensis path based on slug
+            string siteViewRoot = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/'); // "business"
+            string nodePath = string.IsNullOrEmpty(slug)
+                ? $"/{siteViewRoot}"           // "/business" for root
+                : $"/{siteViewRoot}/{slug}";    // "/business/business-rates", etc.
+
+            // Fetch node from repository
+            var node = await _contentRepo.GetNodeByPathAsync(nodePath);
+            if (node == null)
+            {
+                // Optionally set a flag for 404
+                ViewModel = null;
+                return;
+            }
+
+            // Use the factory to determine view name and view model
+            (ViewName, ViewModel) = await _viewModelFactory.CreateAsync(node);
+        }
     }
-
-
 }
-
-

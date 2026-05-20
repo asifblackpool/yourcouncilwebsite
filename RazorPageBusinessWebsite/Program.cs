@@ -19,6 +19,7 @@ using RazorPageBusinessWebsite.Services;
 using RazorPageBusinessWebsite.Services.Breadcrumb;
 using RazorPageBusinessWebsite.Services.Interfaces;
 using Zengenti.Contensis.Delivery;
+using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,18 +74,20 @@ builder.Services.AddScoped<ITextProcessor, HtmlTextProcessor>();
 builder.Services.AddLogging(configure =>
     configure.AddConsole().SetMinimumLevel(LogLevel.Information));
 
-// ===== ADD THIS: MVC Controllers =====
+// Register IZengentiClient adapter and ContentViewModelService
+builder.Services.AddScoped<IZengentiClient, ZengentiClientAdapter>();
+builder.Services.AddScoped<ContentViewModelService>();
+
+// ===== MVC Controllers =====
 builder.Services.AddControllersWithViews();
 
-// ===== Razor Pages (keep existing if needed, but can coexist) =====
+// ===== Razor Pages =====
 string relativeUrlPath = WebsiteConstants.SITE_VIEW_PATH.TrimEnd('/');
 builder.Services
     .AddRazorPages()
     .AddRazorPagesOptions(options =>
     {
-        options.Conventions.AddPageRoute("/Home/Index", WebsiteConstants.SITE_VIEW_PATH);
-        // We'll keep the Details route as fallback, but controller routes will match first
-        //options.Conventions.AddPageRoute("/Home/Details", WebsiteConstants.SITE_VIEW_PATH + "{*slug}");
+        options.RootDirectory = "/Pages";
         options.Conventions.Add(new GlobalHeaderPageApplicationModelConvention());
     });
 
@@ -119,7 +122,10 @@ if (!app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 
-// Block everything except static assets and /business
+// Redirect root to /Business
+app.UseRewriter(new RewriteOptions().AddRedirect("^$", "Business", 301));
+
+// ===== FIXED MIDDLEWARE – correctly compute website path =====
 app.Use(async (context, next) =>
 {
     var path = context.Request.Path.Value ?? "";
@@ -128,7 +134,10 @@ app.Use(async (context, next) =>
                          || path.StartsWith("/images/", StringComparison.OrdinalIgnoreCase)
                          || path.StartsWith("/lib/", StringComparison.OrdinalIgnoreCase);
 
-    string websiteName = string.Concat("/", WebsiteConstants.SITE_VIEW_PATH.AsSpan(0, WebsiteConstants.SITE_VIEW_PATH.Length - 1));
+    // Correctly compute the base path for the business site
+    string sitePath = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/').TrimEnd('/'); // e.g., "business"
+    string websiteName = $"/{sitePath}";
+
     if (!isStaticAsset && !path.StartsWith(websiteName, StringComparison.OrdinalIgnoreCase))
     {
         context.Response.StatusCode = 404;
@@ -139,45 +148,47 @@ app.Use(async (context, next) =>
 
 app.UseRouting();
 
-// ===== DYNAMIC CONTROLLER ROUTES (must come before MapRazorPages) =====
-using (var scope = app.Services.CreateScope())
-{
-    var contentRepo = scope.ServiceProvider.GetRequiredService<IContentRepository>();
-    string siteViewRoot = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/').TrimEnd('/'); // "business"
+// ===== ROUTES: explicit root + catch-all =====
+string siteViewRoot = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/').TrimEnd('/'); // "business"
 
-    // Root business page (handles /business) – no trailing slashes
-    app.MapControllerRoute(
-        name: "business_root",
-        pattern: siteViewRoot,   // e.g., "business"
-        defaults: new { controller = "Business", action = "Dynamic", slug = "" });
+// 1. Explicit route for the exact root (handles /business)
+app.MapControllerRoute(
+    name: "business_root_exact",
+    pattern: siteViewRoot,
+    defaults: new { controller = "Business", action = "Dynamic", slug = "" }
+);
 
-    // Get top-level sections (sync call)
-    var sections = contentRepo.GetTopLevelSections($"/{siteViewRoot}");
-
-    // Child section routes
-    foreach (var section in sections)
-    {
-        if (string.IsNullOrWhiteSpace(section.Slug))
-            continue;
-
-        string controllerName = GetControllerNameForSection(section.Slug);
-        string pattern = $"{siteViewRoot}/{section.Slug.TrimStart('/')}/{{**slug}}";
-
-        app.MapControllerRoute(
-            name: $"cms_{section.Slug}",
-            pattern: pattern,
-            defaults: new { controller = controllerName, action = "Dynamic", slug = "" });
-    }
-}
-// ====================================================================
+// 2. Catch‑all route for everything else under /business/...
+app.MapControllerRoute(
+    name: "business_catchall",
+    pattern: $"{siteViewRoot}/{{**slug}}",
+    defaults: new { controller = "Business", action = "Dynamic", slug = "" }
+);
 
 app.UseMiddleware<BreadcrumbMiddleware>();
 app.UseStatusCodePagesWithReExecute("/Error");
-app.MapRazorPages(); // Razor Pages still available for non-business routes
+app.MapRazorPages(); // Razor Pages still available for non‑business routes
+
+// ===== WARM UP CONTENSIS CLIENT to avoid first‑request timeout =====
+using (var warmupScope = app.Services.CreateScope())
+{
+    var warmupClient = warmupScope.ServiceProvider.GetRequiredService<IZengentiClient>();
+    var logger = warmupScope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        // Synchronous call to initialise the client (avoids async complications)
+        warmupClient.GetNodeByPathAsync("/").GetAwaiter().GetResult();
+        logger.LogInformation("Contensis client warmed up successfully.");
+    }
+    catch (Exception ex)
+    {
+        logger.LogWarning(ex, "Contensis client warm‑up failed – first request may be slow.");
+    }
+}
 
 app.Run();
 
-// Helper method
+// Helper method (kept for reference – not used in simplified routing)
 static string GetControllerNameForSection(string sectionSlug)
 {
     var cultureInfo = System.Globalization.CultureInfo.InvariantCulture;

@@ -1,5 +1,6 @@
 ﻿using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Mvc;
+using RazorPageBusinessWebsite.Components.Extensions;
 
 namespace RazorPageBusinessWebsite.Components
 {
@@ -12,10 +13,11 @@ namespace RazorPageBusinessWebsite.Components
             if (content != null)
             {
 
-                return View(content);
+                return View(ViewComponentExtensions.GetViewPath("Canvas"),content);
             }
-            return View();
+            return View(ViewComponentExtensions.GetViewPath("Canvas"));
         }
+    }
 
         // Alternative async version if you need to do async work
         /*
@@ -25,5 +27,5 @@ namespace RazorPageBusinessWebsite.Components
             return View(model);
         }
         */
-    }
+    
 }

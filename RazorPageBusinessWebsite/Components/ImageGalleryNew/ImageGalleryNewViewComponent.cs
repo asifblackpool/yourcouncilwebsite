@@ -1,10 +1,8 @@
 ﻿using Content.Modelling.Models.Canvas.Images;
 using Microsoft.AspNetCore.Mvc;
+using RazorPageBusinessWebsite.Components.Extensions;
 using RazorPageBusinessWebsite.Core.Models.ViewModels;
 using RazorPageBusinessWebsite.Helpers;
-using RazorPageBusinessWebsite.Helpers.Interfaces;
-using Sprache;
-using Zengenti;
 
 namespace RazorPageBusinessWebsite.Components.ImageGalleryNew
 {
@@ -27,10 +25,10 @@ namespace RazorPageBusinessWebsite.Components.ImageGalleryNew
                         ImageUrl = (item.Asset!= null) ? ImageHelper.GetImageUrl(item.Asset.System?.Uri) : "#"
                     });
 
-                    return View(list);
+                    return View(ViewComponentExtensions.GetViewPath("ImageGalleryNew"), list);
                 }
             }
-            return View(null);
+            return View(ViewComponentExtensions.GetViewPath("ImageGalleryNew"), new List<SimpleImageViewModel>());
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
+using RazorPageBusinessWebsite.Components.Extensions;
 using RazorPageBusinessWebsite.Services.Breadcrumb;
 using System.Text;
 using Zengenti.Contensis.Delivery;
@@ -24,9 +25,10 @@ namespace RazorPageBusinessWebsite.Components
             if (_httpContextAccessor != null && _httpContextAccessor.HttpContext != null)
             {
                 var breadcrumbs = _breadcrumbService.GetBreadcrumbs(_httpContextAccessor.HttpContext);
-                return View(breadcrumbs);
+                return View(ViewComponentExtensions.GetViewPath("Breadcrumb"), breadcrumbs);
             }
-            return View(new List<Core.Models.BreadcrumbItem>());
+      
+            return View(ViewComponentExtensions.GetViewPath("Breadcrumb"), new List<Core.Models.BreadcrumbItem>());
         }
     }
 

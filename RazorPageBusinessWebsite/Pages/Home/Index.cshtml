@@ -1,71 +1,17 @@
-@page
 
-@using Content.Modelling.Helpers.Components;
-@using RazorPageBusinessWebsite.Helpers;
-@using Content.Modelling.Models.Templates;
+@model RazorPageBusinessWebsite.Pages.Home.IndexModel
 
-
-@model RazorPageBusinessWebsite.Pages.IndexModel;
-
-@{
-    BGStandard? entryModel = null;
-
-
-}
-
-@if (entryModel != null)
+@if (Model.ViewModel == null)
 {
-
-
-    <blockquote>
-        <p>There is currently an&nbsp;<strong>Amber weather warning</strong> in place for Blackpool on Friday 24 January 2025 between 6.00am and 9.0pm</p>
-    </blockquote>
-    <p>Storm Éowyn - An amber weather warning for wind has been issued for Friday 24 January, impacting Blackpool and other parts of the UK. This may result in:</p>
-    <ul>
-        <li>Power cuts are likely to occur, with the potential to affect other services, such as mobile phone coverage</li>
-        <li>Road, rail, air and ferry services are likely to be affected, with longer journey times and cancellations possible. Some roads and bridges will close</li>
-        <li>There is a chance that damage to buildings and homes could occur, with roofs blown off and power lines brought down</li>
-        <li>Injuries and danger to life could occur from flying debris, as well as large waves and beach material being thrown onto sea fronts, coastal roads and properties</li>
-    </ul>
-    <p><a id="?tab=warnings&amp;map=Warnings&amp;zoom=5&amp;lon=-3.50&amp;lat=55.50&amp;fcTime=1454544000&amp;regionName=nw" class="sys_16" href="http://www.metoffice.gov.uk/public/weather/warnings/#?tab=warnings&amp;map=Warnings&amp;zoom=5&amp;lon=-3.50&amp;lat=55.50&amp;fcTime=1454544000&amp;regionName=nw">Full details of the storm warning can be found on the Met Office website</a></p>
-    <h2>Roads</h2>
-    <ul>
-        <li>We are aware of a number of temporary road closures, including some areas of the Promenade. We are working to resolve these as soon as possible. Please ensure you consider conditions before you head out/travel</li>
-        <li>Disruptions to travel networks may be experienced - plan any journey ahead of time and check with travel operators for the latest service updates</li>
-    </ul>
-    <h2>Impact on Blackpool Council services</h2>
-    <p>Due to the forecasted strong winds, here’s an update to changes affecting some of our council services and useful advice below:</p>
-    <ul>
-        <li>The Household Waste Recycling Centre (the tip) in Bispham will not open on Friday 24 January 2025</li>
-        <li>Household recycling collection will go ahead as usual. Our teams are kindly requesting bins are returned to households as soon as you able, spreading a little kindness and helping neighbours out with this is also gratefully appreciated</li>
-        <li>Please avoid tree lined areas and routes where possible</li>
-        <li>The Tourist Information Centre will be closed</li>
-        <li>The Wedding Chapel will be closed</li>
-        <li>Take extra care when on the road and plan any journeys ahead to check for any changes in advance</li>
-        <li>Active Blackpool have closed all outdoor areas, including football pitches, tennis courts and tracks</li>
-        <li>Our contact centre teams may experience a high volume of calls, please bear with us as we deal with any incidents</li>
-    </ul>
-    <h2>Public transport</h2>
-    <ul>
-        <li><strong>Tram -&nbsp;</strong>Due to the adverse weather, tram services are suspended until further notice. Blackpool Transport are working to arrange a replacement bus service and will update you as soon as possible</li>
-        <li><strong>Service 1</strong> - Will be diverted from Gynn Square to Redbank Road. The service will be using Warbeck Hill to Warbeck Drive then Redbank Road back to normal route on the prom in both directions</li>
-        <li><strong>Services 5, 5A, 5B and 6 (Southbound)</strong> -&nbsp;Due to adverse weather conditions, southbound services will now be departing from Bickerstaffe House as per the winter illumination timetable</li>
-        <li><strong>Services 5 5a 5b 5c 6 7 7a 11 11a 11b 14 (Northbound)&nbsp;</strong>-&nbsp;Due to adverse weather conditions, northbound services (including 11/11a/11b to Lytham) will now depart from St Johns Square (As per the winter illuminations diversion timetable)</li>
-        <li><strong>Service 5, 5A, 5B, 6, 11, 11A, 11B</strong> will be using Grasmere Road, Condor Grove, Park Road and Church Street to get to St Johns Square. Central drive will not be served between Albert Road and Revoe Libray</li>
-    </ul>
-    <p><a class="sys_16" href="https://www.blackpooltransport.com/">Full details of services are available on the Blackpool Transport website</a></p>
-    <h3>Flood warnings</h3>
-    <ul>
-        <li>Latest <a title="EA Flood warnings" class="sys_16" href="http://apps.environment-agency.gov.uk/flood/34678.aspx?page=1&amp;type=RiverAndTown&amp;term=blackpool">Environment Agency flood warnings</a></li>
-    </ul>
-    <h3>Floodline</h3>
-    <ul>
-        <li>0845 988 11 88</li>
-    </ul>
+    <h1>Page not found</h1>
 }
 else
 {
-    <strong>Homepage not being loaded (entry not found) ..</strong>
-
-
+    <partial name="@Model.ViewName" model="Model.ViewModel" />
 }
+
+<style type="text/css">
+    main {
+        max-width: 1068px !important;
+    }
+</style>

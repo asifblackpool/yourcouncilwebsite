@@ -1,0 +1,24 @@
+﻿@model RazorPageBusinessWebsite.Models.ViewModelWrapper
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    var vm = Model?.ViewModel;
+}
+
+@* Optional: display type information and data message (if any) *@
+@if (!string.IsNullOrEmpty(vm?.ModelType))
+{
+    <p class="text-muted" style="display:none;">Content Type: @vm.ModelType</p>
+}
+@if (!string.IsNullOrEmpty(vm?.DataMessage))
+{
+    <p class="text-muted" style="display:none;">Content Type: @vm.DataMessage</p>
+}
+
+@* Render the concrete model using your custom tag helper or partial *@
+<bg-model model="@Model?.ViewModel" />
+
+<style type="text/css">
+    main {
+        max-width: 1068px !important;
+    }
+</style>

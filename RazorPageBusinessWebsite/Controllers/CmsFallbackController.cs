@@ -6,8 +6,8 @@ namespace RazorPageBusinessWebsite.Controllers
 {
     public class CmsFallbackController : DynamicCmsController
     {
-        public CmsFallbackController(IZengentiClient cmsClient, ICmsViewModelFactory viewModelFactory)
-            : base(cmsClient, viewModelFactory) { }
+        public CmsFallbackController(IZengentiClient cmsClient, ICmsViewModelFactory viewModelFactory, ILogger<BusinessController> logger)
+            : base(cmsClient, viewModelFactory, logger) { }
 
         public async Task<IActionResult> Dynamic(string section, string slug)
         {

@@ -1,6 +1,7 @@
 ﻿using Content.Modelling.Models.Components;
 using Content.Modelling.Models.Templates;
 using Microsoft.AspNetCore.Mvc;
+using RazorPageBusinessWebsite.Components.Extensions;
 using RazorPageBusinessWebsite.Core.Models.ViewModels;
 using RazorPageBusinessWebsite.ViewModels;
 
@@ -26,9 +27,10 @@ namespace RazorPageBusinessWebsite.Components.TileNavigation
                        
                     });
                 }
-                return View(temp);
+                return View(ViewComponentExtensions.GetViewPath("TileNavigation"), temp);
             }
-            return View(null);
+
+            return View(ViewComponentExtensions.GetViewPath("TileNavigation"), new List<NavigationTile>());
         }
     }
 }

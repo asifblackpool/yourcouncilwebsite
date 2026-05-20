@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Content.Modelling.Models.Templates;
 using Content.Modelling.Models.Templates.Base;
 using RazorPageBusinessWebsite.ViewModels;
+using Content.Modelling.Models.Accordions;
+using System.IO;
 
 
 namespace RazorPageBusinessWebsite.TagHelpers
@@ -14,7 +16,7 @@ namespace RazorPageBusinessWebsite.TagHelpers
     public class BGModelTagHelper : TagHelper
     {
         [HtmlAttributeName("model")]
-        public CampaignDetailsViewModel? Model { get; set; }
+        public DetailsViewModel? Model { get; set; }
 
         [ViewContext]
         [HtmlAttributeNotBound]
@@ -62,6 +64,15 @@ namespace RazorPageBusinessWebsite.TagHelpers
                         string temp = GetLegacyFormEmbed(forms.FormID);
                         output.PostElement.AppendHtml(temp);
                     }
+                }
+                else if (Model.ConcreteModel is BGServiceLandingAccordion accordionModel)
+                {
+                    // Output canvas first
+                    output.PostElement.AppendHtml(canvasHtml);
+
+                    // Render tile navigation component
+                    string accordionHtml = await RenderViewComponentAsync("Accordions",accordionModel);
+                    output.PostElement.AppendHtml(accordionHtml);
                 }
                 else if (Model.ConcreteModel is BGServiceLandingTile tileModel)
                 {

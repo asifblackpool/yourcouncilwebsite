@@ -16,7 +16,7 @@ namespace RazorPageBusinessWebsite.Core.Models
 {
     public class BasePageModel<T> : PageModel where T : class
     {
-        public CampaignDetailsViewModel ViewModel { get; set; } = new();
+        public DetailsViewModel ViewModel { get; set; } = new();
 
         protected readonly ILogger<BasePageModel<T>> _logger;
         protected readonly IDataService<T> _dataService;
@@ -185,7 +185,6 @@ namespace RazorPageBusinessWebsite.Core.Models
             ViewData["Model"] = null;
             ViewData["ImageStrip"] = null;
         }
-
     }
 
     #region BT Type Resolver 
@@ -198,7 +197,10 @@ namespace RazorPageBusinessWebsite.Core.Models
                 { ContensisClientKeys.BG_STANDARD_WITH_IMAGES, typeof(BGStandardWithImages) },
                 { ContensisClientKeys.BG_STANDARD_WITH_FORMS, typeof(BGStandardWithForms) },
                 { ContensisClientKeys.BG_STANDARD_WITH_DOCUMENTS, typeof(BGStandardWithDocuments) },
+                { ContensisClientKeys.BG_STANDARD_SERVICE_LANDING_TILE, typeof(BGServiceLandingTile) },
                 { ContensisClientKeys.BG_STANDARD_SERVICE_LANDING_PAGE, typeof(BGServiceLandingTile) },
+                { ContensisClientKeys.BG_STANDARD_SERVICE_ACCORDION_PAGE, typeof(BGServiceLandingAccordion) },
+             
             };
 
             private static readonly JsonSerializerSettings _jsonSettings = new()

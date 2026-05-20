@@ -2,7 +2,7 @@
 
 namespace RazorPageBusinessWebsite.ViewModels
 {
-    public class CampaignDetailsViewModel
+    public class DetailsViewModel
     {
         public BaseBG? ConcreteModel { get; set; }
         public string? ContentTypeId { get; set; }

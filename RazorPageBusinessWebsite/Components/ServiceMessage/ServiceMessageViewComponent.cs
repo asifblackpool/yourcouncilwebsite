@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RazorPageBusinessWebsite.Components.Extensions;
+using Zengenti.Contensis.Delivery;
 
 
 namespace RazorPageBusinessWebsite.Components.ServiceMessage
@@ -9,7 +11,8 @@ namespace RazorPageBusinessWebsite.Components.ServiceMessage
         {
             // You can pass additional data via ViewData if needed
             ViewData["RenderTime"] = DateTime.Now;
-            return View(message);
+            return View(ViewComponentExtensions.GetViewPath("ServiceMessage"), message);
+           
         }
     }
 }

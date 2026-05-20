@@ -4,7 +4,6 @@ using Content.Modelling.Models.Templates;
 using Microsoft.AspNetCore.Mvc;
 using Content.Modelling.Models.AssetGallery;
 using RazorPageBusinessWebsite.Core.Models.ViewModels;
-using RazorPageBusinessWebsite.Core.Interfaces;
 using Zengenti.Contensis.Delivery;
 
 namespace RazorPageBusinessWebsite.Components
