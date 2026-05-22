@@ -145,13 +145,7 @@ app.MapControllerRoute(
     defaults: new { controller = "BusinessSection", action = "Index" }
 );
 
-// 3. Catch‑all for any deeper /Business/... that didn't match the section route
-//    This handles things like /Business/some-page that aren't top‑level sections
-app.MapControllerRoute(
-    name: "business_catchall",
-    pattern: "Business/{**slug}",
-    defaults: new { controller = "Business", action = "Dynamic", slug = "" }
-);
+
 
 app.UseMiddleware<BreadcrumbMiddleware>();
 app.UseStatusCodePagesWithReExecute("/Error");

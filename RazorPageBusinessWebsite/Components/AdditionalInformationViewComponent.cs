@@ -56,7 +56,7 @@ namespace RazorPageBusinessWebsite.Components
                     LinkedEntries = temp.GetReferencedEntries(_contensisClient, 1, null)
                 };
 
-                return View(viewModel);
+                return View(ViewComponentExtensions.GetViewPath("AdditionalInformation"), viewModel);
             }
 
             if (model is BGStandard)
@@ -76,11 +76,11 @@ namespace RazorPageBusinessWebsite.Components
 
                 };
 
-                return  View(ViewComponentExtensions.GetViewPath("AdditionalInformation"), viewModel);
+                return View(ViewComponentExtensions.GetViewPath("AdditionalInformation"), viewModel);
             }
             // Cast to BGStandard to access the properties
             return Content(string.Empty);
-          
+
         }
     }
 }
