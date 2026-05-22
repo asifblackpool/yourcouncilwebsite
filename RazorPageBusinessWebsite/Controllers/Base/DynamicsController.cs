@@ -12,6 +12,9 @@ namespace RazorPageBusinessWebsite.Controllers.Base
         protected readonly ICmsViewModelFactory _viewModelFactory;
         protected readonly ILogger<DynamicCmsController> _logger;
 
+        // NEW: virtual property that derived controllers can override
+        protected virtual string ViewFolder => "Business";
+
         protected DynamicCmsController(IZengentiClient cmsClient, ICmsViewModelFactory viewModelFactory, ILogger<DynamicCmsController> logger)
         {
             _cmsClient = cmsClient;
@@ -51,7 +54,7 @@ namespace RazorPageBusinessWebsite.Controllers.Base
                 _logger.LogWarning("ViewModel is not of expected type (ViewModelWrapper with DetailsViewModel). Actual type: {Type}", viewModel?.GetType().Name);
             }
 
-            return View(viewName, viewModel);
+            return View($"~/Views/{ViewFolder}/{viewName}.cshtml", viewModel);
         }
 
         #region Private helper methods 

@@ -125,43 +125,31 @@ app.UseStaticFiles();
 // Redirect root to /Business
 app.UseRewriter(new RewriteOptions().AddRedirect("^$", "Business", 301));
 
-// ===== FIXED MIDDLEWARE – correctly compute website path =====
-app.Use(async (context, next) =>
-{
-    var path = context.Request.Path.Value ?? "";
-    bool isStaticAsset = path.StartsWith("/css/", StringComparison.OrdinalIgnoreCase)
-                         || path.StartsWith("/js/", StringComparison.OrdinalIgnoreCase)
-                         || path.StartsWith("/images/", StringComparison.OrdinalIgnoreCase)
-                         || path.StartsWith("/lib/", StringComparison.OrdinalIgnoreCase);
-
-    // Correctly compute the base path for the business site
-    string sitePath = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/').TrimEnd('/'); // e.g., "business"
-    string websiteName = $"/{sitePath}";
-
-    if (!isStaticAsset && !path.StartsWith(websiteName, StringComparison.OrdinalIgnoreCase))
-    {
-        context.Response.StatusCode = 404;
-        return;
-    }
-    await next();
-});
+// Restrictive middleware has been REMOVED – now routing and controllers handle 404s.
 
 app.UseRouting();
 
-// ===== ROUTES: explicit root + catch-all =====
 string siteViewRoot = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/').TrimEnd('/'); // "business"
 
-// 1. Explicit route for the exact root (handles /business)
+// 1. EXACT match for /Business (or /business) – must come first
 app.MapControllerRoute(
     name: "business_root_exact",
-    pattern: siteViewRoot,
+    pattern: "Business",  // literal "Business" (case‑insensitive matches /business too)
     defaults: new { controller = "Business", action = "Dynamic", slug = "" }
 );
 
-// 2. Catch‑all route for everything else under /business/...
+// 2. BusinessSection route for /Business/{section}/... (requires at least one segment after Business/)
+app.MapControllerRoute(
+    name: "business_section",
+    pattern: "Business/{section}/{**slug}",
+    defaults: new { controller = "BusinessSection", action = "Index" }
+);
+
+// 3. Catch‑all for any deeper /Business/... that didn't match the section route
+//    This handles things like /Business/some-page that aren't top‑level sections
 app.MapControllerRoute(
     name: "business_catchall",
-    pattern: $"{siteViewRoot}/{{**slug}}",
+    pattern: "Business/{**slug}",
     defaults: new { controller = "Business", action = "Dynamic", slug = "" }
 );
 
@@ -187,15 +175,6 @@ using (var warmupScope = app.Services.CreateScope())
 }
 
 app.Run();
-
-// Helper method (kept for reference – not used in simplified routing)
-static string GetControllerNameForSection(string sectionSlug)
-{
-    var cultureInfo = System.Globalization.CultureInfo.InvariantCulture;
-    var textInfo = cultureInfo.TextInfo;
-    string pascalCase = textInfo.ToTitleCase(sectionSlug.Replace("-", " ")).Replace(" ", "");
-    return pascalCase;
-}
 
 #region ContensisClientFactory (unchanged)
 public static class ContensisClientFactory

@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5001/Business/",
+      "applicationUrl": "http://localhost:5001/Business/Business-rates",
       "sslPort": 44322
     }
   },
@@ -13,7 +13,7 @@
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5001/Business/",
+      "launchUrl": "http://localhost:5001/Business/Business-rates",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +21,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5001/Business/",
+      "launchUrl": "http://localhost:5001/Business/Business-rates",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

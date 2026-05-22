@@ -9,6 +9,7 @@ namespace RazorPageBusinessWebsite.Controllers
         public BusinessController(IZengentiClient cmsClient, ICmsViewModelFactory viewModelFactory, ILogger<BusinessController> logger)
             : base(cmsClient, viewModelFactory, logger) { }
 
+        [HttpGet]
         public async Task<IActionResult> Dynamic(string slug)
         {
             slug ??= "";
