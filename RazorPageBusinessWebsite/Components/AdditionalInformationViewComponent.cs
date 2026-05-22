@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Content.Modelling.Models.AssetGallery;
 using RazorPageBusinessWebsite.Core.Models.ViewModels;
 using Zengenti.Contensis.Delivery;
+using RazorPageBusinessWebsite.Components.Extensions;
 
 namespace RazorPageBusinessWebsite.Components
 {
@@ -75,7 +76,7 @@ namespace RazorPageBusinessWebsite.Components
 
                 };
 
-                return View(viewModel);
+                return  View(ViewComponentExtensions.GetViewPath("AdditionalInformation"), viewModel);
             }
             // Cast to BGStandard to access the properties
             return Content(string.Empty);
