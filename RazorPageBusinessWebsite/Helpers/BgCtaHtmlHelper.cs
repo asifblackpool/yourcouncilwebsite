@@ -44,7 +44,7 @@ namespace RazorPageBusinessWebsite.Helpers
             // Handle external links
             if (!string.IsNullOrEmpty(ctaModel.ExternalLink))
             {
-                buttonTag.Attributes["target"] = "_blank";
+                //buttonTag.Attributes["target"] = "_blank";
                 buttonTag.Attributes["rel"] = "noopener noreferrer";
             }
 

@@ -188,7 +188,7 @@ namespace RazorPageBusinessWebsite.Core.Models
     }
 
     #region BT Type Resolver 
-
+    
         public static class BGTypeResolver
         {
             private static readonly Dictionary<string, Type> _typeMap = new()
@@ -198,7 +198,7 @@ namespace RazorPageBusinessWebsite.Core.Models
                 { ContensisClientKeys.BG_STANDARD_WITH_FORMS, typeof(BGStandardWithForms) },
                 { ContensisClientKeys.BG_STANDARD_WITH_DOCUMENTS, typeof(BGStandardWithDocuments) },
                 { ContensisClientKeys.BG_STANDARD_SERVICE_LANDING_TILE, typeof(BGServiceLandingTile) },
-                { ContensisClientKeys.BG_STANDARD_SERVICE_LANDING_PAGE, typeof(BGServiceLandingTile) },
+                { ContensisClientKeys.BG_STANDARD_SERVICE_LANDING_PAGE, typeof(BGServiceLanding) },
                 { ContensisClientKeys.BG_STANDARD_SERVICE_ACCORDION_PAGE, typeof(BGServiceLandingAccordion) },
              
             };

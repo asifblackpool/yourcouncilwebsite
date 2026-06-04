@@ -464,34 +464,38 @@
 
     var _templateId = null;
 
-    function populateTemplate(title, data, message) {
+    var resetTemplates = function () {
+        $(".councillor-placeholder").html("");
+        $("#councillor-loading-indicator").show();
+    };
 
-        try {
-            if (data !== null) {
-                $.each(data, function (i, item) {
-                    item.photosmallurl = item.photosmallurl.replace("http", "https");
-                });
-            }
-
+  function populateTemplate(title, data, message) {
+    try {
+        if (data !== null) {
+            $.each(data, function (i, item) {
+                item.photosmallurl = item.photosmallurl.replace("http", "https");
+            });
+        } else {
+            data = [];
         }
-        catch (ex) {
-            console.log('error in photo small replacement');
-        }
-    
-        var councillorTemplate = Handlebars.compile($("#" + _templateId).html());
-        $('.councillor-placeholder').html(councillorTemplate({ apidata: data, wardTitle: title, msg: message }));
-        $("#councillor-loading-indicator").hide();
+    } catch (ex) {
+        console.log('error in photo small replacement');
     }
+
+    var councillorTemplate = Handlebars.compile($("#" + _templateId).html());
+    var html = councillorTemplate({ apidata: data, wardTitle: title, msg: message });
+    
+    // Insert the compiled HTML
+    $('.councillor-placeholder').html(html);
+    $('.councillor-placeholder').show(); 
+    $("#councillor-loading-indicator").hide();
+}
 
     function getCouncillorsByArea(postcode, isoffline) {
 
         var returnList = [];
 
-        var resetTemplates = function () {
-            $(".councillor-placeholder").html("");
-            $("#councillor-loading-indicator").show();
-        };
-
+      
         resetTemplates();
         $.get(window.commonservices.Config().democracyUrl + 'CouncillorsByArea?postcode=' + postcode,
              function (data, status) {
@@ -501,7 +505,7 @@
                  var councillors = JSON.search(list, '//councillor');
 
                  (isoffline) ? populateTemplate(null, null, "Our ward/councillor search is currently being updated. We apologise for any inconvenience.")
-                             : populateTemplate(title, list, "No councillor information can be found for the post code entered");
+                     : populateTemplate(title, councillors, "No councillor information can be found for the post code entered");
 
 
 
@@ -518,6 +522,11 @@
    
         getCouncillorsByArea(postcode, isoffline);
     };
+
+    democracy.reset = function () {
+        resetTemplates();
+        setTimeout(function () { $("#councillor-loading-indicator").hide(); }, 2000);
+    }
 
 })(window.democracy = window.democracy || {}, jQuery);
 

@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5001/Business/Business-rates/documents/enforcement-agent-blackpool-code-of-practice-2018",
+      "applicationUrl": "https://localhost:5001//business/licensing-and-permits/housing-licences/selective-licensing",
       "sslPort": 44322
     }
   },
@@ -13,7 +13,7 @@
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5001/Business/Business-rates/documents/enforcement-agent-blackpool-code-of-practice-2018",
+      "launchUrl": "https://localhost:5001/business/licensing-and-permits/housing-licences/selective-licensing",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +21,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5001/Business/Business-rates/documents/enforcement-agent-blackpool-code-of-practice-2018",
+      "launchUrl": "https://localhost:5001/business/licensing-and-permits/housing-licences/selective-licensing",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

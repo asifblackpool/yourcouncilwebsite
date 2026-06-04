@@ -1,5 +1,6 @@
 ﻿@using Content.Modelling.Models.Templates
 @using RazorPageBusinessWebsite.Core.Models;
+@using RazorPageBusinessWebsite.Helpers;
 @using Content.Modelling.Helpers;
 
 @{
@@ -21,7 +22,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@(Model.ViewModel?.ModelTitle ?? "Page not found")</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" asp-append-version="true" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" asp-append-version="true" />
     <link rel="stylesheet" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/base.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SiteElements/ChannelShift/content/styles/bundles/year-2023/newsarticles.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SiteElements/ChannelShift/content/styles/contensis/common/forms/styles-2024.css" asp-append-version="true" />
@@ -61,6 +62,7 @@
     <script type="text/javascript" src="~/SiteElements/ChannelShift/Scripts/services/footerservices.js"></script>
     <script type="text/javascript" src="~/SiteElements/ChannelShift/Scripts/services/homeservices.js"></script>
     <script type="text/javascript" src="~/SiteElements/ChannelShift/Scripts/services/tableservices.js"></script>
+    <script type="text/javascript" src="~/SiteElements/ChannelShift/Scripts/services/yourareaservices.js"></script>
 
     <script type="text/javascript" src="~/static/js/services/formservices.js"></script>
     <script type="text/javascript" src="~/static/js/services/automenuservices.js"></script>
@@ -184,7 +186,7 @@
 
         });
     </script>
-
+    @await Html.IncludeRawAsync("~/siteelements/channelshift/includes/handlebar-templates/postcode/postcode-search.inc")
 </body>
 </html>
 <!-- Google Tag Manager -->

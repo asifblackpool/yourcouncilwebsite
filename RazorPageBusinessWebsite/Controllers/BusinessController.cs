@@ -13,7 +13,7 @@ namespace RazorPageBusinessWebsite.Controllers
         public async Task<IActionResult> Dynamic(string slug)
         {
             slug ??= "";
-            return await RenderDynamicPageAsync("Business", slug);
+         return await RenderDynamicPageAsync("Business", slug);
         }
     }
 }

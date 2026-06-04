@@ -1,0 +1,51 @@
+﻿.sr-only {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+#find-postcode-button {
+    color: #fff;
+    background-color: #830065;
+    border-width: 0;
+    border: 0.1rem solid #830065;
+    position: relative;
+    top: 0px;
+}
+
+#find-postcode-input {
+    border: 2px solid #830065;
+}
+
+div.error-container {
+    max-height: 30px;
+    clear: both;
+    padding: 0px;
+    margin: 0;
+    position: relative;
+}
+
+div.error-container > span {
+    max-height:12px;
+}
+
+@media (min-width: 768px) {
+    .dl-horizontal dt {
+        width: 75px !important;
+        text-align: left !important;
+    }
+
+    .dl-horizontal dd {
+        margin-left: 75px !important;
+    }
+}
+
+
+@media (max-width: 767px) {
+    .col-md-6 {
+        width: 100%;
+    }
+}
