@@ -194,7 +194,7 @@
 
         });
     </script>
-    @await Html.IncludeRawAsync("~/siteelements/channelshift/includes/handlebar-templates/postcode/postcode-search.inc")
+
     @if (Context.Items["PageScripts"] is List<string> scripts)
     {
         foreach (var src in scripts) {  <script src="@src"></script><br/>    }

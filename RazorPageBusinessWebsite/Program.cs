@@ -109,6 +109,8 @@ builder.Services.AddContentModelling(builder.Configuration, options =>
 // Register the factory that maps Contensis content types to view models
 builder.Services.AddScoped<ICmsViewModelFactory, CmsViewModelFactory>();
 
+builder.Services.AddMemoryCache();
+
 var app = builder.Build();
 
 app.UseContentModelling();

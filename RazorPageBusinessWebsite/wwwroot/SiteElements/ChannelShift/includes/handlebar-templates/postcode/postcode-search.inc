@@ -1,4 +1,4 @@
-﻿< !--your councillor templates-- >
+﻿
  <script id="councillor-postcode-template" type="text/x-handlebars-template">
     {{#if this.apidata.length}}
     <h3>Your council ward area is <strong>{{ wardTitle }}</strong></h3>
