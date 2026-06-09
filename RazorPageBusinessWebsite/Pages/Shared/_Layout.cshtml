@@ -87,6 +87,14 @@
     {
         <script type='text/javascript'>$(document).ready(function () { window.automenuservices.init('#sidebar'); });</script>
     }
+    <!-- ... existing meta, title, etc. ... -->
+    @if (Context.Items["PageStyles"] is List<string> styles)
+    {
+        foreach (var href in styles)
+        {
+            <link rel="stylesheet" href="@href" />
+        }
+    }
 </head>
 
 <body>
@@ -187,6 +195,18 @@
         });
     </script>
     @await Html.IncludeRawAsync("~/siteelements/channelshift/includes/handlebar-templates/postcode/postcode-search.inc")
+    @if (Context.Items["PageScripts"] is List<string> scripts)
+    {
+        foreach (var src in scripts) {  <script src="@src"></script><br/>    }
+    }
+    @if (Context.Items["PageInlineScripts"] is List<string> inlineScripts)
+    {
+        foreach (var script in inlineScripts){
+            <script type="text/javascript">
+                @Html.Raw(script)
+            </script>
+        }
+    }
 </body>
 </html>
 <!-- Google Tag Manager -->

@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://localhost:5001//business/licensing-and-permits/housing-licences/selective-licensing",
+      "applicationUrl": "https://localhost:5001/business/business-support-and-advice/healthier-choices-award",
       "sslPort": 44322
     }
   },
@@ -13,7 +13,7 @@
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/business/licensing-and-permits/housing-licences/selective-licensing",
+      "launchUrl": "https://localhost:5001/business/business-support-and-advice/healthier-choices-award",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +21,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/business/licensing-and-permits/housing-licences/selective-licensing",
+      "launchUrl": "https://localhost:5001/business-support-and-advice/healthier-choices-award",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

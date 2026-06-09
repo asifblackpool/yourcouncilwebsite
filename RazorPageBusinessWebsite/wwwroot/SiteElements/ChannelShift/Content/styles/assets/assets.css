@@ -1,4 +1,16 @@
-﻿
+﻿::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #041c2c !important;
+    opacity: 1; /* Firefox */
+    font-weight: bold;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #041c2c !important;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: #041c2c !important;
+}
 
 .search-box {
     background-color: #b5bd00;
@@ -30,17 +42,10 @@ button#generic-search-button {
     font-weight: bold;
 }
 
+
 .bootstrap-select.btn-group .dropdown-toggle .filter-option {
     color: #041c2c !important;
-    font-weight: bold;
 }
-
-.bootstrap-select.btn-group .dropdown-menu li a span.text {
-    display: inline-block;
-    color: #041c2c !important;
-    font-weight: bold;
-}
-
 
 .input-group .form-control {
     color: #041c2c !important;
@@ -123,6 +128,7 @@ div.autocomplete-suggestion {
 
 div.property-details {
     position: relative;
+    
 }
 
 div.property-image > a > img,
@@ -142,12 +148,15 @@ img.main-image {
 .listing-item {
     position: relative;
     padding-top: 5px;
+
 }
 
 .listing-title {
     margin-top: 0px;
     font-weight: bold;
     font-size: 16px;
+    display:inline-block;
+    width:100%;
 }
 
 .listing-size {
@@ -167,7 +176,10 @@ img.main-image {
 }
 
 .listing-cost {
-    top: 280px;
+    position:unset;
+    padding-left:0px;
+    width:100%;
+    display:inline-block;
 }
 
 .item-cost {
@@ -191,42 +203,42 @@ img.main-image {
 #carousel-custom {
 }
 
-    #carousel-custom .carousel-indicators {
-        margin: 10px 0 0;
-        overflow: auto;
-        position: static;
-        text-align: left;
-        white-space: nowrap;
-        width: 100%;
-    }
+#carousel-custom .carousel-indicators {
+    margin: 10px 0 0;
+    overflow: auto;
+    position: static;
+    text-align: left;
+    white-space: nowrap;
+    width: 100%;
+}
 
-        #carousel-custom .carousel-indicators li {
-            background-color: transparent;
-            -webkit-border-radius: 0;
-            border-radius: 0;
-            display: inline-block;
-            height: auto;
-            margin: 0 !important;
-            width: auto;
-        }
+#carousel-custom .carousel-indicators li {
+    background-color: transparent;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    display: inline-block;
+    height: auto;
+    margin: 0 !important;
+    width: auto;
+}
 
-            #carousel-custom .carousel-indicators li img {
-                display: block;
-                opacity: 0.5;
-                height: 75px;
-            }
+#carousel-custom .carousel-indicators li img {
+    display: block;
+    opacity: 0.5;
+    height: 75px;
+}
 
-            #carousel-custom .carousel-indicators li.active img {
-                opacity: 1;
-            }
+#carousel-custom .carousel-indicators li.active img {
+    opacity: 1;
+}
 
-            #carousel-custom .carousel-indicators li:hover img {
-                opacity: 0.75;
-            }
+#carousel-custom .carousel-indicators li:hover img {
+    opacity: 0.75;
+}
 
-    #carousel-custom .carousel-outer {
-        position: relative;
-    }
+#carousel-custom .carousel-outer {
+    position: relative;
+}
 
 .arrow-position {
     position: relative;
@@ -241,27 +253,27 @@ img.main-image {
     overflow: hidden;
 }
 
-    .iframe-rwd iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
+.iframe-rwd iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
 
 
 .btn-top-container {
     position: relative;
 }
 
-    .btn-top-container > button {
-        position: absolute;
-        float: right;
-        top: 0px;
-        right: 10px;
-        padding-right: 15px;
-        z-index: 9999;
-    }
+.btn-top-container > button {
+    position: absolute;
+    float: right;
+    top: 0px;
+    right: 10px;
+    padding-right: 15px;
+    z-index: 9999;
+}
 
 .btn-bottom-container > button {
     margin-top: 10px;
@@ -269,7 +281,30 @@ img.main-image {
     padding-right: 15px;
 }
 
+.carousel-control.right {
+    right: 0 !important;
+    top: 0px;
+    transform: rotate(0deg);
+    -webkit-transform:rotate(0deg); 
+    left: auto !important;
+    position: absolute;
+}
 
+
+@media (min-width: 170px) and (max-width: 1169px) {
+
+    div#mainbar .col-sm-5,
+    div#mainbar .col-sm-8,
+    div#mainbar .col-xs-5,
+    div#mainbar .col-xs-6,
+    div#mainbar .col-xs-8 {
+        width:unset;
+    }
+
+    div#mainbar .col-sm-5 {
+        width:41.667%;
+    }
+}
 
 @media screen and (max-width: 992px) {
 
@@ -301,8 +336,7 @@ img.main-image {
     }
 
     div.property-details {
-        width: 100%;
-        margin-top: 15px;
+        width: 55%;
     }
 
     div.listing-cost {
@@ -312,6 +346,11 @@ img.main-image {
         position: relative;
         padding: 0px;
     }
+
+    .col-sm-5 {
+        width: 44.66666667% !important;
+        float:left;
+    }
 }
 
 @media screen and (max-width: 662px) {
@@ -320,15 +359,19 @@ img.main-image {
         width: 85%;
     }
 
+    div.property-details {
+        margin-top:15px;
+    }
+
 
     .generic-filter {
         width: 100%;
         margin-top: 20px;
     }
 
-        .generic-filter > label {
-            width: 60px;
-        }
+    .generic-filter > label {
+        width: 60px;
+    }
 
     .listing-cost, .item-cost {
         display: block;
@@ -344,6 +387,15 @@ img.main-image {
 @media screen and (max-width: 480px) {
     h1, h2, h3, h4 h5 {
         margin: 8px 8px 8px 0px;
+    }
+
+    .col-sm-5 {
+        width: 100%;
+        float: left;
+    }
+
+    div.property-details {
+        width: 100%;
     }
 
     col-xs-10 {
@@ -377,15 +429,15 @@ img.main-image {
         display: none;
     }
 
-        div#crumbs > ul > li:first-child,
-        div#crumbs > ul > li:nth-child(2),
-        div#crumbs > ul > li:nth-child(3) {
-            display: inline;
-        }
+    div#crumbs > ul > li:first-child,
+    div#crumbs > ul > li:nth-child(2),
+    div#crumbs > ul > li:nth-child(3) {
+        display: inline;
+    }
 
-            div#crumbs > ul > li:nth-child(3):after {
-                content: " ...";
-            }
+    div#crumbs > ul > li:nth-child(3):after {
+        content: " ...";
+    }
 
     ul#print-links-ul li:first-child {
         display: none;

@@ -67,16 +67,29 @@ namespace RazorPageBusinessWebsite.Services.Breadcrumb
         {
             var finalItems = new List<BreadcrumbItem>();
 
-            // Always start with Home
-            finalItems.Add(new BreadcrumbItem { Title = "Home", Url = WebsiteConstants.SITE_VIEW_PATH });
+            // 1. Root home page (domain root)
+            finalItems.Add(new BreadcrumbItem { Title = "Home", Url = "/" });
+
+            // 2. Business node (from SITE_VIEW_PATH)
+            string? businessPath = WebsiteConstants.SITE_VIEW_PATH?.TrimStart('/').TrimEnd('/');
+            if (!string.IsNullOrEmpty(businessPath))
+            {
+                string businessTitle = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(businessPath.Replace("-", " "));
+                finalItems.Add(new BreadcrumbItem { Title = businessTitle, Url = "/" + businessPath });
+            }
 
             if (_autoGenerate)
             {
                 // Auto-generate from route
-                var path = context.Request.Path.Value;
-                List<string> segments = (path != null) ? path.Split('/')
-                    .Where(s => !string.IsNullOrEmpty(s))
-                    .ToList() : new List<string>();
+                var path = context.Request.Path.Value ?? "";
+                // Remove leading slash and split
+                var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                // If the first segment matches the business path, skip it (already added)
+                if (segments.Count > 0 && segments[0].Equals(businessPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    segments.RemoveAt(0);
+                }
 
                 string accumulatedPath = "";
 
@@ -89,14 +102,21 @@ namespace RazorPageBusinessWebsite.Services.Breadcrumb
             }
             else
             {
-                // Use manually added items (but still ensure Home is first)
-                if (!_items.Any() || _items[0].Title != "Home")
+                // Manual items – ensure root home is still first, then business, then manual items
+                // (but manual items may already include business; be careful not to duplicate)
+                if (_items.Count > 0)
                 {
-                    finalItems.AddRange(_items);
-                }
-                else
-                {
-                    finalItems = _items.ToList();
+                    // If the first manual item is "Home" or matches business, we might skip adding our defaults.
+                    // For simplicity, we'll just merge: start with root home + business, then append manual items
+                    // that aren't duplicates of the first two.
+                    var existingTitles = finalItems.Select(i => i.Title.ToLowerInvariant()).ToList();
+                    foreach (var item in _items)
+                    {
+                        if (!existingTitles.Contains(item.Title?.ToLowerInvariant() ?? ""))
+                        {
+                            finalItems.Add(item);
+                        }
+                    }
                 }
             }
 
@@ -106,10 +126,9 @@ namespace RazorPageBusinessWebsite.Services.Breadcrumb
                 finalItems.Last().Url = null;
             }
 
-          
-            string[] ignoreList = GetIgnoreListFromPath(WebsiteConstants.SITE_VIEW_PATH);
-
-            var filteredBreadcrumbs = FilterBreadcrumbs(finalItems, ignoreList);
+            // Apply ignore list filtering (optional)
+            //string[] ignoreList = GetIgnoreListFromPath(WebsiteConstants.SITE_VIEW_PATH);
+            var filteredBreadcrumbs = finalItems; // FilterBreadcrumbs(finalItems, ignoreList);
 
             return filteredBreadcrumbs;
         }

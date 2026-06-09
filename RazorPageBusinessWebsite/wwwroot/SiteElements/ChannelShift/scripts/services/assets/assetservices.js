@@ -28,6 +28,7 @@
     var _pagingservices = null;
     var _pagesize = null;
     var _currentPage = 1;
+    var _sortDirection = "desc"; // or "asc" for ascending
 
     var _mapdata = { text: '', lat: '', long: '' };
 
@@ -310,7 +311,11 @@
                     }
                 }
 
-                _items[index].picture = (images[0].asset !== null) ? images[0].asset.sys.uri : ''
+                try { _items[index].picture = (images[0].asset !== null) ? images[0].asset.sys.uri : ''; }
+                catch (err) {
+                    _items[index].picture = '';
+                }
+
                 _items[index].picturesTotal = count;
             };
 
@@ -369,12 +374,19 @@
         resetTemplates();
         function ajaxCall() {
 
+            // Define sort direction dynamically
+
+
+            // Build the query
             var query = _filterData = {
-                "where": [{ "field": "sys.contentTypeId", "equalTo": "asset" },
-                { "field": "sys.versionStatus", "contains": "published" },
-                { "field": "active", "equalTo": true }
-                ], "pageSize": _pagesize, "pageIndex": currentpage - 1,
-                "orderBy": [{ "asc": "sys.version.published" }]
+                "where": [
+                    { "field": "sys.contentTypeId", "equalTo": "asset" },
+                    { "field": "sys.versionStatus", "contains": "published" },
+                    { "field": "active", "equalTo": true }
+                ],
+                "pageSize": _pagesize,
+                "pageIndex": currentpage - 1,
+                "orderBy": [{ [_sortDirection]: "sys.version.published" }]
             };
 
             $.ajax({
@@ -440,7 +452,7 @@
         resetTemplates();
         _pagingservices.reset();
         getSearch(property_type, function (isOk, result) {
-           
+
             dataLoader(pagenumber, result);
             hideLoader();
         });
@@ -572,7 +584,7 @@
                     { "field": "sys.versionStatus", "contains": "published" },
                     { "field": "active", "equalTo": true }
                     ], "pageSize": _pagesize,
-                    "orderBy": [{ "asc": order_by }]
+                    "orderBy": [{ [_sortDirection]: order_by }]
                 };
                 $("#autocomplete").attr("placeholder", "Search by Lease terms")
                 hideErrorMessage();
@@ -584,7 +596,7 @@
                     { "field": "sys.versionStatus", "contains": "published" },
                     { "field": "active", "equalTo": true }
                     ], "pageSize": _pagesize,
-                    "orderBy": [{ "asc": order_by }]
+                    "orderBy": [{ [_sortDirection]: order_by }]
                 };
                 $("#autocomplete").attr("placeholder", "Search by postcode")
                 hideErrorMessage();
@@ -595,8 +607,8 @@
                     { "field": "sys.contentTypeId", "equalTo": content_type },
                     { "field": "sys.versionStatus", "contains": "published" },
                     { "field": "active", "equalTo": true }
-                    ], "pageSize": _pagesize, "pageIndex":  _currentPage  - 1,
-                    "orderBy": [{ "asc": order_by }]
+                    ], "pageSize": _pagesize, "pageIndex": _currentPage - 1,
+                    "orderBy": [{ [_sortDirection]: order_by }]
                 };
                 $("#autocomplete").attr("placeholder", "Search by Bar, Cafe,Land, Office, ...")
                 break;
@@ -607,7 +619,7 @@
                     { "field": "sys.versionStatus", "contains": "published" },
                     { "field": "active", "equalTo": true }
                     ], "pageSize": _pagesize,
-                    "orderBy": [{ "asc": order_by }]
+                    "orderBy": [{ [_sortDirection]: order_by }]
                 };
                 $("#autocomplete").attr("placeholder", "Search by Title")
                 hideErrorMessage();
@@ -688,7 +700,7 @@
                 resetTemplates();
                 _currentPage = 1;
                 dataLoader(_currentPage, { items: selectedItems, totalCount: selectedItems.length });
-             
+
                 //$("." + _topPaginationPlaceHolder).html(_templatePagination({ apipages: new Array(), apiTotal: selectedItems.length }));
                 hideLoader();
 
@@ -710,4 +722,3 @@
     };
 
 })(window.assetservices = window.assetservices || {}, jQuery);
-
