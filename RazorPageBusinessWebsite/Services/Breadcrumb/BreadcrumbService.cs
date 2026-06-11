@@ -97,7 +97,7 @@ namespace RazorPageBusinessWebsite.Services.Breadcrumb
                 {
                     accumulatedPath += $"/{segment}";
                     var title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(segment.Replace("-", " "));
-                    finalItems.Add(new BreadcrumbItem { Title = title, Url = accumulatedPath });
+                    finalItems.Add(new BreadcrumbItem { Title = title, Url = string.Format("/{0}{1}",businessPath ,accumulatedPath) });
                 }
             }
             else

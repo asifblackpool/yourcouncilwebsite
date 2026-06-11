@@ -138,7 +138,7 @@ img.main-image {
     max-width: 450px;
     display: block;
     margin: auto;
-    height: 300px;
+    height: auto;
 }
 
 .padding-left-zero {
