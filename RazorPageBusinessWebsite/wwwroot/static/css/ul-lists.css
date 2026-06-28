@@ -1,69 +1,115 @@
 ﻿/* Custom CSS following GOV.UK Design System principles */
 :root {
-    /* Main brand colors */
     --ul-primary-color: #041c2c; 
     --ul-print-color: #000;
 }
 
-    ul.shade-black {
+/* ----- BASE STYLES (shared for both ul and ol) ----- */
+ul.shade-black,
+ol.shade-black {
+  
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
     
-        font-size: 1.9rem;
-        line-height: 1.3157894737; 
-        margin-top: 30px;
-        margin-bottom: 30px;
-        margin-left:30px;
-    }
-
-    ul.shade-black li {
-        padding-left: 0px;
-        /
-    }
-
-    ul.shade-black li::before {
-        left: 12px;
-    }
-
-@media screen and (max-width: 640px) {
-
-    ul.shade-black {
-        font-size: 18px;
-        font-size: 1rem;
-        line-height: 1.25;
-        color: var(--ul-primary-color);
-        margin-top: 0;
-        margin-bottom: 20px;
-        padding-left: 0;
-        list-style-type: none;
-    }
-
-
-    ul.shade-black li {
-        margin-bottom: 5px;
-        padding-left: 25px;
-        position: relative;
-    }
-
-    ul.shade-black li::before {
-        content: "•";
-        font-size: 1.2em;
-        font-weight: bold;
-        color: var(--ul-primary-color);
-        position: absolute;
-        left: 10px;
-        top: -1px;
-                
-        }
+    /* MOBILE FIRST (GOV.UK standard) */
+    font-size: 16px;
+    line-height: 1.25;
+    color: var(--ul-primary-color);
+    
+    margin-top: 0;
+    margin-bottom: 20px;
+    
+    /* INDENTATION: GOV.UK uses padding-left on the list itself */
+    padding-left: 20px;
 }
 
-    /* Print styles */
+/* ----- UNORDERED (bullets) ----- */
+ul.shade-black {
+    list-style-type: disc;
+}
+
+/* ----- ORDERED (numbers) ----- */
+ol.shade-black {
+    list-style-type: decimal;
+}
+
+/* ----- LIST ITEMS (spacing between items) ----- */
+ul.shade-black > li,
+ol.shade-black > li {
+    margin-bottom: 0; /* GOV.UK: no gap on mobile for compactness */
+}
+
+/* ----- NESTED SUB-LISTS (any combination) ----- */
+ul.shade-black ul,
+ul.shade-black ol,
+ol.shade-black ul,
+ol.shade-black ol {
+    margin-top: 10px;      /* GOV.UK: space between parent text and sub-list */
+    margin-bottom: 0;      /* Prevents double margin */
+    padding-left: 20px;    /* GOV.UK: adds another 20px indentation (total 40px) */
+}
+
+/* Ensure nested unordered lists keep bullets, nested ordered keep numbers */
+ul.shade-black ul,
+ol.shade-black ul {
+    list-style-type: disc;
+}
+ul.shade-black ol,
+ol.shade-black ol {
+    list-style-type: decimal;
+}
+
+/* ----- DEEPER NESTING (3rd level and beyond) ----- */
+ul.shade-black ul ul,
+ul.shade-black ul ol,
+ul.shade-black ol ul,
+ul.shade-black ol ol,
+ol.shade-black ul ul,
+ol.shade-black ul ol,
+ol.shade-black ol ul,
+ol.shade-black ol ol {
+    padding-left: 20px;    /* INDENTATION: total 60px+ */
+    margin-top: 10px;
+}
+
+/* ----- TABLET & DESKTOP OVERRIDES (min-width: 641px) ----- */
+@media (min-width: 40.0625em) {
+    ul.shade-black,
+    ol.shade-black {
+        font-size: 19px;
+        line-height: 1.3157894737; /* 25/19 */
+        margin-bottom: 25px;
+    }
+
+    /* Add a small 5px gap between items on tablet/desktop */
+    ul.shade-black > li,
+    ol.shade-black > li {
+        margin-bottom: 5px;
+    }
+    
+    /* Also apply the gap to nested items on desktop */
+    ul.shade-black ul > li,
+    ul.shade-black ol > li,
+    ol.shade-black ul > li,
+    ol.shade-black ol > li {
+        margin-bottom: 5px;
+    }
+}
+
+/* ----- Optional: Extra top margin (uncomment if needed) ----- */
+/* ul.shade-black,
+ol.shade-black {
+    margin-top: 30px;
+} */
+
+/* ----- PRINT STYLES (kept your variables) ----- */
 @media print {
-    ul.shade-black {
+    ul.shade-black,
+    ol.shade-black {
         color: var(--ul-print-color);
         font-size: 14pt;
         line-height: 1.2;
     }
-
-    ul.shade-black li::before {
-        color: var(--ul-print-color);
-    }
+    /* Native bullets/numbers inherit colour automatically in print */
 }

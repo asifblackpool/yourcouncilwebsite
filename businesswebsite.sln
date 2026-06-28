@@ -5,14 +5,14 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorPageBusinessWebsite", "RazorPageBusinessWebsite\RazorPageBusinessWebsite.csproj", "{1967F302-6CBB-C923-12A2-02ACEC1F7328}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Content.Modelling", "..\shared\lgwebsite.data\content.modelling\Content.Modelling.csproj", "{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B426CFD9-8F4E-4D31-8F97-8757096D175F}"
 	ProjectSection(SolutionItems) = preProject
 		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessWebsite.UnitTests", "BusinessWebsite.UnitTests\BusinessWebsite.UnitTests.csproj", "{8F0B4DEB-60C9-4E9B-BC4F-51588C20E578}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "content.modelling", "..\shared\lgwebsite.data\content.modelling\content.modelling.csproj", "{B695E6C8-456D-4C01-93B6-695817CE0DF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,18 +36,6 @@ Global
 		{1967F302-6CBB-C923-12A2-02ACEC1F7328}.Release|x64.Build.0 = Release|Any CPU
 		{1967F302-6CBB-C923-12A2-02ACEC1F7328}.Release|x86.ActiveCfg = Release|Any CPU
 		{1967F302-6CBB-C923-12A2-02ACEC1F7328}.Release|x86.Build.0 = Release|Any CPU
-		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Debug|x64.Build.0 = Debug|Any CPU
-		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Debug|x86.Build.0 = Debug|Any CPU
-		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Release|x64.ActiveCfg = Release|Any CPU
-		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Release|x64.Build.0 = Release|Any CPU
-		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Release|x86.ActiveCfg = Release|Any CPU
-		{D1F2F3DC-6790-4DD8-A68D-1C908E3E6285}.Release|x86.Build.0 = Release|Any CPU
 		{8F0B4DEB-60C9-4E9B-BC4F-51588C20E578}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8F0B4DEB-60C9-4E9B-BC4F-51588C20E578}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F0B4DEB-60C9-4E9B-BC4F-51588C20E578}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -60,6 +48,18 @@ Global
 		{8F0B4DEB-60C9-4E9B-BC4F-51588C20E578}.Release|x64.Build.0 = Release|Any CPU
 		{8F0B4DEB-60C9-4E9B-BC4F-51588C20E578}.Release|x86.ActiveCfg = Release|Any CPU
 		{8F0B4DEB-60C9-4E9B-BC4F-51588C20E578}.Release|x86.Build.0 = Release|Any CPU
+		{B695E6C8-456D-4C01-93B6-695817CE0DF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B695E6C8-456D-4C01-93B6-695817CE0DF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B695E6C8-456D-4C01-93B6-695817CE0DF8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B695E6C8-456D-4C01-93B6-695817CE0DF8}.Debug|x64.Build.0 = Debug|Any CPU
+		{B695E6C8-456D-4C01-93B6-695817CE0DF8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B695E6C8-456D-4C01-93B6-695817CE0DF8}.Debug|x86.Build.0 = Debug|Any CPU
+		{B695E6C8-456D-4C01-93B6-695817CE0DF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B695E6C8-456D-4C01-93B6-695817CE0DF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B695E6C8-456D-4C01-93B6-695817CE0DF8}.Release|x64.ActiveCfg = Release|Any CPU
+		{B695E6C8-456D-4C01-93B6-695817CE0DF8}.Release|x64.Build.0 = Release|Any CPU
+		{B695E6C8-456D-4C01-93B6-695817CE0DF8}.Release|x86.ActiveCfg = Release|Any CPU
+		{B695E6C8-456D-4C01-93B6-695817CE0DF8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

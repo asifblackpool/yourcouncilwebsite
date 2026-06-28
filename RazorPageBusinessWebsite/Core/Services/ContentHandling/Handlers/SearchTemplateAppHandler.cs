@@ -1,15 +1,11 @@
-﻿namespace RazorPageBusinessWebsite.Core.Services.ContentHandling.Handlers
-{
-    using Content.Modelling.Models.GenericTypes;
-    using global::RazorPageBusinessWebsite.Core.Models.Components;
-    using global::RazorPageBusinessWebsite.Core.Services.ContentHandling.Interfaces;
-    using global::RazorPageBusinessWebsite.Helpers.Wrappers;
-    using global::RazorPageBusinessWebsite.Helpers;
+﻿using Content.Modelling.Models.GenericTypes;
+using global::RazorPageBusinessWebsite.Core.Models.Components;
+using global::RazorPageBusinessWebsite.Core.Services.ContentHandling.Interfaces;
+using global::RazorPageBusinessWebsite.Helpers.Wrappers;
+using global::RazorPageBusinessWebsite.Helpers;
     // File: Core/Services/ContentHandling/Handlers/SearchTemplateAppHandler.cs
-    using Microsoft.AspNetCore.Html;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Configuration;
-    using System.Threading.Tasks;
+using Microsoft.AspNetCore.Html;
+
 
     namespace RazorPageBusinessWebsite.Core.Services.ContentHandling.Handlers
     {
@@ -97,4 +93,4 @@
           
         }
     }
-}
+

@@ -22,7 +22,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\..\shared\lgwebsite.data\content.modelling\Content.Modelling.csproj" />
+    <ProjectReference Include="..\..\shared\lgwebsite.data\content.modelling\content.modelling.csproj" Condition="Exists('..\..\shared\lgwebsite.data\content.modelling\content.modelling.csproj')" />
     <ProjectReference Include="..\RazorPageBusinessWebsite\RazorPageBusinessWebsite.csproj" />
   </ItemGroup>
 

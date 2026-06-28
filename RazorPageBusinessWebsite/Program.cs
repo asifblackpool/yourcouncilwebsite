@@ -1,5 +1,4 @@
 ﻿using DotNetEnv;
-using Content.Modelling.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using RazorPageBusinessWebsite.Constants;
 using RazorPageBusinessWebsite.Core.Interfaces;
@@ -20,6 +19,7 @@ using RazorPageBusinessWebsite.Services.Breadcrumb;
 using RazorPageBusinessWebsite.Services.Interfaces;
 using Zengenti.Contensis.Delivery;
 using Microsoft.AspNetCore.Rewrite;
+using Content.Modelling.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

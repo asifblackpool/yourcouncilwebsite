@@ -1,0 +1,18 @@
+﻿/* ==========================================
+   LAYOUT: Responsive adjustments
+   Hide sidebar and adjust container padding
+   at 1024px / 64em
+   ========================================== */
+
+@media (max-width: 64em) {  /* 1024px ÷ 16 = 64em */
+    
+    /* HIDE THE SIDEBAR */
+    #sidebar {
+        display: none !important;
+    }
+    
+    /* ADD LEFT PADDING TO MAIN CONTAINER */
+    #blackpool-council-container {
+        padding-left: 5px !important;
+    }
+}

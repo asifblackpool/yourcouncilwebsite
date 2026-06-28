@@ -1,0 +1,92 @@
+﻿/* ==========================================
+   GOV.UK List Styles for <ul> and <ol> 
+   inside .govuk-body (Mobile-first)
+   ========================================== */
+
+/* ----- BASE STYLES FOR ALL LISTS (shared) ----- */
+.govuk-body ul,
+.govuk-body ol {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;               /* Mobile font size */
+  line-height: 1.25;             /* Mobile line-height */
+  color: #0b0c0c;
+  margin-top: 0;
+  margin-bottom: 20px;           /* Mobile bottom spacing */
+  padding-left: 20px;            /* INDENTATION: 20px per level */
+}
+
+/* ----- UNORDERED LISTS (bullets) ----- */
+.govuk-body ul {
+  list-style-type: disc;
+}
+
+/* ----- ORDERED LISTS (numbers) ----- */
+.govuk-body ol {
+  list-style-type: decimal;
+}
+
+/* ----- NESTED SUB-LISTS (any combination) ----- */
+.govuk-body ul ul,
+.govuk-body ul ol,
+.govuk-body ol ul,
+.govuk-body ol ol {
+  margin-top: 10px;              /* Spacing between parent text and child list */
+  margin-bottom: 0;              /* Prevents double bottom margin */
+  padding-left: 20px;            /* INDENTATION: adds another 20px (total 40px) */
+}
+
+/* Ensure nested unordered lists keep bullets, nested ordered keep numbers */
+.govuk-body ul ul,
+.govuk-body ol ul {
+  list-style-type: disc;
+}
+.govuk-body ul ol,
+.govuk-body ol ol {
+  list-style-type: decimal;
+}
+
+/* ----- DEEPER NESTING (3rd level, just in case) ----- */
+.govuk-body ul ul ul,
+.govuk-body ul ul ol,
+.govuk-body ul ol ul,
+.govuk-body ul ol ol,
+.govuk-body ol ul ul,
+.govuk-body ol ul ol,
+.govuk-body ol ol ul,
+.govuk-body ol ol ol {
+  padding-left: 20px;            /* INDENTATION: total 60px */
+  margin-top: 10px;
+}
+
+/* ----- LIST ITEMS (spacing between each item) ----- */
+/* On mobile: no gap between items (GOV.UK default) */
+.govuk-body ul > li,
+.govuk-body ol > li {
+  margin-bottom: 0;
+}
+
+/* ----- TABLET & DESKTOP OVERRIDES (min-width: 641px) ----- */
+@media (min-width: 40.0625em) {
+  .govuk-body ul,
+  .govuk-body ol {
+    font-size: 19px;             /* Larger font for bigger screens */
+    line-height: 1.3157894737;   /* 25/19 ratio */
+    margin-bottom: 25px;         /* Increased bottom spacing */
+  }
+
+  /* Add a small 5px gap between items on tablet/desktop */
+  .govuk-body ul > li,
+  .govuk-body ol > li {
+    margin-bottom: 5px;
+  }
+
+  /* Nested items also get the gap */
+  .govuk-body ul ul > li,
+  .govuk-body ul ol > li,
+  .govuk-body ol ul > li,
+  .govuk-body ol ol > li {
+    margin-bottom: 5px;
+  }
+}

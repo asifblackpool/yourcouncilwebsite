@@ -8,8 +8,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ghcr.io/${{ github.repository }}
-  CONTENSIS_CLIENT_ID: aafd27eb-75b2-4b5b-8371-c5489082c710
-  CONTENSIS_SHARED_SECRET: 9dc71260e4de430f956162a67345cc53-147c9d2fed75415788f9fdd321d255b1-2b734d1c6f3d471cb0d62157ac681f85
 
 jobs:
   build-latest:
@@ -21,10 +19,27 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # Updated to v4
+        uses: actions/checkout@v4
+
+      # ============================================================
+      # NEW STEP: Auto-stamp the .csproj version with the build number
+      # ============================================================
+      - name: Stamp project version with build number
+        run: |
+          # Find the main website .csproj (ignores test projects)
+          CSPROJ_FILE=$(find . -name "*.csproj" -not -path "./*Tests*" -not -path "./*test*" | head -1)
+          echo "Found project file: $CSPROJ_FILE"
+          
+          # Replace the Version tag with 1.0.{run_number} (e.g., 1.0.45)
+          sed -i 's|<Version>.*</Version>|<Version>1.0.${{ github.run_number }}</Version>|g' $CSPROJ_FILE
+          
+          # Verify the change in the logs
+          echo "Updated version to:"
+          grep -A 1 -B 1 '<Version>' $CSPROJ_FILE
+      # ============================================================
 
       - name: Log in to GHCR
-        uses: docker/login-action@v3  # Updated to v3
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -33,6 +48,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
+            --build-arg GITHUB_PAT=${{ secrets.GITHUB_TOKEN }} \
             -t ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} \
             -t ${{ env.IMAGE_NAME }}:latest \
             .
@@ -51,23 +67,20 @@ jobs:
       packages: write
 
     steps:
-      # Add step to update Docker before pushing to Contensis
       - name: Update Docker client
         run: |
-          # Update Docker to latest version
           curl -fsSL https://get.docker.com -o get-docker.sh
           sudo sh get-docker.sh
-          # Verify Docker version
           docker version --format '{{.Client.Version}}'
           
       - name: Push block to Contensis
         uses: contensis/block-push@v1
         env:
-          DOCKER_API_VERSION: 1.44  # Set specific API version
+          DOCKER_API_VERSION: 1.44
         with:
           block-id: business-website
           alias: blackpool
           project-id: lgWebsite
-          client-id: ${{ env.CONTENSIS_CLIENT_ID }}
-          shared-secret: ${{ env.CONTENSIS_SHARED_SECRET }}
+          client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
+          shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
           image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}

@@ -2,6 +2,12 @@
     --primary-dark-blue-color: #041c2c;
     --primary-purple-color: #830065;
 }
+
+/* ==========================================
+   Contact Details Section – Layout & Colours
+   (preserved from your existing CSS)
+   ========================================== */
+
 .contact-details-section {
     background-color: #e3e4e6;
     padding: 10px 0;
@@ -11,6 +17,7 @@
 /* Inner wrapper – mimics old #contact-wrapper left margin */
 .contact-details-section .contact-grid {
     margin-left: 5px;
+    font-family: "Calibri", Calibri, Arial, sans-serif;
 }
 
 /* Each contact method block – stacked like old divs */
@@ -22,45 +29,168 @@
     margin-bottom: 0;
 }
 
-
-.contact-details-section .method-title {
-    font-weight: bold;
-    color: var(--primary-dark-blue-color);
-    margin: 0 0 2px 0; 
-    font-size: 1em; 
-}
-
-/* Method details – reset margins */
-.contact-details-section .method-detail {
-    margin: 0;
-    }
-
-/* Telephone number link – bold and #0412C as requested */
+/* ----- LINKS (preserved) ----- */
 .contact-phone .method-detail a {
     color: var(--primary-dark-blue-color);
     text-decoration: none !important;
+    font-family: "Calibri", Calibri, Arial, sans-serif;
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1.3;
 }
 
-/* Email link – purple and bold as requested */
 .contact-email .method-detail a {
     color: var(--primary-dark-blue-color);
     text-decoration: none !important;
+    font-family: "Calibri", Calibri, Arial, sans-serif;
+    font-size: 19px;
+    font-weight: 400;
+    line-height: 1.3;
 }
 
-/* Add underline on hover for both links (optional, good UX) */
 .contact-phone .method-detail a:hover,
 .contact-email .method-detail a:hover {
     text-decoration: underline;
 }
 
-/* Opening hours – subtle grey, smaller */
+.contact-address .method-detail {
+    color: var(--secondary-base-color);
+    line-height: 1.4;
+}
+
 .contact-phone .opening-hours {
     color: #555;
     margin: 2px 0 0 0;
 }
 
-/* Postal address – plain text, keep it simple */
-.contact-address .method-detail {
-    color: #000;
-    line-height: 1.4;
+
+/* ==========================================
+   TYPOGRAPHY – Calibri, responsive sizes
+   (added while preserving the above)
+   ========================================== */
+
+/* ----- SERVICE NAME (not in your existing CSS, so added) ----- */
+.service-name {
+    font-family: "Calibri", Calibri, Arial, sans-serif;
+    font-size: 20px;              /* Mobile */
+    font-weight: 700;
+    color: var(--primary-purple-color);
+    margin: 0 0 10px 0;
+    line-height: 1.2;
 }
+
+/* ----- METHOD TITLE (merge with your existing) ----- */
+.contact-details-section .method-title {
+    /* Keep your existing margins/colours */
+    font-weight: 700;             /* bold (overrides your "bold") */
+    color: var(--primary-dark-blue-color);
+    margin: 0 0 2px 0;
+
+    /* NEW: font family and mobile size */
+    font-family: "Calibri", Calibri, Arial, sans-serif;
+    font-size: 19px;              /* Mobile */
+    line-height: 1.25;
+}
+
+/* ----- METHOD DETAIL (merge with your existing) ----- */
+.contact-details-section .method-detail {
+    margin: 0;                    /* your existing */
+    /* NEW: font family and mobile size */
+    font-family: "Calibri", Calibri, Arial, sans-serif;
+    font-size: 17px;              /* Mobile */
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+/* ----- OPENING HOURS (add Calibri, keep your colour/margins) ----- */
+.contact-phone .opening-hours {
+    font-family: "Calibri", Calibri, Arial, sans-serif;
+    font-size: 16px;              /* Mobile */
+    font-weight: 400;
+    /* color: var(--background-primary-color); */                  /* your existing */
+    margin: 2px 0 0 0;            /* your existing */
+    line-height: 1.25;
+    color: var(--secondary-base-color);
+}
+
+
+/* ==========================================
+   TABLET & DESKTOP (min-width: 641px)
+   ========================================== */
+
+@media (min-width: 40.0625em) {
+    .service-name {
+        font-size: 23px;
+        line-height: 1.3;
+        margin-bottom: 15px;
+    }
+
+    .contact-details-section .method-title {
+        font-size: 21px !important;
+        line-height: 1.3;
+        margin-bottom: 4px;
+    }
+
+    .contact-details-section .method-detail {
+        font-size: 19px !important;
+        line-height: 1.4;
+        margin-bottom: 4px;
+    }
+
+    .contact-phone .opening-hours {
+        font-size: 17px;
+        line-height: 1.3;
+    }
+}
+
+/* ==========================================
+   LARGE DESKTOP (optional, keep consistency)
+   ========================================== */
+@media (min-width: 64.0625em) {
+    .service-name {
+        font-size: 23px;
+    }
+    .contact-details-section .method-title {
+        font-size: 20px;
+    }
+    .contact-details-section .method-detail {
+        font-size: 19px;
+    }
+    .contact-phone .opening-hours {
+        font-size: 19px;
+    }
+}
+
+/* ==========================================
+   PRINT (optional)
+   ========================================== */
+@media print {
+    .service-name {
+        font-size: 18pt;
+        color: #000;
+    }
+    .contact-details-section .method-title {
+        font-size: 16pt;
+        color: #000;
+    }
+    .contact-details-section .method-detail {
+        font-size: 14pt;
+        color: #000;
+    }
+    .contact-phone .opening-hours {
+        font-size: 12pt;
+        color: #000;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageProjectUrl>/venues</PackageProjectUrl>
+    <!-- VERSION STAMP: Pipeline will auto-update this to 1.0.{run_number} -->
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +30,10 @@
     <PackageReference Include="Nancy" Version="2.0.0" />
     <PackageReference Include="Zengenti.Contensis.Delivery" Version="17.0.1" />
     <PackageReference Include="Zengenti.Contensis.Management" Version="17.0.1" />
+    <!-- Shared library pulled securely from GitHub Packages during CI/CD -->
+    <PackageReference Include="Content.Modelling" Version="1.0.3" />
+    <!-- LOCAL BUILD ONLY: Uses the local project. Ignored in Docker/CI because the path doesn't exist -->
+
   </ItemGroup>
 
   <ItemGroup>
@@ -39,37 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!--ProjectReference Include="..\..\shared\lgwebsite.data\content.modelling\Content.Modelling.csproj" /-->
-    <Reference Include="SharedLib">
-      <HintPath>libs\Content.Modelling.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
+    <ProjectReference Include="..\..\shared\lgwebsite.data\content.modelling\content.modelling.csproj" Condition="Exists('..\..\shared\lgwebsite.data\content.modelling\content.modelling.csproj')" />
   </ItemGroup>
-
-  <Target Name="CopyRequiredDlls" BeforeTargets="BeforeBuild">
-    <PropertyGroup>
-      <!-- Adjust these paths to match your exact structure -->
-      <SourceDllPath>C:\Development\Projects\repositories\shared\lgwebsite.data\content.modelling\bin\$(Configuration)\net8.0\Content.Modelling.dll</SourceDllPath>
-      <Destination1>C:\Development\Projects\repositories\businesswebsite\shared</Destination1>
-      <Destination2>C:\Development\Projects\repositories\businesswebsite\RazorPageBusinessWebsite\libs</Destination2>
-    </PropertyGroup>
-
-    <!-- Create directories if they don't exist -->
-    <MakeDir Directories="$(Destination1);$(Destination2)" Condition="!Exists('$(Destination1)') or !Exists('$(Destination2)')" />
-
-    <Message Text="Attempting to copy from $(SourceDllPath)" Importance="high" />
-
-    <Copy SourceFiles="$(SourceDllPath)" DestinationFolder="$(Destination1)" SkipUnchangedFiles="true" Condition="Exists('$(SourceDllPath)')">
-      <Output TaskParameter="CopiedFiles" PropertyName="CopiedFiles1" />
-    </Copy>
-
-    <Copy SourceFiles="$(SourceDllPath)" DestinationFolder="$(Destination2)" SkipUnchangedFiles="true" Condition="Exists('$(SourceDllPath)')">
-      <Output TaskParameter="CopiedFiles" PropertyName="CopiedFiles2" />
-    </Copy>
-
-    <Message Text="Copied to shared: @(CopiedFiles1)" Importance="high" Condition="'@(CopiedFiles1)' != ''" />
-    <Message Text="Copied to libs: @(CopiedFiles2)" Importance="high" Condition="'@(CopiedFiles2)' != ''" />
-    <Warning Text="Source DLL not found at $(SourceDllPath)" Condition="!Exists('$(SourceDllPath)')" />
-  </Target>
 
 </Project>

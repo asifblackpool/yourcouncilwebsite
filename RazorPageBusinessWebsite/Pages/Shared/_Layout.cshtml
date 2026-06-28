@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="~/SiteElements/ChannelShift/content/styles/bundles/year-2023/newsarticles.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SiteElements/ChannelShift/content/styles/contensis/common/forms/styles-2024.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SiteElements/ChannelShift/content/styles/home/IE/ie10.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/link-button.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/webforms.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/panel.css" asp-append-version="true" />
@@ -40,6 +41,7 @@
     <link rel="stylesheet" href="~/static/css/lead-paragraph.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/data-table.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/ul-lists.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/ul-lists-gov.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/headings.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/call-to-action-buttons.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/service-contact.css" asp-append-version="true" />
@@ -98,15 +100,13 @@
 </head>
 
 <body>
-
     <!-- start of container -->
     <div id="container">
         <partial name="Global/_header" />
-
         <div id="root-container" class="homepage-max-width clearfix"
-            style="margin-top: 0px; background-color: white; max-width:1170px;">
+            style="margin-top: 0px; background-color: white; max-width:1170px; margin:auto;">
             <div class="row zero-pad-left zero-pad-right clearfix">
-                <div class="col-md-12 col-sm-12 zero-pad-all">
+                <div id="blackpool-council-container" class="col-md-12 col-sm-12 zero-pad-all">
                     <div id="topbar" class="clearfix">
                         <div id="icon-landing-page-image-container"
                             class="clearfix grid-block grid-block-default-height">
@@ -145,10 +145,7 @@
             </div>
             <partial name="Global/_backtotop" />
         </div>
-
         <partial name="Global/_footer" />
-
- 
     </div>
     <!-- end of container -->
     <div id="sidr-menu" class="sidr" style="display: none;"></div>
@@ -176,9 +173,7 @@
         });
     </script>
 
-
     <!-- Accordion CSS and Scripts -->
-
     <link rel="stylesheet "href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/tables.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/accordion.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/accordion-gallery.css" asp-append-version="true" />

@@ -1,19 +1,27 @@
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG TARGETARCH
+ARG GITHUB_PAT
 
 WORKDIR /src
-# The below allows layer caching for the restore.
 
-# Copy the Razor Pages project and the SharedLib DLL
+# Copy the Razor Pages project
 COPY RazorPageBusinessWebsite/ ./RazorPageBusinessWebsite/
-COPY shared/ ./RazorPageBusinessWebsite/libs/
+
+# Copy the nuget.config file so dotnet restore can find GitHub Packages
+COPY RazorPageBusinessWebsite/nuget.config ./RazorPageBusinessWebsite/
 
 # Set working directory to the web project
 WORKDIR /src/RazorPageBusinessWebsite
 
+# Set the GitHub Packages credentials for restore
+ENV GITHUB_PAT=$GITHUB_PAT
+
+# ?? FIX: Replace the placeholder in nuget.config with the actual PAT
+RUN sed -i 's|%GITHUB_PAT%|'"$GITHUB_PAT"'|g' nuget.config
+
 # Restore and publish the project
 COPY --link /RazorPageBusinessWebsite/*.csproj .
-RUN dotnet restore -a $TARGETARCH
+RUN dotnet restore -a $TARGETARCH --configfile nuget.config
 
 COPY --link /RazorPageBusinessWebsite/. .
 RUN dotnet publish --runtime linux-$TARGETARCH --self-contained false --no-restore -o /app/publish
@@ -25,7 +33,7 @@ ENV ASPNETCORE_URLS=http://*:3001
 EXPOSE 3001
 WORKDIR /app/publish
 COPY --link --from=build /app/publish .
-USER $APP_UID
+USER app  # ?? FIX: Changed from $APP_UID to 'app'
 COPY --link /.env .
 COPY ./manifest.json /manifest.json
 ENTRYPOINT ["dotnet", "RazorPageBusinessWebsite.dll"]

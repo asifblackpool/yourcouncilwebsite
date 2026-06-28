@@ -28,6 +28,7 @@ div.govuk-body table tbody td,
 .tbl-responsive tbody td {
     background: #e3e4e6;
     border: solid 1px #fff;
+    font-family:Calibri;
 }
 
 div.govuk-body table caption {
