@@ -13,9 +13,8 @@ WORKDIR /src/RazorPageBusinessWebsite
 # Set the GitHub Packages credentials for restore
 ENV GITHUB_PAT=$GITHUB_PAT
 
-# ?? NEW: Add GitHub Packages source directly with authentication
-RUN dotnet nuget add source "https://nuget.pkg.github.com/asifblackpool/index.json" \
-    --name github-asifblackpool \
+# ?? UPDATE: Update the existing GitHub source with the PAT
+RUN dotnet nuget update source github-asifblackpool \
     --username asifblackpool \
     --password $GITHUB_PAT \
     --store-password-in-clear-text
