@@ -5,10 +5,8 @@ ARG GITHUB_PAT
 WORKDIR /src
 
 # Copy the Razor Pages project
+# Copy the Razor Pages project (includes nuget.config now)
 COPY RazorPageBusinessWebsite/ ./RazorPageBusinessWebsite/
-
-# Copy the nuget.config file so dotnet restore can find GitHub Packages
-COPY RazorPageBusinessWebsite/nuget.config ./RazorPageBusinessWebsite/
 
 # Set working directory to the web project
 WORKDIR /src/RazorPageBusinessWebsite
