@@ -13,11 +13,11 @@ WORKDIR /src/RazorPageBusinessWebsite
 # Set the GitHub Packages credentials for restore
 ENV GITHUB_PAT=$GITHUB_PAT
 
-# Debug: List files to confirm nuget.config is present
-RUN ls -la
-
-# ?? FIX: Replace the placeholder in nuget.config with the actual PAT (using absolute path)
+# ?? FIX: Replace the placeholder in nuget.config with the actual PAT
 RUN sed -i 's|%GITHUB_PAT%|'"$GITHUB_PAT"'|g' /src/RazorPageBusinessWebsite/nuget.config
+
+# ?? NEW: Remove any leading blank lines that might have been introduced
+RUN sed -i '1{/^$/d;}' /src/RazorPageBusinessWebsite/nuget.config
 
 # Restore and publish the project
 COPY --link /RazorPageBusinessWebsite/*.csproj .
