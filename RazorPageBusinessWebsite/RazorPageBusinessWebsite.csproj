@@ -25,6 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="nuget.config" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="2.5.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.12.2" />
     <PackageReference Include="Nancy" Version="2.0.0" />
@@ -42,6 +46,10 @@
     <Folder Include="Data\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\siteelements\channelshift\scripts\webresource\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="nuget.config" />
   </ItemGroup>
 
   <ItemGroup>
