@@ -13,15 +13,16 @@ WORKDIR /src/RazorPageBusinessWebsite
 # Set the GitHub Packages credentials for restore
 ENV GITHUB_PAT=$GITHUB_PAT
 
-# ?? FIX: Replace the placeholder in nuget.config with the actual PAT
-RUN sed -i 's|%GITHUB_PAT%|'"$GITHUB_PAT"'|g' /src/RazorPageBusinessWebsite/nuget.config
-
-# ?? NEW: Remove any leading blank lines that might have been introduced
-RUN sed -i '1{/^$/d;}' /src/RazorPageBusinessWebsite/nuget.config
+# ?? NEW: Add GitHub Packages source directly with authentication
+RUN dotnet nuget add source "https://nuget.pkg.github.com/asifblackpool/index.json" \
+    --name github-asifblackpool \
+    --username asifblackpool \
+    --password $GITHUB_PAT \
+    --store-password-in-clear-text
 
 # Restore and publish the project
 COPY --link /RazorPageBusinessWebsite/*.csproj .
-RUN dotnet restore -a $TARGETARCH --configfile nuget.config
+RUN dotnet restore -a $TARGETARCH
 
 COPY --link /RazorPageBusinessWebsite/. .
 RUN dotnet publish --runtime linux-$TARGETARCH --self-contained false --no-restore -o /app/publish
