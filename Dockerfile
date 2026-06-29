@@ -10,9 +10,8 @@ COPY RazorPageBusinessWebsite/ ./RazorPageBusinessWebsite/
 # Set working directory to the web project
 WORKDIR /src/RazorPageBusinessWebsite
 
-# Add GitHub source with token directly (bypasses NuGet.Config)
-RUN dotnet nuget add source https://nuget.pkg.github.com/asifblackpool/index.json \
-    --name github-asifblackpool \
+# Update the GitHub source with token (use update instead of add)
+RUN dotnet nuget update source github-asifblackpool \
     --username asifblackpool \
     --password ${GH_PAT} \
     --store-password-in-clear-text
