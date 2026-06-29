@@ -10,47 +10,34 @@ COPY RazorPageBusinessWebsite/ ./RazorPageBusinessWebsite/
 # Set working directory to the web project
 WORKDIR /src/RazorPageBusinessWebsite
 
-# Debug: Verify GH_PAT is received
-RUN echo "=== DEBUG: Checking GH_PAT ===" && \
-    echo "GH_PAT length: $(echo ${GH_PAT} | wc -c)" && \
-    if [ -z "$GH_PAT" ]; then \
-        echo "? ERROR: GH_PAT is empty or not set!" && exit 1; \
+# Debug: Check if GH_PAT is received
+RUN echo "=== DEBUG: GH_PAT length ===" && \
+    echo ${#GH_PAT}
+
+# Create NuGet.Config from template by replacing the token
+RUN if [ -f "NuGet.Config.template" ]; then \
+        echo "Found NuGet.Config.template, creating NuGet.Config..."; \
+        sed "s/REPLACE_WITH_TOKEN/${GH_PAT}/g" NuGet.Config.template > NuGet.Config; \
+        echo "? NuGet.Config created successfully"; \
     else \
-        echo "? SUCCESS: GH_PAT is set"; \
-    fi
-
-# Create NuGet.Config with the token embedded (this is the most reliable method)
-RUN echo '<?xml version="1.0" encoding="utf-8"?>' > NuGet.Config && \
-    echo '<configuration>' >> NuGet.Config && \
-    echo '  <packageSources>' >> NuGet.Config && \
-    echo '    <add key="github" value="https://nuget.pkg.github.com/asifblackpool/index.json" />' >> NuGet.Config && \
-    echo '    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />' >> NuGet.Config && \
-    echo '  </packageSources>' >> NuGet.Config && \
-    echo '  <packageSourceCredentials>' >> NuGet.Config && \
-    echo '    <github>' >> NuGet.Config && \
-    echo '      <add key="Username" value="asifblackpool" />' >> NuGet.Config && \
-    echo '      <add key="ClearTextPassword" value="'${GH_PAT}'" />' >> NuGet.Config && \
-    echo '    </github>' >> NuGet.Config && \
-    echo '  </packageSourceCredentials>' >> NuGet.Config && \
-    echo '</configuration>' >> NuGet.Config
-
-# Debug: Show NuGet.Config (masking the token for security)
-RUN echo "=== DEBUG: NuGet.Config content (token masked) ===" && \
-    cat NuGet.Config | sed 's/value="[^"]*"/value="***"/g'
-
-# Debug: Also show the actual token length to verify it was embedded
-RUN echo "=== DEBUG: Verifying token was embedded ===" && \
-    if grep -q "ClearTextPassword" NuGet.Config; then \
-        echo "? ClearTextPassword found in NuGet.Config"; \
-    else \
-        echo "? ClearTextPassword NOT found in NuGet.Config"; \
+        echo "? NuGet.Config.template not found!"; \
         exit 1; \
     fi
 
+# Debug: Show NuGet.Config content (mask token for security)
+RUN echo "=== DEBUG: NuGet.Config content (token masked) ===" && \
+    cat NuGet.Config | sed 's/value="[^"]*"/value="***"/g'
+
+# Debug: Verify the file was created
+RUN echo "=== DEBUG: Verifying NuGet.Config exists ===" && \
+    ls -la NuGet.Config
+
 # Copy csproj and restore
 COPY --link /RazorPageBusinessWebsite/*.csproj .
+
+# Restore with explicit reference to NuGet.Config
 RUN echo "=== Running dotnet restore ===" && \
-    dotnet restore -a $TARGETARCH
+    dotnet restore -a $TARGETARCH --configfile NuGet.Config
 
 COPY --link /RazorPageBusinessWebsite/. .
 RUN dotnet publish --runtime linux-$TARGETARCH --self-contained false --no-restore -o /app/publish
