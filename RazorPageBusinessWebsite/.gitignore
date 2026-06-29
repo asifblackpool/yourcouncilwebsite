@@ -1,0 +1,54 @@
+# .NET
+**/bin/
+**/obj/
+*.user
+*.suo
+*.pdb
+*.nupkg
+*.dll
+*.exe
+
+# Visual Studio
+.vs/
+*.tmp
+*.log
+*.cache
+*.suo
+*.sdf
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+packages/
+
+# Environment files
+.env
+*.local
+appsettings.Development.json
+
+# Docker
+.dockerignore
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Node (if you have any frontend assets)
+node_modules/
+dist/
+npm-debug.log*
+
+# Extensions
+*.swp
+*~
+.DS_Store
+
+# Unit test results
+TestResults/
+*.trx
+
+# Generated files
+*.generated.cs

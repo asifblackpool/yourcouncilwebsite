@@ -36,10 +36,8 @@
     <PackageReference Include="Zengenti.Contensis.Management" Version="17.0.1" />
     <!-- Shared library pulled securely from GitHub Packages during CI/CD -->
     <PackageReference Include="Content.Modelling" Version="1.0.3" />
-    <!-- LOCAL BUILD ONLY: Uses the local project. Ignored in Docker/CI because the path doesn't exist -->
 
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="bin\" />
     <Folder Include="Core\Models\Content\" />
