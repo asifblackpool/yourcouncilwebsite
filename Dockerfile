@@ -2,18 +2,22 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG TARGETARCH
 ARG GH_PAT
 
-# Set the environment variable for NuGet.Config (it expects %GITHUB_PAT%)
-ENV GITHUB_PAT=$GH_PAT
-
 WORKDIR /src
 
-# Copy the Razor Pages project (includes nuget.config)
+# Copy the Razor Pages project
 COPY RazorPageBusinessWebsite/ ./RazorPageBusinessWebsite/
 
 # Set working directory to the web project
 WORKDIR /src/RazorPageBusinessWebsite
 
-# Copy csproj and restore - NuGet.Config will use %GITHUB_PAT%
+# Add GitHub source with token directly (bypasses NuGet.Config)
+RUN dotnet nuget add source https://nuget.pkg.github.com/asifblackpool/index.json \
+    --name github-asifblackpool \
+    --username asifblackpool \
+    --password ${GH_PAT} \
+    --store-password-in-clear-text
+
+# Copy csproj and restore
 COPY --link /RazorPageBusinessWebsite/*.csproj .
 RUN dotnet restore -a $TARGETARCH
 
