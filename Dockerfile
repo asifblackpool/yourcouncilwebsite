@@ -14,30 +14,28 @@ WORKDIR /src/RazorPageBusinessWebsite
 RUN echo "=== DEBUG: GH_PAT length ===" && \
     echo ${#GH_PAT}
 
-# Create NuGet.Config from template by replacing the token
-RUN if [ -f "NuGet.Config.template" ]; then \
-        echo "Found NuGet.Config.template, creating NuGet.Config..."; \
-        sed "s/REPLACE_WITH_TOKEN/${GH_PAT}/g" NuGet.Config.template > NuGet.Config; \
-        echo "? NuGet.Config created successfully"; \
-    else \
-        echo "? NuGet.Config.template not found!"; \
-        exit 1; \
-    fi
+# Remove any existing GitHub sources
+RUN echo "=== Removing existing sources ===" && \
+    dotnet nuget remove source github 2>/dev/null || true && \
+    dotnet nuget remove source github-asifblackpool 2>/dev/null || true && \
+    dotnet nuget remove source github-auth 2>/dev/null || true
 
-# Debug: Show NuGet.Config content (mask token for security)
-RUN echo "=== DEBUG: NuGet.Config content (token masked) ===" && \
-    cat NuGet.Config | sed 's/value="[^"]*"/value="***"/g'
+# Add the source with the token
+RUN echo "=== Adding GitHub source with token ===" && \
+    dotnet nuget add source https://nuget.pkg.github.com/asifblackpool/index.json \
+        --name github \
+        --username asifblackpool \
+        --password "${GH_PAT}" \
+        --store-password-in-clear-text
 
-# Debug: Verify the file was created
-RUN echo "=== DEBUG: Verifying NuGet.Config exists ===" && \
-    ls -la NuGet.Config
+# List all sources to verify
+RUN echo "=== All NuGet sources ===" && \
+    dotnet nuget list source
 
 # Copy csproj and restore
 COPY --link /RazorPageBusinessWebsite/*.csproj .
-
-# Restore with explicit reference to NuGet.Config
 RUN echo "=== Running dotnet restore ===" && \
-    dotnet restore -a $TARGETARCH --configfile NuGet.Config
+    dotnet restore -a $TARGETARCH
 
 COPY --link /RazorPageBusinessWebsite/. .
 RUN dotnet publish --runtime linux-$TARGETARCH --self-contained false --no-restore -o /app/publish
