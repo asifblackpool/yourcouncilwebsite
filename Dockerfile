@@ -2,23 +2,31 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG TARGETARCH
 ARG GH_PAT
 
-# Set the environment variable for NuGet.Config
-ENV GH_PAT=${GH_PAT}
-
 WORKDIR /src
 
-# Copy the Razor Pages project (includes nuget.config)
+# Copy the Razor Pages project
 COPY RazorPageBusinessWebsite/ ./RazorPageBusinessWebsite/
 
 # Set working directory to the web project
 WORKDIR /src/RazorPageBusinessWebsite
 
-# Verify token is set (debug - remove this line later)
-RUN echo "Token length: ${#GH_PAT}" && echo "Token first 4 chars: ${GH_PAT:0:4}"
+# DEBUG: Verify token is set (using simpler syntax)
+RUN echo "=== DEBUG: Checking GH_PAT ===" && \
+    echo "GH_PAT length: " $(echo ${GH_PAT} | wc -c) && \
+    if [ -z "$GH_PAT" ]; then \
+        echo "? ERROR: GH_PAT is empty or not set!" && exit 1; \
+    else \
+        echo "? SUCCESS: GH_PAT is set"; \
+    fi
 
-# Copy csproj and restore
+# Copy csproj and restore - use explicit sources
 COPY --link /RazorPageBusinessWebsite/*.csproj .
-RUN dotnet restore -a $TARGETARCH
+
+# Restore with explicit sources
+RUN echo "=== Restoring with explicit sources ===" && \
+    dotnet restore -a $TARGETARCH \
+        --source "https://asifblackpool:${GH_PAT}@nuget.pkg.github.com/asifblackpool/index.json" \
+        --source "https://api.nuget.org/v3/index.json"
 
 COPY --link /RazorPageBusinessWebsite/. .
 RUN dotnet publish --runtime linux-$TARGETARCH --self-contained false --no-restore -o /app/publish

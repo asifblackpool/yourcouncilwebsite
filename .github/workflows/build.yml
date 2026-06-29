@@ -21,22 +21,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ============================================================
-      # NEW STEP: Auto-stamp the .csproj version with the build number
-      # ============================================================
+      # DEBUG: Verify the secret exists and has a value
+      - name: Debug - Check GH_PAT secret
+        run: |
+          echo "Checking if GH_PAT secret is available..."
+          if [ -n "$GH_PAT" ]; then
+            echo "? GH_PAT is set!"
+            echo "Token length: ${#GH_PAT}"
+            echo "Token first 4 chars: ${GH_PAT:0:4}"
+          else
+            echo "? GH_PAT is NOT set or is empty!"
+            exit 1
+          fi
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+
       - name: Stamp project version with build number
         run: |
-          # Find the main website .csproj (ignores test projects)
           CSPROJ_FILE=$(find . -name "*.csproj" -not -path "./*Tests*" -not -path "./*test*" | head -1)
           echo "Found project file: $CSPROJ_FILE"
-          
-          # Replace the Version tag with 1.0.{run_number} (e.g., 1.0.45)
           sed -i 's|<Version>.*</Version>|<Version>1.0.${{ github.run_number }}</Version>|g' $CSPROJ_FILE
-          
-          # Verify the change in the logs
           echo "Updated version to:"
           grep -A 1 -B 1 '<Version>' $CSPROJ_FILE
-      # ============================================================
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -47,11 +53,15 @@ jobs:
 
       - name: Build Docker image
         run: |
+          echo "Building with GH_PAT (first 4 chars): ${GH_PAT:0:4}"
           docker build \
-            --build-arg GITHUB_PAT=${{ secrets.GITHUB_TOKEN }} \
+            --build-arg GH_PAT=${{ secrets.GH_PAT }} \
+            --build-arg TARGETARCH=amd64 \
             -t ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} \
             -t ${{ env.IMAGE_NAME }}:latest \
             .
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
 
       - name: Push Docker image
         run: |
