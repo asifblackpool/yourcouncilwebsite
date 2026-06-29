@@ -2,19 +2,19 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG TARGETARCH
 ARG GH_PAT
 
+# Set the environment variable for NuGet.Config
+ENV GH_PAT=${GH_PAT}
+
 WORKDIR /src
 
-# Copy the Razor Pages project
+# Copy the Razor Pages project (includes nuget.config)
 COPY RazorPageBusinessWebsite/ ./RazorPageBusinessWebsite/
 
 # Set working directory to the web project
 WORKDIR /src/RazorPageBusinessWebsite
 
-# Update the GitHub source with token (use update instead of add)
-RUN dotnet nuget update source github-asifblackpool \
-    --username asifblackpool \
-    --password ${GH_PAT} \
-    --store-password-in-clear-text
+# Verify token is set (debug - remove this line later)
+RUN echo "Token length: ${#GH_PAT}" && echo "Token first 4 chars: ${GH_PAT:0:4}"
 
 # Copy csproj and restore
 COPY --link /RazorPageBusinessWebsite/*.csproj .
