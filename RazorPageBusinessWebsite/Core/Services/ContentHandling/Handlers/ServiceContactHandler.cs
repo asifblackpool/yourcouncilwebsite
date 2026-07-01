@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using RazorPageBusinessWebsite.Core.Services.ContentHandling.Interfaces;
 using RazorPageBusinessWebsite.Helpers.Html;
 using RazorPageBusinessWebsite.Helpers.Wrappers;
+using RazorPageBusinessWebsite.Helpers;
 
 namespace RazorPageBusinessWebsite.Core.Services.ContentHandling.Handlers
 {
@@ -28,43 +29,18 @@ namespace RazorPageBusinessWebsite.Core.Services.ContentHandling.Handlers
 
             try
             {
-                // Deserialize the quote content
                 var serviceContact = await _serializer.DeserializeAsync<ServiceContact>(item);
 
                 if (serviceContact != null)
                 {
-                    // Example 1: Basic usage
-                    //htmlContent.AppendServiceContact(serviceContact);
+                    // Use the sidebar display (your current implementation)
+                    htmlContent.AppendServiceContact(serviceContact, ServiceContactHelper.SidebarOptions);
 
-                    // Example 2: With custom options
-                    var options = new ServiceContactOptions
-                    {
-                        ServiceTypeText = "Blackpool Council Service",
-                        ShowOpeningHours = false,
-                        AdditionalInfo = "Response time: 3-5 working days",
-                        PhonePriority = PhoneNumberPriority.FirstNonEmpty,
-                        Layout = ContactLayout.Cards,
-                        AdditionalCssClasses = "my-service-contact"
-                    };
+                    // If you also want the HTML string with default options (for logging, storing, etc.)
+                    var htmlStringWithOptions = ServiceContactHelper.Render(serviceContact, ServiceContactHelper.DefaultOptions);
 
-                    //htmlContent.AppendServiceContact(serviceContact, options);
-
-                    // Example 3: Minimal display for sidebars
-                    var minimalOptions = new ServiceContactOptions
-                    {
-                        ShowServiceType = false,
-                        ShowSectionTitles = false,
-                        CompactMode = true,
-                        ContainerCssClass = "service-contact-sidebar"
-                    };
-
-                    htmlContent.AppendServiceContact(serviceContact, minimalOptions);
-
-                    // Example 4: String extension usage
-                    //var htmlString = serviceContact.ToContactCardHtml();
-
-                    // Or with options
-                    var htmlStringWithOptions = serviceContact.ToContactCardHtml(options);
+                    // You could also append it if needed:
+                    // htmlContent.AppendHtml(htmlStringWithOptions);
                 }
                 else
                 {

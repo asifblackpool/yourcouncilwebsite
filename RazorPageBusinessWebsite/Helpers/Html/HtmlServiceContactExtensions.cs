@@ -1,18 +1,11 @@
 ﻿using Content.Modelling.Models.Components;
 using Microsoft.AspNetCore.Html;
 using System.Net;
+using System.Text;
+
 
 namespace RazorPageBusinessWebsite.Helpers.Html
 {
-    using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
-    using System.Text;
-    using Zengenti.Contensis.Delivery;
-
- 
 
     // Configuration options for the service contract display
     public class ServiceContactOptions
@@ -35,6 +28,13 @@ namespace RazorPageBusinessWebsite.Helpers.Html
         public bool ShowPhoneSection { get; set; } = true;
         public bool ShowAddressSection { get; set; } = true;
         public bool ShowSectionTitles { get; set; } = true;
+
+        // Notes section
+        public bool ShowNotesSection { get; set; } = true;
+        public string NotesTitle { get; set; } = "Additional information";
+        public string NotesCssClass { get; set; } = "contact-notes";
+        public string NotesTitleTag { get; set; } = "h4";
+        public bool ShowNotesAsList { get; set; } = false; // If notes contain multiple lines
 
         // Phone number priority
         public PhoneNumberPriority PhonePriority { get; set; } = PhoneNumberPriority.Telephone1ThenTelephoneThenTelephone2;
@@ -94,7 +94,7 @@ namespace RazorPageBusinessWebsite.Helpers.Html
 
             var sections = new List<string>();
 
-            if (options.ShowEmailSection && !string.IsNullOrEmpty(serviceContact.emailAddress))
+            if (options.ShowEmailSection && !string.IsNullOrEmpty(serviceContact.EmailAddress))
             {
                 sections.Add(RenderEmailSection(serviceContact, options));
             }
@@ -111,6 +111,12 @@ namespace RazorPageBusinessWebsite.Helpers.Html
             if (options.ShowAddressSection && !string.IsNullOrEmpty(serviceContact.Address))
             {
                 sections.Add(RenderAddressSection(serviceContact, options));
+            }
+
+            // Add Notes section
+            if (options.ShowNotesSection && !string.IsNullOrEmpty(serviceContact.Notes))
+            {
+                sections.Add(RenderNotesSection(serviceContact, options));
             }
 
             // Handle empty state
@@ -165,8 +171,8 @@ namespace RazorPageBusinessWebsite.Helpers.Html
             <div class=""contact-method contact-email"">
                 <{options.MethodTitleTag} class=""method-title"">By email</{options.MethodTitleTag}>
                 <p class=""method-detail"">
-                    <a href=""mailto:{serviceContact.emailAddress}"" class=""{options.LinkCssClass}""{targetAttr}{ariaLabel}>
-                        {HtmlEncode(serviceContact.emailAddress)}
+                    <a href=""mailto:{serviceContact.EmailAddress}"" class=""{options.LinkCssClass}""{targetAttr}{ariaLabel}>
+                        {HtmlEncode(serviceContact.EmailAddress)}
                     </a>
                 </p>
             </div>";
@@ -197,7 +203,7 @@ namespace RazorPageBusinessWebsite.Helpers.Html
                         </p>
                         {openingHours}
                     </div>";
-                }
+        }
 
         private static string RenderAddressSection(ServiceContact serviceContact, ServiceContactOptions options)
         {
@@ -218,6 +224,33 @@ namespace RazorPageBusinessWebsite.Helpers.Html
                     <p class=""method-detail"">
                         {address}
                     </p>
+                </div>";
+        }
+
+        private static string RenderNotesSection(ServiceContact serviceContact, ServiceContactOptions options)
+        {
+            var notes = HtmlEncode(serviceContact.Notes);
+
+            // If notes contain multiple lines, we can format them as a list
+            var notesContent = notes;
+            if (options.ShowNotesAsList && notes.Contains("\n"))
+            {
+                var items = notes.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                var listItems = string.Join("\n", items.Select(item => $"<li>{item.Trim()}</li>"));
+                notesContent = $@"<ul class=""notes-list"">{listItems}</ul>";
+            }
+            else
+            {
+                // Replace newlines with <br> for better formatting
+                notesContent = notes.Replace("\n", "<br>");
+            }
+
+            return $@"
+                <div class=""{options.NotesCssClass}"">
+                    <{options.NotesTitleTag} class=""notes-title"">{HtmlEncode(options.NotesTitle)}</{options.NotesTitleTag}>
+                    <div class=""notes-content"">
+                        {notesContent}
+                    </div>
                 </div>";
         }
 
@@ -307,6 +340,8 @@ namespace RazorPageBusinessWebsite.Helpers.Html
         }
     }
 
+    #region optional helper for generating CSS code
+
     // Optional helper for generating default CSS
     public static class ServiceContactCss
     {
@@ -317,7 +352,7 @@ namespace RazorPageBusinessWebsite.Helpers.Html
 
         private static string GetExpandedStyles()
         {
-                    return @"
+            return @"
                 /* Service Contact Card Styles */
                 .govuk-service-details {
                     font-family: 'Arial', sans-serif;
@@ -418,6 +453,41 @@ namespace RazorPageBusinessWebsite.Helpers.Html
                     font-size: 14px;
                     line-height: 1.5;
                 }
+
+                /* Notes styles */
+                .contact-notes {
+                    margin-top: 20px;
+                    padding-top: 15px;
+                    border-top: 1px solid #e5e5e5;
+                }
+
+                .notes-title {
+                    margin-top: 0;
+                    margin-bottom: 10px;
+                    font-size: 19px;
+                    font-weight: 700;
+                    color: #0b0c0c;
+                    line-height: 1.3;
+                }
+
+                .notes-content {
+                    font-size: 16px;
+                    line-height: 1.6;
+                    color: #0b0c0c;
+                }
+
+                .notes-content ul.notes-list {
+                    margin: 5px 0;
+                    padding-left: 20px;
+                }
+
+                .notes-content ul.notes-list li {
+                    margin-bottom: 5px;
+                }
+
+                .notes-content p {
+                    margin: 5px 0;
+                }
         
                 /* Layout variations */
                 .layout-list .contact-grid {
@@ -471,6 +541,14 @@ namespace RazorPageBusinessWebsite.Helpers.Html
                 .compact-mode .method-detail {
                     font-size: 14px;
                 }
+
+                .compact-mode .notes-title {
+                    font-size: 16px;
+                }
+
+                .compact-mode .notes-content {
+                    font-size: 14px;
+                }
         
                 /* Empty state */
                 .govuk-service-details.empty-state {
@@ -516,6 +594,14 @@ namespace RazorPageBusinessWebsite.Helpers.Html
                     .service-banner {
                         padding: 15px;
                     }
+
+                    .notes-title {
+                        font-size: 17px;
+                    }
+                    
+                    .notes-content {
+                        font-size: 15px;
+                    }
                 }
         
                 @media (max-width: 480px) {
@@ -530,14 +616,23 @@ namespace RazorPageBusinessWebsite.Helpers.Html
                     .method-title {
                         font-size: 17px;
                     }
+
+                    .notes-title {
+                        font-size: 16px;
+                    }
+                    
+                    .notes-content {
+                        font-size: 14px;
+                    }
                 }";
         }
 
         private static string GetMinifiedStyles()
         {
-            return @".govuk-service-details{font-family:'Arial',sans-serif;border:1px solid #b1b4b6;border-radius:4px;margin:20px 0;background:#fff}.service-banner{background:#005ea5;color:#fff;padding:20px;border-radius:4px 4px 0 0}.service-title .service-name{color:#fff;margin:0 0 10px;font-size:32px;font-weight:700;line-height:1.2}.service-type{margin:0;font-size:19px;opacity:.9;font-weight:400}.contact-details-section{padding:30px}.section-title{margin-top:0;margin-bottom:25px;font-size:27px;font-weight:700;color:#0b0c0c;line-height:1.2}.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px}.contact-method{margin-bottom:20px}.method-title{margin-top:0;margin-bottom:10px;font-size:19px;font-weight:700;color:#0b0c0c;line-height:1.3}.method-detail{margin:0 0 10px;font-size:16px;line-height:1.5}.method-detail a{word-break:break-all}.opening-hours{margin:5px 0 0;font-size:14px;color:#505a5f;font-style:italic;line-height:1.4}.govuk-link{color:#005ea5;text-decoration:underline;text-decoration-thickness:1px}.govuk-link:hover{color:#003078;text-decoration-thickness:3px}.additional-info{margin-top:30px;padding-top:20px;border-top:1px solid #b1b4b6;color:#505a5f;font-size:14px;line-height:1.5}.layout-list .contact-grid{display:block}.layout-cards .contact-method{border:1px solid #b1b4b6;border-radius:4px;padding:20px;background:#f8f8f8;transition:box-shadow .3s ease}.layout-cards .contact-method:hover{box-shadow:0 2px 8px rgba(0,0,0,.1)}.layout-horizontal .contact-grid{display:flex;flex-wrap:wrap;gap:20px}.layout-horizontal .contact-method{flex:1;min-width:200px}.compact-mode{font-size:14px}.compact-mode .service-name{font-size:24px}.compact-mode .section-title{font-size:22px}.compact-mode .contact-details-section{padding:20px}.compact-mode .method-title{font-size:16px}.compact-mode .method-detail{font-size:14px}.govuk-service-details.empty-state{text-align:center;padding:40px 20px}.empty-message{color:#505a5f;font-style:italic;margin:0;font-size:16px}@media (max-width:768px){.contact-grid{grid-template-columns:1fr;gap:20px}.layout-horizontal .contact-grid{flex-direction:column;gap:15px}.layout-horizontal .contact-method{min-width:100%}.service-name{font-size:24px}.section-title{font-size:22px}.contact-details-section{padding:20px}.service-banner{padding:15px}}@media (max-width:480px){.service-name{font-size:20px}.section-title{font-size:18px}.method-title{font-size:17px}}";
+            return @".govuk-service-details{font-family:'Arial',sans-serif;border:1px solid #b1b4b6;border-radius:4px;margin:20px 0;background:#fff}.service-banner{background:#005ea5;color:#fff;padding:20px;border-radius:4px 4px 0 0}.service-title .service-name{color:#fff;margin:0 0 10px;font-size:32px;font-weight:700;line-height:1.2}.service-type{margin:0;font-size:19px;opacity:.9;font-weight:400}.contact-details-section{padding:30px}.section-title{margin-top:0;margin-bottom:25px;font-size:27px;font-weight:700;color:#0b0c0c;line-height:1.2}.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px}.contact-method{margin-bottom:20px}.method-title{margin-top:0;margin-bottom:10px;font-size:19px;font-weight:700;color:#0b0c0c;line-height:1.3}.method-detail{margin:0 0 10px;font-size:16px;line-height:1.5}.method-detail a{word-break:break-all}.opening-hours{margin:5px 0 0;font-size:14px;color:#505a5f;font-style:italic;line-height:1.4}.govuk-link{color:#005ea5;text-decoration:underline;text-decoration-thickness:1px}.govuk-link:hover{color:#003078;text-decoration-thickness:3px}.additional-info{margin-top:30px;padding-top:20px;border-top:1px solid #b1b4b6;color:#505a5f;font-size:14px;line-height:1.5}.contact-notes{margin-top:20px;padding-top:15px;border-top:1px solid #e5e5e5}.notes-title{margin-top:0;margin-bottom:10px;font-size:19px;font-weight:700;color:#0b0c0c;line-height:1.3}.notes-content{font-size:16px;line-height:1.6;color:#0b0c0c}.notes-content ul.notes-list{margin:5px 0;padding-left:20px}.notes-content ul.notes-list li{margin-bottom:5px}.notes-content p{margin:5px 0}.layout-list .contact-grid{display:block}.layout-cards .contact-method{border:1px solid #b1b4b6;border-radius:4px;padding:20px;background:#f8f8f8;transition:box-shadow .3s ease}.layout-cards .contact-method:hover{box-shadow:0 2px 8px rgba(0,0,0,.1)}.layout-horizontal .contact-grid{display:flex;flex-wrap:wrap;gap:20px}.layout-horizontal .contact-method{flex:1;min-width:200px}.compact-mode{font-size:14px}.compact-mode .service-name{font-size:24px}.compact-mode .section-title{font-size:22px}.compact-mode .contact-details-section{padding:20px}.compact-mode .method-title{font-size:16px}.compact-mode .method-detail{font-size:14px}.compact-mode .notes-title{font-size:16px}.compact-mode .notes-content{font-size:14px}.govuk-service-details.empty-state{text-align:center;padding:40px 20px}.empty-message{color:#505a5f;font-style:italic;margin:0;font-size:16px}@media (max-width:768px){.contact-grid{grid-template-columns:1fr;gap:20px}.layout-horizontal .contact-grid{flex-direction:column;gap:15px}.layout-horizontal .contact-method{min-width:100%}.service-name{font-size:24px}.section-title{font-size:22px}.contact-details-section{padding:20px}.service-banner{padding:15px}.notes-title{font-size:17px}.notes-content{font-size:15px}}@media (max-width:480px){.service-name{font-size:20px}.section-title{font-size:18px}.method-title{font-size:17px}.notes-title{font-size:16px}.notes-content{font-size:14px}}";
         }
     }
 
+    #endregion
 }
 
