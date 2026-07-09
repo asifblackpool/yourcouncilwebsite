@@ -9,7 +9,7 @@ using RazorPageBusinessWebsite.ViewModels;
 using Content.Modelling.Models.Accordions;
 using System.IO;
 
-
+//Taghhelper
 namespace RazorPageBusinessWebsite.TagHelpers
 {
     [HtmlTargetElement("bg-model")]
