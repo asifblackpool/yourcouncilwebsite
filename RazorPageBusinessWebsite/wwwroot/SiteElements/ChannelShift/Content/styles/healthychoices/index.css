@@ -11,12 +11,15 @@ div.filter > label {
 
 button#ct-search-button {
     background: url(/SiteElements/ChannelShift/content/images/header-menu/magglass.svg) no-repeat;
-    background-size: 20px 34px;
+    background-size: 20px 36px;
     background-position-x: 4px;
-    background-position-y: 0px;
+    background-position-y: 6px;
     background-color: #fff;
     width: 30px;
     border: solid 1px #fff;
+    max-height: 30px !important;
+    display: inline-block;
+    height: 40px;
 }
 
 .bootstrap-select.btn-group .dropdown-toggle .filter-option {
@@ -32,6 +35,7 @@ button#ct-search-button {
 
 .input-group .form-control {
     color: #041c2c !important;
+    height: 48px;
 }
 
 .open > .dropdown-toggle.btn-default:hover {
@@ -47,6 +51,10 @@ div.filter > div:nth-child(2) {
 
 div.filter > div:nth-child(3) {
     max-width: 200px !important;
+}
+
+div.content-placeholder {
+    margin: 50px 0px 0px 0px;
 }
 
 
@@ -78,6 +86,12 @@ span.error-message {
 
 
 /*pagingation */
+
+.pagination-total { 
+    display:inline-block;
+    margin: 0 0 20px 0;
+}
+
 ul.pagination > li > a.page-link,
 ul.pagination > li > a.left-link,
 ul.pagination > li > a.right-link {
