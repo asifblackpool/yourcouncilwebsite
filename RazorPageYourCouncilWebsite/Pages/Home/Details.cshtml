@@ -1,0 +1,17 @@
+﻿
+@model RazorPageYourCouncilWebsite.Pages.Home.DetailsModel
+
+@if (Model.ViewModel == null)
+{
+    <h1>Page not found</h1>
+}
+else
+{
+    <partial name="@Model.ViewName" model="Model.ViewModel" />
+}
+
+<style type="text/css">
+    main {
+        max-width: 1068px !important;
+    }
+</style>

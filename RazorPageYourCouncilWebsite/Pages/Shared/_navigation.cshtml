@@ -1,0 +1,82 @@
+﻿@using RazorPageYourCouncilWebsite.Constants
+@using Zengenti;
+@using Zengenti.Contensis.Delivery;
+@using RazorPageYourCouncilWebsite.Helpers;
+
+
+
+@{
+    var client = ContensisClient.Create();
+
+    // Get our blog node and its children
+    var nodes = client.Nodes.GetByPath(WebsiteConstants.SITE_VIEW_PATH, null, 1);
+    // Get children of that node
+    var children = nodes.Children();
+    IReadOnlyList<Node> subchildren;
+    int count = 0;    
+}
+
+<div class="row navigation-container">
+    <div class="col-md-6 home-link-container">
+        <h1 class="home"><a href="@NavigationLinkHelper.GetHomeLink()" class="home-link">Your Blackpool Wedding</a></h1>
+    </div>
+    <div class="col-md-6">
+        @if (children != null && children.Count > 0)
+        {
+            <nav class="nav-container">
+                <!-- Mobile menu toggle -->
+                <div class="mobile-menu-toggle">
+                    <span class="mobile-caret"></span>  Menu
+                </div>
+                <ul class="nav-list hover-panel-menu">
+                    @foreach (var item in children)
+                    {
+                        if (item.IncludeInMenu)
+                        {
+                            subchildren = item.Children();
+                            var x = subchildren;
+                            if (count == 0 && subchildren.Count > 0)
+                            {
+                                <li class="nav-item has-panel">
+                                    <a href="@NavigationLinkHelper.GetLinkUrl(item.Path)">@item.DisplayName</a>
+                                    <span class="caret"></span>
+                                    <div class="hover-panel">
+                                        <div class="panel-content">
+                                            <h3 style="display:none;">@string.Format("Our {0}", item.DisplayName)</h3>
+                                            <p style="display:none;">@string.Format("Explore details about {0}", item.DisplayName)</p>
+                                            <ul>
+                                                @foreach (var subitem in subchildren)
+                                                {
+                                                    <li>
+                                                        <a href="@NavigationLinkHelper.GetLinkUrl(subitem.Path)">@subitem.DisplayName</a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                            <br /><br />
+                                        </div>
+                                    </div>
+                                </li>
+                                count++;
+                            }
+                            else
+                            {
+                                <li class="nav-item"><a href="@NavigationLinkHelper.GetLinkUrl(item.Path)">@item.DisplayName</a></li>
+                            }
+                        }
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+</div>
+
+
+<style type="text/css">
+    <!-- breadcrumb should not be displayed on home page 
+    -->
+    .breadcumb-container
+    {
+    display:
+    none;
+    }
+</style>

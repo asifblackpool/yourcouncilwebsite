@@ -5,10 +5,10 @@ ARG GH_PAT
 WORKDIR /src
 
 # Copy the Razor Pages project
-COPY RazorPageBusinessWebsite/ ./RazorPageBusinessWebsite/
+COPY RazorPageYourCouncilWebsite/ ./RazorPageYourCouncilWebsite/
 
 # Set working directory to the web project
-WORKDIR /src/RazorPageBusinessWebsite
+WORKDIR /src/RazorPageYourCouncilWebsite
 
 # Debug: Check if GH_PAT is received
 RUN echo "=== DEBUG: GH_PAT length ===" && \
@@ -33,11 +33,11 @@ RUN echo "=== All NuGet sources ===" && \
     dotnet nuget list source
 
 # Copy csproj and restore
-COPY --link /RazorPageBusinessWebsite/*.csproj .
+COPY --link /RazorPageYourCouncilWebsite/*.csproj .
 RUN echo "=== Running dotnet restore ===" && \
     dotnet restore -a $TARGETARCH
 
-COPY --link /RazorPageBusinessWebsite/. .
+COPY --link /RazorPageYourCouncilWebsite/. .
 RUN dotnet publish --runtime linux-$TARGETARCH --self-contained false --no-restore -o /app/publish
 
 #############################
@@ -49,4 +49,4 @@ COPY --link --from=build /app/publish .
 USER app
 COPY --link /.env .
 COPY ./manifest.json /manifest.json
-ENTRYPOINT ["dotnet", "RazorPageBusinessWebsite.dll"]
+ENTRYPOINT ["dotnet", "RazorPageYourYourCouncilWebsite.dll"]

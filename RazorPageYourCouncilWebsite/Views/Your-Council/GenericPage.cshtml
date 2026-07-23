@@ -1,0 +1,23 @@
+﻿
+@model RazorPageYourCouncilWebsite.Models.GenericPageViewModel
+@{
+    Layout = "_Layout"; // or whatever layout you use for your council pages
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="generic-page">
+    <h1>@Model.Title</h1>
+    <div class="content">
+        @Html.Raw(Model.HtmlContent)
+    </div>
+</div>
+
+<style type="text/css">
+    main {
+        max-width: 1068px !important;
+        margin: 0 auto;
+    }
+    .generic-page {
+        padding: 2rem 0;
+    }
+</style>

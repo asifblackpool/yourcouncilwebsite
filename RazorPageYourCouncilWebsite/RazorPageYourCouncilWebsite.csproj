@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PackageProjectUrl>/venues</PackageProjectUrl>
+    <!-- VERSION STAMP: Pipeline will auto-update this to 1.0.{run_number} -->
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="bin\Legacy\**" />
+    <Compile Remove="Core\Models\Content\Components\**" />
+    <Compile Remove="wwwroot\siteelements\channelshift\razorviews\**" />
+    <Content Remove="bin\Legacy\**" />
+    <Content Remove="Core\Models\Content\Components\**" />
+    <Content Remove="wwwroot\siteelements\channelshift\razorviews\**" />
+    <EmbeddedResource Remove="bin\Legacy\**" />
+    <EmbeddedResource Remove="Core\Models\Content\Components\**" />
+    <EmbeddedResource Remove="wwwroot\siteelements\channelshift\razorviews\**" />
+    <None Remove="bin\Legacy\**" />
+    <None Remove="Core\Models\Content\Components\**" />
+    <None Remove="wwwroot\siteelements\channelshift\razorviews\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="nuget.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="2.5.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.2" />
+    <PackageReference Include="Nancy" Version="2.0.0" />
+    <PackageReference Include="Zengenti.Contensis.Delivery" Version="17.0.1" />
+    <PackageReference Include="Zengenti.Contensis.Management" Version="17.0.1" />
+    <!-- Shared library pulled securely from GitHub Packages during CI/CD -->
+    <PackageReference Include="Content.Modelling" Version="1.0.7" />
+
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\" />
+    <Folder Include="Core\Models\Content\" />
+    <Folder Include="Data\" />
+    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\siteelements\channelshift\scripts\webresource\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="nuget.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\shared\lgwebsite.data\content.modelling\content.modelling.csproj" Condition="Exists('..\..\shared\lgwebsite.data\content.modelling\content.modelling.csproj')" />
+  </ItemGroup>
+
+</Project>

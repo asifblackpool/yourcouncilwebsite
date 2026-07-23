@@ -1,0 +1,22 @@
+﻿@model RazorPageYourCouncilWebsite.Models.YourCouncilHomeViewModel
+
+@{
+    Layout = null; // because the main layout is already applied in _ViewStart.cshtml
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">@Model.Title</h1>
+        @Html.Raw(Model.HtmlContent)
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <!-- Optional sidebar -->
+        <aside class="app-related-items">
+            <h2 class="govuk-heading-m">Related links</h2>
+            <ul class="govuk-list">
+                <li><a href="#">example 1</a></li>
+   
+            </ul>
+        </aside>
+    </div>
+</div>

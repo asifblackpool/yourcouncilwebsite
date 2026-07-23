@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/RazorPageBusinessWebsite/bin/Debug/net8.0-windows8.0/RazorPageBusinessWebsite.dll",
+            "program": "${workspaceFolder}/RazorPageYourCouncilWebsite/bin/Debug/net8.0-windows8.0/RazorPageYourCouncilWebsite.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/RazorPageBusinessWebsite",
+            "cwd": "${workspaceFolder}/RazorPageYourCouncilWebsite",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {

@@ -1,0 +1,55 @@
+﻿@using Content.Modelling.Models.Templates
+@using RazorPageYourCouncilWebsite.ViewModels
+@model List<TileNavigationViewModel>
+
+@{
+    // Retrieve layout from ViewData; default to 3 tiles per row
+    var layout = ViewData["Layout"] as TileLayout? ?? TileLayout.ThreeTilesInARow;
+
+    // Define column classes based on layout
+    string columnClass = layout switch
+    {
+        TileLayout.ThreeTilesInARow => "col-md-4 col-sm-6", // 3 on medium, 2 on small
+        TileLayout.FourTilesInARow => "col-md-3 col-sm-6", // 4 on medium, 2 on small
+        _ => "col-md-4 col-sm-6"
+    };
+
+    // Determine how many tiles per row (3 or 4)
+    int colsPerRow = layout == TileLayout.FourTilesInARow ? 4 : 3;
+}
+
+@if (Model != null && Model.Any())
+{
+    var items = Model.ToList();
+
+    <!-- Wrap all rows in a container (no Bootstrap row class here) -->
+    <div class="tile-board">
+        @for (int i = 0; i < items.Count; i += colsPerRow)
+        {
+            var rowItems = items.Skip(i).Take(colsPerRow).ToList();
+            // Only apply centering if this row has fewer items than a full row
+            string centerClass = rowItems.Count < colsPerRow ? "justify-content-center" : "";
+
+            <!-- Each row is a proper Bootstrap row -->
+            <div class="row g-4 @centerClass">
+                @foreach (var tile in rowItems)
+                {
+                    <div class="@columnClass">
+                        <div class="card h-100 tile-card">
+                            <div class="card-body">
+                                <a href="@tile.Url" class="stretched-link text-decoration-none">
+                                    @tile.LinkText
+                                </a>
+                            </div>
+                            <!-- Footer removed as intended -->
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p class="text-muted">No tiles available.</p>
+}

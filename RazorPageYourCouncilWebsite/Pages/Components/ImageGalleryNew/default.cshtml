@@ -1,0 +1,135 @@
+﻿@using Content.Modelling.Models.Components
+@using System.Text.Json;
+@using RazorPageYourCouncilWebsite.Core.Models.ViewModels
+@using RazorPageYourCouncilWebsite.Helpers
+@model MultipleImages;
+
+@functions {
+
+    // Define the class
+    public class SimpleImage
+    {
+        public string? Url { get; set; }
+        public string? AltText { get; set; }
+        public string? Caption { get; set; }
+    }
+}
+
+@{
+
+
+    List<SimpleImage> images = new List<SimpleImage>();
+    foreach (var img in Model.MultipleImage)
+    {
+        images.Add(new SimpleImage()
+        {
+            AltText = img.AltText,
+            Caption = img.Caption,
+            Url = ImageHelper.GetImageUrl(img.ImageUrl)
+        });
+    }
+
+    var imageData = JsonSerializer.Serialize(images);
+
+}
+
+@if (images != null && images.Count > 0)
+{
+    <div class="gallery-container">
+        <!-- Main Image Display -->
+        <div class="main-image-container">
+            <div class="loading" id="loadingState">
+                <i class="fas fa-spinner fa-spin"></i> Loading gallery...
+            </div>
+            <div class="error" id="errorState" style="display: none;">
+                <div>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Unable to load gallery</h3>
+                    <p id="errorMessage"></p>
+                    <button onclick="galleryservices.init(window.galleryData)"
+                        style="margin-top: 20px; padding: 10px 20px; background: #4a6ee0; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Retry
+                    </button>
+                </div>
+            </div>
+
+            @{
+                var firstImage = images.First();
+                var firstImageUrl = firstImage.Url;
+                var firstAltText = !string.IsNullOrEmpty(firstImage.AltText) ? firstImage.AltText : firstImage.Caption;
+            }
+
+            <img id="mainImage" class="main-image" src="@firstImageUrl" alt="@firstAltText" style="display: block;"
+                data-index="0">
+            <div class="image-info">
+                <h3 id="mainImageTitle" class="image-title">@firstAltText</h3>
+                <p id="mainImageCaption" class="image-caption">@firstImage.Caption</p>
+            </div>
+        </div>
+
+        <!-- Thumbnail Scroller -->
+        <div class="thumbnail-scroller" id="thumbnailScroller">
+            <button class="scroll-btn prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <div class="thumbnails-container" id="thumbnails">
+                @for (int i = 0; i < images.Count; i++)
+                {
+                    var image = images[i];
+                    var imageUrl = image.Url;
+                    var altText = !string.IsNullOrEmpty(image.AltText) ? image.AltText : image.Caption;
+
+                    if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        <div class="thumbnail @(i == 0 ? "active" : "")" data-index="@i" title="@altText">
+                            <img src="@imageUrl" alt="@altText">
+                        </div>
+                    }
+                }
+            </div>
+
+            <button class="scroll-btn next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal for Full View -->
+    <div class="modal-overlay" id="imageModal">
+        <button class="close-modal">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="modal-content">
+            <img id="modalImage" class="modal-image" src="" alt="">
+
+            <div class="modal-info">
+                <h3 id="modalTitle" class="modal-title"></h3>
+                <p id="modalCaption" class="modal-caption"></p>
+            </div>
+
+            <button class="modal-nav prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="modal-nav next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        window.galleryData = @Html.Raw(imageData)
+            window.addEventListener('load', function () {
+                console.log('All resources loaded');
+                galleryservices.init(window.galleryData);
+            });
+
+    </script>
+}
+else
+{
+    <div class="gallery-empty">
+        <p>No images in gallery</p>
+    </div>
+}
