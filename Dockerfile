@@ -1,52 +1,52 @@
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG TARGETARCH
+# Use the official ASP.NET Core runtime as the base image for the final stage
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 443
+
+# Use the SDK image for building the application
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+# Define build arguments for secrets (these are passed from GitHub Actions)
 ARG GH_PAT
+ARG PROJECT_API_ID
+ARG ALIAS
+ARG CONTENSIS_CLIENT_ID
+ARG CONTENSIS_CLIENT_SECRET
+ARG ACCESS_TOKEN
+ARG BLOCK_ID
+
+# Set environment variables from build arguments
+ENV GH_PAT=${GH_PAT} \
+    PROJECT_API_ID=${PROJECT_API_ID} \
+    ALIAS=${ALIAS} \
+    CONTENSIS_CLIENT_ID=${CONTENSIS_CLIENT_ID} \
+    CONTENSIS_CLIENT_SECRET=${CONTENSIS_CLIENT_SECRET} \
+    ACCESS_TOKEN=${ACCESS_TOKEN} \
+    BLOCK_ID=${BLOCK_ID}
 
 WORKDIR /src
 
-# Copy the Razor Pages project
-COPY RazorPageYourCouncilWebsite/ ./RazorPageYourCouncilWebsite/
-
-# Set working directory to the web project
+# Copy the project file(s) and restore dependencies
+COPY RazorPageYourCouncilWebsite/*.csproj ./RazorPageYourCouncilWebsite/
 WORKDIR /src/RazorPageYourCouncilWebsite
+RUN dotnet restore
 
-# Debug: Check if GH_PAT is received
-RUN echo "=== DEBUG: GH_PAT length ===" && \
-    echo ${#GH_PAT}
+# Copy the rest of the application code
+COPY RazorPageYourCouncilWebsite/. .
 
-# Remove any existing GitHub sources
-RUN echo "=== Removing existing sources ===" && \
-    dotnet nuget remove source github 2>/dev/null || true && \
-    dotnet nuget remove source github-asifblackpool 2>/dev/null || true && \
-    dotnet nuget remove source github-auth 2>/dev/null || true
+# Publish the application
+RUN dotnet publish --runtime linux-amd64 --self-contained false -o /app/publish
 
-# Add the source with the token
-RUN echo "=== Adding GitHub source with token ===" && \
-    dotnet nuget add source https://nuget.pkg.github.com/asifblackpool/index.json \
-        --name github \
-        --username asifblackpool \
-        --password "${GH_PAT}" \
-        --store-password-in-clear-text
+# Final stage - copy the published application
+FROM base AS final
+WORKDIR /app
 
-# List all sources to verify
-RUN echo "=== All NuGet sources ===" && \
-    dotnet nuget list source
+# Copy the published output from the build stage
+COPY --from=build /app/publish .
 
-# Copy csproj and restore
-COPY --link /RazorPageYourCouncilWebsite/*.csproj .
-RUN echo "=== Running dotnet restore ===" && \
-    dotnet restore -a $TARGETARCH
+# Copy the manifest.json if needed
+COPY manifest.json /manifest.json
 
-COPY --link /RazorPageYourCouncilWebsite/. .
-RUN dotnet publish --runtime linux-$TARGETARCH --self-contained false --no-restore -o /app/publish
-
-#############################
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
-ENV ASPNETCORE_URLS=http://*:3001
-EXPOSE 3001
-WORKDIR /app/publish
-COPY --link --from=build /app/publish .
-USER app
-COPY --link /.env .
-COPY ./manifest.json /manifest.json
-ENTRYPOINT ["dotnet", "RazorPageYourYourCouncilWebsite.dll"]
+# Set the entry point
+ENTRYPOINT ["dotnet", "RazorPageYourCouncilWebsite.dll"]

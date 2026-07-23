@@ -1,4 +1,4 @@
-name: Docker - Build and push latest
+﻿name: Docker - Build and push latest
 
 on:
   push:
@@ -21,16 +21,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # DEBUG: Verify the secret exists and has a value
+      # Verify secrets exist
       - name: Debug - Check GH_PAT secret
         run: |
           echo "Checking if GH_PAT secret is available..."
           if [ -n "$GH_PAT" ]; then
-            echo "? GH_PAT is set!"
+            echo "✅ GH_PAT is set!"
             echo "Token length: ${#GH_PAT}"
-            echo "Token first 4 chars: ${GH_PAT:0:4}"
           else
-            echo "? GH_PAT is NOT set or is empty!"
+            echo "❌ GH_PAT is NOT set or is empty!"
             exit 1
           fi
         env:
@@ -53,15 +52,18 @@ jobs:
 
       - name: Build Docker image
         run: |
-          echo "Building with GH_PAT (first 4 chars): ${GH_PAT:0:4}"
           docker build \
             --build-arg GH_PAT=${{ secrets.GH_PAT }} \
+            --build-arg PROJECT_API_ID=${{ secrets.PROJECT_API_ID }} \
+            --build-arg ALIAS=${{ secrets.ALIAS }} \
+            --build-arg CONTENSIS_CLIENT_ID=${{ secrets.CONTENSIS_CLIENT_ID }} \
+            --build-arg CONTENSIS_CLIENT_SECRET=${{ secrets.CONTENSIS_SHARED_SECRET }} \
+            --build-arg ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} \
+            --build-arg BLOCK_ID=${{ secrets.BLOCK_ID }} \
             --build-arg TARGETARCH=amd64 \
             -t ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} \
             -t ${{ env.IMAGE_NAME }}:latest \
             .
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
 
       - name: Push Docker image
         run: |
@@ -88,9 +90,10 @@ jobs:
         env:
           DOCKER_API_VERSION: 1.44
         with:
-          block-id: yourcouncil-website
-          alias: blackpool
-          project-id: lgWebsite
+          block-id: ${{ secrets.BLOCK_ID }}
+          alias: ${{ secrets.ALIAS }}
+          project-id: ${{ secrets.PROJECT_API_ID }}
           client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
           shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
+          access-token: ${{ secrets.ACCESS_TOKEN }}
           image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
