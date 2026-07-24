@@ -35,7 +35,7 @@
     <PackageReference Include="Zengenti.Contensis.Delivery" Version="17.0.1" />
     <PackageReference Include="Zengenti.Contensis.Management" Version="17.0.1" />
     <!-- Shared library pulled securely from GitHub Packages during CI/CD -->
-    <PackageReference Include="Content.Modelling" Version="1.0.7" />
+    <PackageReference Include="Content.Modelling" Version="1.0.8" />
 
   </ItemGroup>
   <ItemGroup>
