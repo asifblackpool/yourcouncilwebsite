@@ -15,7 +15,6 @@
         // For backward compatibility
         public static readonly string SITE_NAME = SITE_CONTROLLER;
         public static readonly string SITE_VIEW_PATH = SITE_PATH + "/";
-        public static readonly string View_Folder = VIEW_FOLDER;
         public static readonly string SHARED_COMPONENTS_PATH = "~/Pages/Components";
     
 

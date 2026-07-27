@@ -14,7 +14,7 @@ namespace RazorPageYourCouncilWebsite.Controllers.Base
         protected readonly ILogger<DynamicCmsController> _logger;
 
         // NEW: virtual property that derived controllers can override
-        protected virtual string ViewFolder => WebsiteConstants.View_Folder;
+        protected virtual string ViewFolder => WebsiteConstants.VIEW_FOLDER;
 
         protected DynamicCmsController(IZengentiClient cmsClient, ICmsViewModelFactory viewModelFactory, ILogger<DynamicCmsController> logger)
         {

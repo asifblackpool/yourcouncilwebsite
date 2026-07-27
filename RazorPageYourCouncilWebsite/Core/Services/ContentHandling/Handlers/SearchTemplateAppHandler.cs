@@ -1,13 +1,14 @@
 ﻿using Content.Modelling.Models.GenericTypes;
-using global::RazorPageYourCouncilWebsite.Core.Models.Components;
+
 using global::RazorPageYourCouncilWebsite.Core.Services.ContentHandling.Interfaces;
 using global::RazorPageYourCouncilWebsite.Helpers.Wrappers;
 using global::RazorPageYourCouncilWebsite.Helpers;
     // File: Core/Services/ContentHandling/Handlers/SearchTemplateAppHandler.cs
 using Microsoft.AspNetCore.Html;
+using Content.Modelling.Core.Models.Components;
 
 
-    namespace RazorPageYourCouncilWebsite.Core.Services.ContentHandling.Handlers
+namespace RazorPageYourCouncilWebsite.Core.Services.ContentHandling.Handlers
     {
         public class SearchTemplateAppHandler : IContentHandler
         {

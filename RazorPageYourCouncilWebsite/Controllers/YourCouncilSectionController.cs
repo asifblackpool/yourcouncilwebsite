@@ -8,7 +8,7 @@ namespace RazorPageYourCouncilWebsite.Controllers
     public class YourCouncilSectionController : DynamicCmsController
     {
         // Tell the base controller to look for views in the "Your council" folder
-        protected override string ViewFolder => WebsiteConstants.View_Folder;
+        protected override string ViewFolder => WebsiteConstants.VIEW_FOLDER;
         public YourCouncilSectionController(IZengentiClient cmsClient, ICmsViewModelFactory viewModelFactory, ILogger<YourCouncilSectionController> logger)
             : base(cmsClient, viewModelFactory, logger) { }
 

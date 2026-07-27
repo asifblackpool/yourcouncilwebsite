@@ -14,7 +14,7 @@ namespace RazorPageYourCouncilWebsite.Controllers
         public async Task<IActionResult> Dynamic(string slug)
         {
             slug ??= "";
-         return await RenderDynamicPageAsync(WebsiteConstants.View_Folder, slug);
+         return await RenderDynamicPageAsync(WebsiteConstants.VIEW_FOLDER, slug);
         }
     }
 }
