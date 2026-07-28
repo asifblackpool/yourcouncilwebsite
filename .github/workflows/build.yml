@@ -10,6 +10,26 @@ env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}
 
 jobs:
+ debug-secrets:
+    name: Debug Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify BLOCK_ID
+        run: |
+          echo "=== BLOCK_ID VERIFICATION ==="
+          echo "BLOCK_ID: ${{ secrets.BLOCK_ID }}"
+          if [ -z "${{ secrets.BLOCK_ID }}" ]; then
+            echo "❌ BLOCK_ID is empty!"
+            exit 1
+          else
+            echo "✅ BLOCK_ID is set"
+            if [ "${{ secrets.BLOCK_ID }}" = "your-council-website" ]; then
+              echo "✅ BLOCK_ID is correct! (your-council-website)"
+            else
+              echo "⚠️  BLOCK_ID is: ${{ secrets.BLOCK_ID }}"
+              echo "   Expected: your-council-website"
+            fi
+          fi
   build-latest:
     name: Build Block
     runs-on: ubuntu-latest
