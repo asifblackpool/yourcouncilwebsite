@@ -86,23 +86,24 @@ jobs:
             .
 
       # =============================================
-      # DEBUG: Verify .env file in the built image
+      # FIXED: Debug - Verify .env file (completes in seconds!)
       # =============================================
       - name: Debug - Verify .env file in Docker image
         run: |
           echo "=== VERIFYING .env FILE IN DOCKER IMAGE ==="
           echo ""
           echo "1. Checking if .env exists..."
-          docker run --rm ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} ls -la .env || echo "❌ .env file NOT found!"
+          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "ls -la .env && echo '✅ .env file found!' || echo '❌ .env file NOT found!'"
           echo ""
           echo "2. .env file contents (MASKED):"
-          docker run --rm ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} cat .env | sed 's/ACCESS_TOKEN=.*/ACCESS_TOKEN=***MASKED***/g' || echo "❌ Failed to read .env file!"
+          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "cat .env | sed 's/ACCESS_TOKEN=.*/ACCESS_TOKEN=***MASKED***/g' || echo '❌ Failed to read .env file!'"
           echo ""
           echo "3. Checking ACCESS_TOKEN environment variable (first 4 chars only):"
-          docker run --rm ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} printenv ACCESS_TOKEN | sed 's/^\(.\{4\}\).*$/\1***MASKED***/g' || echo "❌ ACCESS_TOKEN environment variable not found!"
+          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "echo ACCESS_TOKEN: \${ACCESS_TOKEN:0:4}..."
           echo ""
-          echo "4. Checking all environment variables (MASKED):"
-          docker run --rm ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} printenv | grep -E "PROJECT_API_ID|ALIAS|CONTENSIS|ACCESS_TOKEN|BLOCK_ID" | sed 's/=.*/=***MASKED***/g' || echo "No matching variables found"
+          echo "4. All environment variables (MASKED):"
+          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "printenv | grep -E 'PROJECT_API_ID|ALIAS|CONTENSIS|ACCESS_TOKEN|BLOCK_ID' | sed 's/=.*/=***MASKED***/g' || echo 'No matching variables found'"
+          echo "=== DEBUG COMPLETE ==="
         continue-on-error: true
 
       - name: Push Docker image
