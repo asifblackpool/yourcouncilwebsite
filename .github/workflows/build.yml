@@ -10,7 +10,7 @@ env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}
 
 jobs:
- debug-secrets:
+  debug-secrets:    # ✅ Correct: no extra spaces before the job name
     name: Debug Secrets
     runs-on: ubuntu-latest
     steps:
@@ -30,6 +30,7 @@ jobs:
               echo "   Expected: your-council-website"
             fi
           fi
+
   build-latest:
     name: Build Block
     runs-on: ubuntu-latest
