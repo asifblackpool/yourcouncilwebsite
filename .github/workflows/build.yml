@@ -86,7 +86,7 @@ jobs:
             .
 
       # =============================================
-      # FIXED: Debug - Verify .env file (completes in seconds!)
+      # FIXED DEBUG STEP - Uses printenv to avoid "Bad substitution"
       # =============================================
       - name: Debug - Verify .env file in Docker image
         run: |
@@ -98,8 +98,8 @@ jobs:
           echo "2. .env file contents (MASKED):"
           docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "cat .env | sed 's/ACCESS_TOKEN=.*/ACCESS_TOKEN=***MASKED***/g' || echo '❌ Failed to read .env file!'"
           echo ""
-          echo "3. Checking ACCESS_TOKEN environment variable (first 4 chars only):"
-          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "echo ACCESS_TOKEN: \${ACCESS_TOKEN:0:4}..."
+          echo "3. Checking ACCESS_TOKEN environment variable (first 10 chars only):"
+          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "printenv ACCESS_TOKEN | head -c 10 && echo '... (truncated)' || echo '❌ ACCESS_TOKEN not found!'"
           echo ""
           echo "4. All environment variables (MASKED):"
           docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "printenv | grep -E 'PROJECT_API_ID|ALIAS|CONTENSIS|ACCESS_TOKEN|BLOCK_ID' | sed 's/=.*/=***MASKED***/g' || echo 'No matching variables found'"
