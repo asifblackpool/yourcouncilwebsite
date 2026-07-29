@@ -3,6 +3,9 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 443
 
+# Set production environment
+ENV ASPNETCORE_ENVIRONMENT=Production
+
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 # Build arguments for secrets
@@ -46,15 +49,19 @@ RUN dotnet restore
 
 # Copy rest of code and publish
 COPY RazorPageYourCouncilWebsite/. .
-RUN dotnet publish --runtime linux-amd64 --self-contained false -o /app/publish
 
 # =============================================
-# FIXED FINAL STAGE - Now with environment variables!
+# PUBLISH WITH RAZOR COMPILATION FORCED
+# This prevents runtime file watchers in production
 # =============================================
+RUN dotnet publish --runtime linux-amd64 --self-contained false -o /app/publish \
+    -p:RazorCompileOnBuild=true \
+    -p:RazorCompileOnPublish=true
+
 FROM base AS final
 WORKDIR /app
 
-# Accept build arguments again (they don't carry over automatically)
+# Accept build arguments again
 ARG PROJECT_API_ID
 ARG ALIAS
 ARG CONTENSIS_CLIENT_ID
@@ -62,19 +69,20 @@ ARG CONTENSIS_CLIENT_SECRET
 ARG ACCESS_TOKEN
 ARG BLOCK_ID
 
-# Set environment variables in the final stage (where the app runs)
+# Set environment variables in the final stage
 ENV PROJECT_API_ID=${PROJECT_API_ID} \
     ALIAS=${ALIAS} \
     CONTENSIS_CLIENT_ID=${CONTENSIS_CLIENT_ID} \
     CONTENSIS_CLIENT_SECRET=${CONTENSIS_CLIENT_SECRET} \
     ACCESS_TOKEN=${ACCESS_TOKEN} \
-    BLOCK_ID=${BLOCK_ID}
+    BLOCK_ID=${BLOCK_ID} \
+    ASPNETCORE_ENVIRONMENT=Production
 
 # Copy the published app
 COPY --from=build /app/publish .
 COPY manifest.json /manifest.json
 
-# Option 1: Create .env file for apps that expect it
+# Create .env file for the application
 RUN echo "PROJECT_API_ID=${PROJECT_API_ID}" > .env && \
     echo "ALIAS=${ALIAS}" >> .env && \
     echo "CONTENSIS_CLIENT_ID=${CONTENSIS_CLIENT_ID}" >> .env && \
