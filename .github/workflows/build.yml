@@ -1,4 +1,4 @@
-﻿name: Docker - Build and push latest
+name: Docker - Build and push latest
 
 on:
   push:
