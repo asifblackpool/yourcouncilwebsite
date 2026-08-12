@@ -14,14 +14,22 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
+            "label": "clean",
             "command": "dotnet",
             "type": "process",
             "args": [
-                "publish",
-                "${workspaceFolder}/RazorPageYourCouncilWebsite/RazorPageYourCouncilWebsite.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "clean",
+                "${workspaceFolder}/RazorPageYourCouncilWebsite/RazorPageYourCouncilWebsite.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "restore",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "restore",
+                "${workspaceFolder}/RazorPageYourCouncilWebsite/RazorPageYourCouncilWebsite.csproj"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -32,9 +40,8 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/RazorPageYourCouncilWebsite/RazorPageYourCouncilWebsite.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "--project",
+                "${workspaceFolder}/RazorPageYourCouncilWebsite/RazorPageYourCouncilWebsite.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

@@ -13,15 +13,19 @@
   <ItemGroup>
     <Compile Remove="bin\Legacy\**" />
     <Compile Remove="Core\Models\Content\Components\**" />
+    <Compile Remove="js\**" />
     <Compile Remove="wwwroot\siteelements\channelshift\razorviews\**" />
     <Content Remove="bin\Legacy\**" />
     <Content Remove="Core\Models\Content\Components\**" />
+    <Content Remove="js\**" />
     <Content Remove="wwwroot\siteelements\channelshift\razorviews\**" />
     <EmbeddedResource Remove="bin\Legacy\**" />
     <EmbeddedResource Remove="Core\Models\Content\Components\**" />
+    <EmbeddedResource Remove="js\**" />
     <EmbeddedResource Remove="wwwroot\siteelements\channelshift\razorviews\**" />
     <None Remove="bin\Legacy\**" />
     <None Remove="Core\Models\Content\Components\**" />
+    <None Remove="js\**" />
     <None Remove="wwwroot\siteelements\channelshift\razorviews\**" />
   </ItemGroup>
 
@@ -36,7 +40,7 @@
     <PackageReference Include="Zengenti.Contensis.Delivery" Version="17.0.1" />
     <PackageReference Include="Zengenti.Contensis.Management" Version="17.0.1" />
     <!-- Shared library pulled securely from GitHub Packages during CI/CD pipeline -->
-    <PackageReference Include="Content.Modelling" Version="1.0.9" />
+    <PackageReference Include="Content.Modelling" Version="1.0.10" />
   </ItemGroup>
 
   <ItemGroup>

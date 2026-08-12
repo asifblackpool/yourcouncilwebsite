@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/RazorPageYourCouncilWebsite/bin/Debug/net8.0-windows8.0/RazorPageYourCouncilWebsite.dll",
+            "program": "${workspaceFolder}/RazorPageYourCouncilWebsite/bin/Debug/net8.0/RazorPageYourCouncilWebsite.dll",
             "args": [],
             "cwd": "${workspaceFolder}/RazorPageYourCouncilWebsite",
             "stopAtEntry": false,

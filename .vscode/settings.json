@@ -1,4 +1,5 @@
 {
   "omnisharp.useModernNet": true,
-  "git.pullTags": false
+  "git.pullTags": false,
+  "dotnet.defaultProject": "RazorPageYourCouncilWebsite/RazorPageYourCouncilWebsite.csproj"
 }

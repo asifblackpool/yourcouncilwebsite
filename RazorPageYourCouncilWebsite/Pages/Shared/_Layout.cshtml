@@ -108,12 +108,12 @@
     <div id="container">
         <partial name="Global/_header" />
         <div id="root-container" class="homepage-max-width clearfix"
-            style="margin-top: 0px; background-color: white; max-width:1170px; margin:auto;">
+             style="margin-top: 0px; background-color: white; max-width:1170px; margin:auto;">
             <div class="row zero-pad-left zero-pad-right clearfix">
                 <div id="blackpool-council-container" class="col-md-12 col-sm-12 zero-pad-all">
                     <div id="topbar" class="clearfix">
                         <div id="icon-landing-page-image-container"
-                            class="clearfix grid-block grid-block-default-height">
+                             class="clearfix grid-block grid-block-default-height">
                             &nbsp;
                         </div>
                         <div class="clearfix grid-block-5">
@@ -135,14 +135,14 @@
                     </div>
                     <div class="row zero-pad-left zero-pad-right">
                         <div id="mainbar"
-                            class="col-xs-12 col-sm-12 col-md-12 col-md-10 col-md-push-2 clearfix zero-pad-all">
+                             class="col-xs-12 col-sm-12 col-md-12 col-md-10 col-md-push-2 clearfix zero-pad-all">
                             @RenderBody()
                         </div>
                         <div id="sidebar"
-                            class="col-xs-12 col-sm-12 col-md-12 col-md-2 col-md-pull-10 clearfix zero-pad-all">
+                             class="col-xs-12 col-sm-12 col-md-12 col-md-2 col-md-pull-10 clearfix zero-pad-all">
                             <!--Additional Information to go here -->
                             @await Component.InvokeAsync("AdditionalInformation")
-                      
+
                         </div>
                     </div>
                 </div>
@@ -178,13 +178,13 @@
     </script>
 
     <!-- Accordion CSS and Scripts -->
-    <link rel="stylesheet "href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/tables.css" asp-append-version="true" />
+    <link rel="stylesheet " href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/tables.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/accordion.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/accordion-gallery.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2023/thirdparty/govuk/overrides.css" asp-append-version="true" />
     <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
     <script type="text/javascript" src="~/SiteElements/ChannelShift/scripts/thirdparty/govuk/accordion.js"></script>
-    <script type="text/javascript"rc="~/SiteElements/ChannelShift/scripts/services/privacy/privacyservices.js"></script>
+    <script type="text/javascript" rc="~/SiteElements/ChannelShift/scripts/services/privacy/privacyservices.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -197,11 +197,16 @@
 
     @if (Context.Items["PageScripts"] is List<string> scripts)
     {
-        foreach (var src in scripts) {  <script src="@src"></script><br/>    }
+        foreach (var src in scripts)
+        {
+            <script src="@src"></script>
+            <br />
+        }
     }
     @if (Context.Items["PageInlineScripts"] is List<string> inlineScripts)
     {
-        foreach (var script in inlineScripts){
+        foreach (var script in inlineScripts)
+        {
             <script type="text/javascript">
                 @Html.Raw(script)
             </script>

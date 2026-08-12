@@ -1,18 +1,13 @@
 ﻿using Content.Modelling.Models.Interfaces;
 using RazorPageYourCouncilWebsite.Core.Interfaces;
-using Zengenti.Contensis.Delivery;
+using RazorPageYourCouncilWebsite.Models;
+using RazorPageYourCouncilWebsite.Services;
 
-namespace RazorPageYourCouncilWebsite.Infrastructure.Repositories
+
+namespace RazorPageBusinessWebsite.Infrastructure.Repositories
 {
     // Infrastructure/Repositories/ContensisRepository.cs
-    using Zengenti.Contensis.Delivery;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Content.Modelling.Models.Interfaces;
-    using Content.Modelling.Models.Templates;
-    using RazorPageYourCouncilWebsite.Services;
-    using RazorPageYourCouncilWebsite.Models;
+
 
     public class ContensisContentRepository : IContentRepository
     {
@@ -48,7 +43,7 @@ namespace RazorPageYourCouncilWebsite.Infrastructure.Repositories
             return results;
         }
 
-        public List<CmsNodeInfo>GetTopLevelSections(string parentPath)
+        public List<CmsNodeInfo> GetTopLevelSections(string parentPath)
         {
             var parentNode = _client.GetClient().Nodes.GetByPath(parentPath);
             if (parentNode == null) return new List<CmsNodeInfo>();

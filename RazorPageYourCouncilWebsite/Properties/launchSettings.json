@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://localhost:5001/your-council/citizenship/citizenship-ceremonies",
+      "applicationUrl": "https://localhost:5001/your-council/creating-a-better-blackpool/regeneration/blackpool-researching-together/about-blackpool-researching-together",
       "sslPort": 44322
     }
   },
@@ -13,7 +13,7 @@
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/your-council/citizenship/citizenship-ceremonies",
+      "launchUrl": "https://localhost:5001/your-council/creating-a-better-blackpool/regeneration/blackpool-researching-together/about-blackpool-researching-together",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +21,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/your-council/citizenship/citizenship-ceremonies",
+      "launchUrl": "https://localhost:5001/your-council/creating-a-better-blackpool/regeneration/blackpool-researching-together/about-blackpool-researching-together",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

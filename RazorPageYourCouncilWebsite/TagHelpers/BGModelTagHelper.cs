@@ -2,12 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
+using Content.Modelling.Models.Accordions;
 using Content.Modelling.Models.Templates;
 using Content.Modelling.Models.Templates.Base;
 using RazorPageYourCouncilWebsite.ViewModels;
-using Content.Modelling.Models.Accordions;
-using System.IO;
+using Zengenti;
+using Content.Modelling.Helpers.Extensions;
+using Content.Modelling.Models.GenericTypes;
+
+
 
 //Taghhelper
 namespace RazorPageYourCouncilWebsite.TagHelpers
@@ -71,7 +74,7 @@ namespace RazorPageYourCouncilWebsite.TagHelpers
                     output.PostElement.AppendHtml(canvasHtml);
 
                     // Render tile navigation component
-                    string accordionHtml = await RenderViewComponentAsync("Accordions",accordionModel);
+                    string accordionHtml = await RenderViewComponentAsync("Accordions", accordionModel);
                     output.PostElement.AppendHtml(accordionHtml);
                 }
                 else if (Model.ConcreteModel is BGServiceLandingTile tileModel)
@@ -119,7 +122,8 @@ namespace RazorPageYourCouncilWebsite.TagHelpers
         {
             if (Model?.ConcreteModel is IHasSerialisedCanvas hasCanvas)
             {
-                var canvasData = hasCanvas.GetSerialisedCanvas();
+                SerialisedContent canvasData = hasCanvas.GetSerialisedCanvas();
+                canvasData.ReplaceConsecutiveTilesWithLists();
                 if (canvasData != null)
                 {
                     return await RenderViewComponentAsync("Canvas", canvasData);

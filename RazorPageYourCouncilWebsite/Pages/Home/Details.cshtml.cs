@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using RazorPageYourCouncilWebsite.Models;
 using RazorPageYourCouncilWebsite.Services.Interfaces;
 using RazorPageYourCouncilWebsite.Constants;
 using RazorPageYourCouncilWebsite.Core.Interfaces;
