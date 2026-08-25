@@ -73,7 +73,7 @@ namespace RazorPageYourCouncilWebsite.Helpers.Renderers
                 var buttonSpan = new TagBuilder("span");
                 buttonSpan.AddCssClass("govuk-accordion__section-button");
                 buttonSpan.Attributes["id"] = $"accordion-default-heading-{SanitizeId(accordionTitle)}-{counter}";
-                buttonSpan.InnerHtml.Append(_htmlEncoder.Encode(item.Title ?? $"Section {counter}"));
+                buttonSpan.InnerHtml.Append(item.Title ?? $"Section {counter}");
 
                 heading.InnerHtml.AppendHtml(buttonSpan);
                 headerDiv.InnerHtml.AppendHtml(heading);
