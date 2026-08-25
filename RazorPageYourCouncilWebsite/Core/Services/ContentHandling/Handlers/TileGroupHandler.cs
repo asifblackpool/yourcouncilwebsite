@@ -64,7 +64,7 @@ namespace RazorPageYourCouncilWebsite.Core.Services.ContentHandling.Handlers
             }
             catch (Exception ex)
             {
-                htmlContent.AppendHtml($"<!-- Error processing TileGroup Handler: {ex.Message} -->");
+                htmlContent.AppendHtml($"<!-- Error processing the  TileGroup Handler: {ex.Message} -->");
             }
 
             return htmlContent;
