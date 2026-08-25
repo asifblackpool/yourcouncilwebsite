@@ -1,0 +1,178 @@
+﻿div.govuk-body table,
+.tbl-responsive {
+    margin: 0 auto;
+    width: 100% !important;
+    margin-bottom: 15px;
+    border: none;
+    table-layout: fixed;
+    word-wrap: break-word;
+    border-collapse: collapse;
+}
+
+div.govuk-body table thead th,
+div.govuk-body table tr th,
+.tbl-responsive thead th,
+.tbl-responsive tr th {
+    border: solid 1px #fff;
+    background: #830065;
+    color: #fff;
+    padding: 0.8rem;
+    font-size: 0.95rem;
+    word-wrap: break-word;
+}
+
+div.govuk-body table thead th,
+div.govuk-body table tr th,
+div.govuk-body table td,
+.tbl-responsive thead th,
+.tbl-responsive tr th,
+.tbl-responsive tbody td {
+    padding: 0.8rem;
+    font-size: 0.95rem;
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+div.govuk-body table tbody td,
+.tbl-responsive tbody td {
+    background: #e3e4e6;
+    border: solid 1px #fff;
+    font-family: Calibri, sans-serif;
+    padding: 0.8rem;
+    font-size: 0.95rem;
+    word-wrap: break-word;
+}
+
+div.govuk-body table caption {
+    display: none;
+}
+
+/* Ensure table stays within parent div */
+div.govuk-body {
+    overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Remove any height/width from colgroup */
+div.govuk-body table colgroup {
+    display: none;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 640px) {
+    div.govuk-body {
+        font-size: 1.5rem;
+        overflow-x: auto;
+    }
+
+    div.govuk-body table {
+        width: 100% !important;
+        table-layout: auto;
+    }
+
+    div.govuk-body table thead,
+    div.govuk-body table tr th,
+    .tbl-responsive thead,
+    .tbl-responsive tr th {
+        display: none;
+    }
+
+    div.govuk-body table tbody td,
+    .tbl-responsive tbody td {
+        display: block;
+        padding: 0.6rem;
+        text-align: right;
+        padding-right: 20px;
+        width: 100% !important;
+        font-size: 1rem;
+        border: solid 1px #fff;
+        box-sizing: border-box;
+    }
+
+    div.govuk-body table tbody tr td:first-child,
+    .tbl-responsive tbody tr td:first-child {
+        background: #830065;
+        color: #fff;
+        width: 100% !important;
+        font-weight: bold;
+    }
+
+    div.govuk-body table tbody tr td.background-gray,
+    .tbl-responsive tbody tr td.background-gray {
+        background: #e3e4e6;
+        color: #000;
+    }
+
+    div.govuk-body tbody td:before,
+    .tbl-responsive tbody td:before {
+        content: attr(data-th);
+        font-weight: bold;
+        display: inline-block;
+        width: 1rem;
+        float: left;
+    }
+
+    div.govuk-body table tbody td[data-title]:before,
+    .tbl-responsive tbody td[data-title]:before {
+        content: attr(data-title);
+        float: left;
+        font-size: 0.8em;
+        color: #041c2c;
+        padding-right: 6px;
+        min-width: 100px;
+        display: inline-block;
+        text-align: left;
+    }
+
+    div.govuk-body table tbody td[data-title].text-white:before,
+    .tbl-responsive tbody td[data-title].text-white:before {
+        color: #fff !important;
+    }
+
+    div.govuk-body table tbody td.width-full,
+    .tbl-responsive tbody td.width-full {
+        display: block;
+        padding: 5px;
+        text-align: left;
+    }
+
+    div.govuk-body table td.width-full:before,
+    .tbl-responsive tbody td.width-full:before {
+        content: attr(data-th);
+        font-weight: 700;
+        display: inline-block;
+        width: 100%;
+        float: left;
+        text-align: left;
+        background-color: #830065;
+        color: #fff;
+        padding: 10px 5px;
+        box-sizing: border-box;
+    }
+}
+
+/* Small screen optimizations */
+@media screen and (max-width: 480px) {
+    div.govuk-body table tbody td {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+    
+    div.govuk-body table tbody td[data-title]:before {
+        min-width: 70px;
+        font-size: 0.7em;
+    }
+}
+
+/* Print styles - optional */
+@media print {
+    div.govuk-body table {
+        width: 100% !important;
+        table-layout: auto;
+    }
+    
+    div.govuk-body table tbody td {
+        background: #f5f5f5 !important;
+    }
+}
