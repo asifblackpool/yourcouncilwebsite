@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://localhost:5001/your-council/the-council/council-make-up",
+      "applicationUrl": "https://localhost:5001/your-council/the-council/council-constitution-and-plans/blackpool-council-constitution-1/part-4a-procedural-standing-orders-for-council-and-committees#c-4-extraordinary-meetings",
       "sslPort": 44322
     }
   },
@@ -13,7 +13,7 @@
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/your-council/the-council/council-make-up",
+      "launchUrl": "https://localhost:5001/your-council/the-council/council-constitution-and-plans/blackpool-council-constitution-1/part-4a-procedural-standing-orders-for-council-and-committees#c-4-extraordinary-meetings",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +21,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/your-council/the-council/council-make-up",
+      "launchUrl": "https://localhost:5001/your-council/the-council/council-constitution-and-plans/blackpool-council-constitution-1/part-4a-procedural-standing-orders-for-council-and-committees#c-4-extraordinary-meetings",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

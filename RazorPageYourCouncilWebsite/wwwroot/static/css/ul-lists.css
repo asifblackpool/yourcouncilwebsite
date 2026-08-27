@@ -2,6 +2,7 @@
 :root {
     --ul-primary-color: #041c2c; 
     --ul-print-color: #000;
+    --link-color: #830065;
 }
 
 /* ----- BASE STYLES (shared for both ul and ol) ----- */
@@ -38,6 +39,11 @@ ol.shade-black {
 ul.shade-black > li,
 ol.shade-black > li {
     margin-bottom: 0; /* GOV.UK: no gap on mobile for compactness */
+}
+
+ul.shade-black > li > a,
+ol.shade-black > li > a {
+    color: var(--link-color)
 }
 
 /* ----- NESTED SUB-LISTS (any combination) ----- */
