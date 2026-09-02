@@ -1,10 +1,11 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 8080
+EXPOSE 3001
 EXPOSE 443
 
 # Set production environment
 ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://*:3001
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 

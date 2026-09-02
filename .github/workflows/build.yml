@@ -81,6 +81,7 @@ jobs:
             --build-arg ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} \
             --build-arg BLOCK_ID=${{ secrets.BLOCK_ID }} \
             --build-arg TARGETARCH=amd64 \
+            --build-arg ASPNETCORE_URLS=http://*:3001 \
             -t ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} \
             -t ${{ env.IMAGE_NAME }}:latest \
             .

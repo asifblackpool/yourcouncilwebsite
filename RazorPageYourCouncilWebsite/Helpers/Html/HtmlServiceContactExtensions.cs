@@ -14,7 +14,7 @@ namespace RazorPageYourCouncilWebsite.Helpers.Html
         public bool ShowServiceType { get; set; } = true;
         public string ServiceTypeText { get; set; } = "Blackpool Council Service";
         public bool ShowOpeningHours { get; set; } = true;
-        public string OpeningHoursText { get; set; } = "Monday to Friday, 9am to 5pm";
+        public string OpeningHoursText { get; set; } = "";
 
         // Content options
         public string? AdditionalInfo { get; set; }

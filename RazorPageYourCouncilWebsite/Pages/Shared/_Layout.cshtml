@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="~/static/css/youtube.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/servicemessage.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/AdditionalInformation.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/images.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/image-gallery.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/image-text-component.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/tile-navigation.css" asp-append-version="true" />
@@ -131,7 +132,7 @@
                                 </div>
                             }
                             @await Component.InvokeAsync("Title")
-                            <partial name="Global/_linkstopdf" />
+                            <partial name="Global/_linkstopdf" model="Model.ViewModel.ConcreteModel" />
                         </div>
                     </div>
                     <div class="row zero-pad-left zero-pad-right">

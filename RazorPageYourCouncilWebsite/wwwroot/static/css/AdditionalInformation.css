@@ -16,6 +16,9 @@
     margin-bottom: 2rem;
     border-radius: 0px;
     /*box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
+    padding-top: 1rem;
+    position: relative;
+    top: -1rem;
 }
 
     .sidebar-title, nav.nav-contents > h3 {
@@ -23,8 +26,11 @@
         border-bottom: 2px solid #dee2e6;
         padding-bottom: 0.75rem;
         margin-bottom: 1.5rem;
-        font-size: 2.1rem;
+        font-size: 1.7rem;
         font-weight: 600;
+        /* padding-top: 1rem; */
+        /* position: relative; */
+        /* top: -1rem; */
     }
 
 .sidebar-section {
@@ -56,6 +62,12 @@ nav.nav-contents > ul > li > a {
 
 .nav-link-item {
     margin-bottom: 0.5rem;
+}
+
+.nav-link-item > span {
+
+  display:inline-block;
+  font-size:1.25 rem;
 }
 
 .nav-link-item:last-child {
@@ -208,7 +220,7 @@ nav.nav-contents > ul > li > a {
 
 .entry-title {
     margin: 0 0 0.5rem 0;
-    font-size: 1.6rem;
+    font-size: 1.25rem;
     font-weight: 400;
     color: var(--secondary-base-color);
     line-height: 1.3;
