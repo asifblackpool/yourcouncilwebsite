@@ -1,4 +1,5 @@
 ﻿using Content.Modelling.Models.Canvas.Quote;
+using Content.Modelling.Models.Canvas.Tables;
 using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
 using RazorPageYourCouncilWebsite.Core.Services.ContentHandling.Interfaces;
@@ -17,7 +18,16 @@ namespace RazorPageYourCouncilWebsite.Core.Services.ContentHandling.Handlers
 
         string IContentHandler.ContentType => throw new NotImplementedException();
 
-        public bool CanHandle(string className) => className == typeof(Quote).Name;
+        public bool CanHandle(string className)
+        {
+            var expected = typeof(Quote).Name;
+            var result = className == expected;
+            System.Diagnostics.Debug.WriteLine(
+                $">>> QuoteHandler.CanHandle: incoming=\"{className}\" expected=\"{expected}\" match={result}");
+            return result;
+        }
+
+        //public bool CanHandle(string className) => className == typeof(Table).Name;
 
         public async Task<IHtmlContent> HandleAsync(SerialisedItem item)
         {

@@ -1,4 +1,4 @@
-
+﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -24,7 +24,7 @@ namespace RazorPageYourCouncilWebsite.Helpers.ContextView
                 throw new ArgumentNullException(nameof(httpContext));
 
             var modelMetadataProvider = new EmptyModelMetadataProvider();
-            
+
             return new ViewContext(
                 new ActionContext(
                     httpContext,
@@ -49,7 +49,7 @@ namespace RazorPageYourCouncilWebsite.Helpers.ContextView
         {
             if (viewContextAware == null)
                 throw new ArgumentNullException(nameof(viewContextAware));
-            
+
             if (httpContext == null)
                 throw new ArgumentNullException(nameof(httpContext));
 
