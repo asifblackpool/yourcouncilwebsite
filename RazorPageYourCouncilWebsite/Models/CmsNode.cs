@@ -1,13 +1,18 @@
 ﻿namespace RazorPageYourCouncilWebsite.Models
 {
+  
+
     public class CmsNode
     {
-        public string Path { get; set; } = "";
-        public string Title { get; set; } = "";
-        public string ContentType { get; set; } = "";
-        public string HtmlContent { get; set; } = "";
-        public string Slug { get; set; } = "";
-        public Dictionary<string, object> Fields { get; set; } = new();
-        public List<CmsNode> Children { get; set; } = new();
+        public Guid? EntryId { get; set; }
+        public string Path { get; set; } = string.Empty;
+        public string Slug { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string ContentType { get; set; } = string.Empty;
+        public string HtmlContent { get; set; } = string.Empty;
+
+        // Fully-hydrated entry JSON (all inline refs resolved).
+        // Null when the entry could not be fetched.
+        public string? EntryJson { get; set; }
     }
 }

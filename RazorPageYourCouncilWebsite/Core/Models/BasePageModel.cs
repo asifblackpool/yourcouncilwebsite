@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 namespace RazorPageYourCouncilWebsite.Core.Models
 {
-    public class BasePageModel<T> : PageModel where T : class
+    public class BasePageModel<T> : PageModel where T : class, new()
     {
         public DetailsViewModel ViewModel { get; set; } = new();
 
@@ -29,7 +29,7 @@ namespace RazorPageYourCouncilWebsite.Core.Models
             {
                 string? path = HttpContext.Request.Path;
                 path = path == null ? string.Empty : path.RemoveFileExtension(FILE_Extension.ASPX);
-                return path == null ? string.Empty : path;
+                return path ?? string.Empty;
             }
         }
 
@@ -43,27 +43,27 @@ namespace RazorPageYourCouncilWebsite.Core.Models
         public List<T> Items { get; protected set; } = new();
 
         // Constructor with DI
-        public BasePageModel(ILogger<BasePageModel<T>> logger,IDataService<T> dataService,
-                             IContentRepository contentRepository, BreadcrumbService breadcrumb)
+        public BasePageModel(
+            ILogger<BasePageModel<T>> logger,
+            IDataService<T> dataService,
+            IContentRepository contentRepository,
+            BreadcrumbService breadcrumb)
         {
             _logger = logger;
             _dataService = dataService;
             _breadcrumb = breadcrumb;
             _contentRepository = contentRepository;
-
-            
         }
 
         // Shared initialization
         public virtual async Task OnGetAsync()
         {
-            _logger.LogInformation($"Loading {PageType} data");
+            _logger.LogInformation("Loading {PageType} data", PageType);
+
             Items = await _dataService.GetAllAsync();
             Reset();
 
-            ViewData["Title"]           = $"{PageType}s - {DateTime.Now.Year}";
-         
-
+            ViewData["Title"] = $"{PageType}s - {DateTime.Now.Year}";
 
             StoreTitle(Items);
             StoreImageStrip(Items);
@@ -71,77 +71,118 @@ namespace RazorPageYourCouncilWebsite.Core.Models
 
         public virtual async Task OnGetByPathAsync(string path)
         {
-            _logger.LogInformation($"Loading {PageType} data");
+            _logger.LogInformation("Loading {PageType} data", PageType);
+
             Items = await _dataService.GetAllAsync(path);
             Reset();
+
             ViewData["Title"] = $"{PageType}s - {DateTime.Now.Year}";
+
             StoreTitle(Items);
             StoreImageStrip(Items);
-
         }
 
-        // Example of using content repository inside your page model
-        protected List<TChild> GetChildEntries<TChild>(string parentUri) where TChild : class, IPageTemplates
+        protected Task<List<TChild>> GetChildEntriesAsync<TChild>(string parentUri)
+        where TChild : class, IPageTemplates
         {
-            return _contentRepository.GetChildEntries<TChild>(parentUri);
+            return _contentRepository.GetChildEntriesAsync<TChild>(parentUri);
         }
 
         // Shared method
         protected void LogAction(string action)
         {
-            _logger.LogInformation($"{PageType} action: {action}");
+            _logger.LogInformation("{PageType} action: {Action}", PageType, action);
         }
 
-        // Usage in your method:
+        /// <summary>
+        /// Populates the strongly-typed ConcreteModel from the raw item,
+        /// keeping ViewData in sync for backward compatibility.
+        /// </summary>
         protected void PopulateConcreteModel(List<T> items)
         {
-            Helpers.Serialisation.SerializationHelper sh = new Helpers.Serialisation.SerializationHelper();
-
-            if (items?.Count > 0)
+            if (items == null || items.Count == 0)
             {
-                var item = items.First();
-
-                // Always try to get the concrete type
-                if (item != null)
-                {
-                
-                    string? content = (item != null) ? item.ToString(): string.Empty;
-                    if (content != null)
-                    {
-                        SerialisedItem temp = new SerialisedItem("baseBGkey", typeof(BaseBG), content, "");
-                        BaseBG? baseIem = sh.Deserialize<BaseBG>(temp);
-                        if (baseIem != null) 
-                        {
-                            string contentTypeId = baseIem.Sys.ContentTypeId;
-                            
-                        var concreteModel = BGTypeResolver.DeserializeToConcreteType(contentTypeId, content);
-
-
-                        // The concreteModel is already the correct type!
-                        ViewModel.ConcreteModel         = concreteModel as BaseBG;
-                        ViewModel.ContentTypeId         = contentTypeId;
-                        ViewModel.ModelType             = concreteModel?.GetType().Name;
-                        ViewModel.OriginalItems         = Items as List<dynamic>;
-                        if (ViewModel.ConcreteModel != null) {
-                            ViewModel.ModelTitle = ViewModel.ConcreteModel.PageTitle;
-                        }
-
-                        ViewModel.DataMessage           = _dataService.StatusMessage();
-
-                            // Keep ViewData in sync for backward compatibilty
-                        ViewData["Model"]               = ViewModel.ConcreteModel;
-                        ViewData["ModelType"]           = ViewModel.ModelType;
-                        ViewData["ContentTypeId"]       = ViewModel.ContentTypeId;
-
-                        }
-                    }    
-                }
-                else
-                {
-                    ViewData["Model"] = null;
-                }
+                ViewData["Model"] = null;
+                return;
             }
 
+            var item = items.First();
+            if (item == null)
+            {
+                ViewData["Model"] = null;
+                return;
+            }
+
+            // Serialize ONCE to JSON. Do not use item.ToString() — that returns
+            // the type name for strongly-typed T, not the JSON payload.
+            string content = JsonConvert.SerializeObject(item);
+
+            string? contentTypeId = TryGetContentTypeId(item);
+            if (string.IsNullOrEmpty(contentTypeId))
+            {
+                ViewData["Model"] = null;
+                return;
+            }
+
+            // Single deserialize into the concrete type.
+            var concreteModel = BGTypeResolver.DeserializeToConcreteType(contentTypeId, content, _logger);
+
+            ViewModel.ConcreteModel = concreteModel as BaseBG;
+            ViewModel.ContentTypeId = contentTypeId;
+            ViewModel.ModelType = concreteModel?.GetType().Name;
+
+            // NOTE: OriginalItems is intentionally NOT set.
+            // Holding the raw dynamic graph on the view model keeps the whole
+            // entry (canvas + components + assets) alive for the request lifetime.
+            // If a view needs OriginalItems, resolve just the specific fields
+            // it uses instead of retaining the raw graph.
+
+            if (ViewModel.ConcreteModel != null)
+            {
+                ViewModel.ModelTitle = ViewModel.ConcreteModel.PageTitle;
+            }
+
+            ViewModel.DataMessage = _dataService.StatusMessage();
+
+            // Keep ViewData in sync for backward compatibility
+            ViewData["Model"] = ViewModel.ConcreteModel;
+            ViewData["ModelType"] = ViewModel.ModelType;
+            ViewData["ContentTypeId"] = ViewModel.ContentTypeId;
+        }
+
+        /// <summary>
+        /// Reads sys.contentTypeId without a full deserialize round-trip.
+        /// Handles JObject, IDictionary (ExpandoObject), and strongly-typed models.
+        /// </summary>
+        private static string? TryGetContentTypeId(object item)
+        {
+            try
+            {
+                // JObject shape
+                if (item is Newtonsoft.Json.Linq.JObject jObj)
+                {
+                    return jObj["sys"]?["contentTypeId"]?.ToString();
+                }
+
+                // ExpandoObject / IDictionary shape
+                if (item is IDictionary<string, object> dict
+                    && dict.TryGetValue("sys", out var sysObj)
+                    && sysObj is IDictionary<string, object> sysDict
+                    && sysDict.TryGetValue("contentTypeId", out var ctid))
+                {
+                    return ctid?.ToString();
+                }
+
+                // Strongly-typed model with a Sys property
+                var sysProp = item.GetType().GetProperty("Sys");
+                var sys = sysProp?.GetValue(item);
+                var ctProp = sys?.GetType().GetProperty("ContentTypeId");
+                return ctProp?.GetValue(sys)?.ToString();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -155,28 +196,30 @@ namespace RazorPageYourCouncilWebsite.Core.Models
         private void StoreTitle(List<T> items)
         {
             ViewData["Title"] = $"{PageType}s - {DateTime.Now.Year}";
-            var temp = items != null && items.Count > 0 ? (dynamic)items.First() : null;
-            if (temp != null)
 
+            if (items == null || items.Count == 0)
+                return;
+
+            var first = items.First();
+            if (first == null)
+                return;
+
+            // Reflection instead of dynamic + try/catch.
+            // Avoids per-access runtime binding cost and hides no exceptions.
+            var type = first.GetType();
+            var titleValue =
+                type.GetProperty("Title")?.GetValue(first)?.ToString()
+                ?? type.GetProperty("PageTitle")?.GetValue(first)?.ToString();
+
+            if (!string.IsNullOrEmpty(titleValue))
             {
-                try
-                {
-                    ViewData["Title"] = temp.Title != null ? temp.Title : temp.PageTitle; // Works if T has Title, but throws exception if it doesn't
-                }
-                catch
-                {
-                    ViewData["Title"] = null;
-                }
-
+                ViewData["Title"] = titleValue;
             }
-
         }
 
         private void StoreImageStrip(List<T> items)
-
-
         {
-           
+            // Intentionally empty for now.
         }
 
         private void Reset()
@@ -187,51 +230,54 @@ namespace RazorPageYourCouncilWebsite.Core.Models
         }
     }
 
-    #region BT Type Resolver 
-    
-        public static class BGTypeResolver
+    #region BG Type Resolver
+
+    public static class BGTypeResolver
+    {
+        private static readonly Dictionary<string, Type> _typeMap = new()
         {
-            private static readonly Dictionary<string, Type> _typeMap = new()
-            {
-                { ContensisClientKeys.BG_STANDARD, typeof(BGStandard) },
-                { ContensisClientKeys.BG_STANDARD_WITH_IMAGES, typeof(BGStandardWithImages) },
-                { ContensisClientKeys.BG_STANDARD_WITH_FORMS, typeof(BGStandardWithForms) },
-                { ContensisClientKeys.BG_STANDARD_WITH_DOCUMENTS, typeof(BGStandardWithDocuments) },
-                { ContensisClientKeys.BG_STANDARD_SERVICE_LANDING_TILE, typeof(BGServiceLandingTile) },
-                { ContensisClientKeys.BG_STANDARD_SERVICE_LANDING_PAGE, typeof(BGServiceLanding) },
-                { ContensisClientKeys.BG_STANDARD_SERVICE_ACCORDION_PAGE, typeof(BGServiceLandingAccordion) },
-             
-            };
+            { ContensisClientKeys.BG_STANDARD, typeof(BGStandard) },
+            { ContensisClientKeys.BG_STANDARD_WITH_IMAGES, typeof(BGStandardWithImages) },
+            { ContensisClientKeys.BG_STANDARD_WITH_FORMS, typeof(BGStandardWithForms) },
+            { ContensisClientKeys.BG_STANDARD_WITH_DOCUMENTS, typeof(BGStandardWithDocuments) },
+            { ContensisClientKeys.BG_STANDARD_SERVICE_LANDING_TILE, typeof(BGServiceLandingTile) },
+            { ContensisClientKeys.BG_STANDARD_SERVICE_LANDING_PAGE, typeof(BGServiceLanding) },
+            { ContensisClientKeys.BG_STANDARD_SERVICE_ACCORDION_PAGE, typeof(BGServiceLandingAccordion) },
+        };
 
-            private static readonly JsonSerializerSettings _jsonSettings = new()
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                NullValueHandling = NullValueHandling.Ignore
-            };
+        private static readonly JsonSerializerSettings _jsonSettings = new()
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            NullValueHandling = NullValueHandling.Ignore
+        };
 
-            public static Type GetConcreteType(string contentTypeId)
-            {
-                return _typeMap.TryGetValue(contentTypeId, out var type) ? type : typeof(BaseBG);
-            }
-
-            public static object? DeserializeToConcreteType(string contentTypeId, string json)
-            {
-                if (string.IsNullOrEmpty(json)) return null;
-
-                var concreteType = GetConcreteType(contentTypeId);
-
-                try
-                {
-                    return JsonConvert.DeserializeObject(json, concreteType, _jsonSettings);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Failed to deserialize JSON to {concreteType.Name}: {ex.Message}");
-                    return null;
-                }
-            }
+        public static Type GetConcreteType(string contentTypeId)
+        {
+            return _typeMap.TryGetValue(contentTypeId, out var type) ? type : typeof(BaseBG);
         }
 
-    #endregion
+        public static object? DeserializeToConcreteType(
+            string contentTypeId,
+            string json,
+            ILogger? logger = null)
+        {
+            if (string.IsNullOrEmpty(json)) return null;
 
+            var concreteType = GetConcreteType(contentTypeId);
+
+            try
+            {
+                return JsonConvert.DeserializeObject(json, concreteType, _jsonSettings);
+            }
+            catch (Exception ex)
+            {
+                // Logger instead of Console.WriteLine so failures surface in Contensis logs.
+                logger?.LogError(ex,
+                    "Failed to deserialize JSON to {ConcreteType}", concreteType.Name);
+                return null;
+            }
+        }
+    }
+
+    #endregion
 }

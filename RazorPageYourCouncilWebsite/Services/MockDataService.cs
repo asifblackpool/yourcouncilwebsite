@@ -5,18 +5,16 @@ using System.Reflection;
 
 namespace RazorPageYourCouncilWebsite.Services
 {
-
     public class MockDataService<T> : IDataService<T> where T : class, new()
     {
         private List<T> _mockData;
-        private string _path        = "";
-        private bool _dataLoaded    = false;
+        private string _path = "";
+        private bool _dataLoaded = false;
 
         // Proper constructor with no return type
         public MockDataService()
         {
             _mockData = new List<T>();
-          
         }
 
         private void LoadMockData()
@@ -24,19 +22,19 @@ namespace RazorPageYourCouncilWebsite.Services
             if (typeof(T) == typeof(Product))
             {
                 var products = new List<Product>
-            {
-                new Product { Id = 1, Name = "Wireless Mouse", Price = 24.99m },
-                new Product { Id = 2, Name = "Keyboard", Price = 49.99m }
-            };
+                {
+                    new Product { Id = 1, Name = "Wireless Mouse", Price = 24.99m },
+                    new Product { Id = 2, Name = "Keyboard", Price = 49.99m }
+                };
                 _mockData = products.Cast<T>().ToList();
             }
             else if (typeof(T) == typeof(Customer))
             {
                 var customers = new List<Customer>
-            {
-                new Customer { Id = 1, Name = "John Doe", Email = "john@example.com" },
-                new Customer { Id = 2, Name = "Jane Smith", Email = "jane@example.com" }
-            };
+                {
+                    new Customer { Id = 1, Name = "John Doe", Email = "john@example.com" },
+                    new Customer { Id = 2, Name = "Jane Smith", Email = "jane@example.com" }
+                };
                 _mockData = customers.Cast<T>().ToList();
             }
             else
@@ -44,17 +42,24 @@ namespace RazorPageYourCouncilWebsite.Services
                 // Default empty list for other types
                 _mockData = new List<T>();
             }
+
+            _dataLoaded = true;
+            _path = _path ?? "";
         }
 
         private void CheckData(string? path)
         {
-            if (_dataLoaded == false){
+            if (_dataLoaded == false)
+            {
                 LoadMockData();
             }
-            else{
+            else
+            {
                 if (path != null && _path != path)
                     LoadMockData();
             }
+
+            _path = path ?? "";
         }
 
         public string StatusMessage()
@@ -62,7 +67,8 @@ namespace RazorPageYourCouncilWebsite.Services
             return string.Empty;
         }
 
-        public Task<List<T>> GetAllAsync(string? path)
+        // Signature now matches the interface: both params optional.
+        public Task<List<T>> GetAllAsync(string? path = null, Guid? entryId = null)
         {
             CheckData(path);
             return Task.FromResult(_mockData);
@@ -75,5 +81,4 @@ namespace RazorPageYourCouncilWebsite.Services
             return Task.FromResult(item);
         }
     }
-
 }

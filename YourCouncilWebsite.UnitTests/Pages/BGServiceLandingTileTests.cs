@@ -9,7 +9,6 @@ using RazorPageYourCouncilWebsite.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
 using System.Text.Json;
 using Xunit;
 
@@ -31,7 +30,6 @@ namespace YourCouncilWebsite.UnitTests.Pages
         [Fact]
         public void BGServiceLandingTile_Can_Create_With_Basic_Properties()
         {
-            // Arrange & Act
             var tile = new BGServiceLandingTile
             {
                 PageTitle = "Test Service Landing Page",
@@ -40,7 +38,6 @@ namespace YourCouncilWebsite.UnitTests.Pages
                 TileLayout = TileLayout.ThreeTilesInARow
             };
 
-            // Assert
             Assert.Equal("Test Service Landing Page", tile.PageTitle);
             Assert.Equal("This is a test meta description that needs to be between 50 and 100 characters for proper SEO optimization.", tile.MetaDescription);
             Assert.Equal("test-bot-123", tile.ChatBotId);
@@ -50,7 +47,6 @@ namespace YourCouncilWebsite.UnitTests.Pages
         [Fact]
         public void BGServiceLandingTile_Can_Hold_NavigationTiles()
         {
-            // Arrange
             var navigationTiles = new List<NavigationTile>
             {
                 new NavigationTile
@@ -82,14 +78,12 @@ namespace YourCouncilWebsite.UnitTests.Pages
                 }
             };
 
-            // Act
             var tile = new BGServiceLandingTile
             {
                 PageTitle = "Service Landing",
                 NavigationTile = navigationTiles
             };
 
-            // Assert
             Assert.NotNull(tile.NavigationTile);
             Assert.Equal(3, tile.NavigationTile.Count);
             Assert.Equal("Tile 1", tile.NavigationTile[0].Title);
@@ -99,7 +93,6 @@ namespace YourCouncilWebsite.UnitTests.Pages
         [Fact]
         public void BGServiceLandingTile_Validates_TileCount_Minimum()
         {
-            // Arrange
             var tile = new BGServiceLandingTile
             {
                 PageTitle = "Service Landing",
@@ -109,12 +102,10 @@ namespace YourCouncilWebsite.UnitTests.Pages
                 }
             };
 
-            // Act
             var validationResults = new List<ValidationResult>();
             var validationContext = new ValidationContext(tile);
             var isValid = Validator.TryValidateObject(tile, validationContext, validationResults, true);
 
-            // Assert - Should fail validation due to min count
             Assert.False(isValid);
             Assert.Contains(validationResults, v => v.ErrorMessage != null &&
                 v.ErrorMessage.Contains("minimum of 3 tiles"));
@@ -123,7 +114,6 @@ namespace YourCouncilWebsite.UnitTests.Pages
         [Fact]
         public void BGServiceLandingTile_Validates_TileCount_Maximum()
         {
-            // Arrange
             var tiles = new List<NavigationTile>();
             for (int i = 0; i < 20; i++)
             {
@@ -136,12 +126,10 @@ namespace YourCouncilWebsite.UnitTests.Pages
                 NavigationTile = tiles
             };
 
-            // Act
             var validationResults = new List<ValidationResult>();
             var validationContext = new ValidationContext(tile);
             var isValid = Validator.TryValidateObject(tile, validationContext, validationResults, true);
 
-            // Assert - Should fail validation due to max count
             Assert.False(isValid);
             Assert.Contains(validationResults, v => v.ErrorMessage != null &&
                 v.ErrorMessage.Contains("maximum of 16"));
@@ -150,19 +138,16 @@ namespace YourCouncilWebsite.UnitTests.Pages
         [Fact]
         public void BGServiceLandingTile_With_Null_NavigationTile_Fails_Validation()
         {
-            // Arrange
             var tile = new BGServiceLandingTile
             {
                 PageTitle = "Service Landing",
                 NavigationTile = null
             };
 
-            // Act
             var validationResults = new List<ValidationResult>();
             var validationContext = new ValidationContext(tile);
             var isValid = Validator.TryValidateObject(tile, validationContext, validationResults, true);
 
-            // Assert - Should fail validation due to required
             Assert.False(isValid);
             Assert.Contains(validationResults, v => v.ErrorMessage != null &&
                 v.ErrorMessage.Contains("minimum of 3 tiles"));
@@ -171,7 +156,6 @@ namespace YourCouncilWebsite.UnitTests.Pages
         [Fact]
         public void BGServiceLandingTile_Can_Process_JsonElement_Canvas()
         {
-            // Arrange
             var jsonString = @"
             {
                 ""type"": ""paragraph"",
@@ -191,38 +175,31 @@ namespace YourCouncilWebsite.UnitTests.Pages
                 Canvas = jsonElement
             };
 
-            // Act
             var serialisedContent = tile.GetSerialisedCanvas();
 
-            // Assert
             Assert.NotNull(serialisedContent);
         }
 
         [Fact]
         public void BGServiceLandingTile_Returns_Empty_SerialisedContent_When_Canvas_Null()
         {
-            // Arrange
             var tile = new BGServiceLandingTile
             {
                 PageTitle = "Service Landing",
                 Canvas = null
             };
 
-            // Act
             var serialisedContent = tile.GetSerialisedCanvas();
 
-            // Assert
             Assert.NotNull(serialisedContent);
         }
 
         [Fact]
         public void BGServiceLandingTile_Can_Set_Different_TileLayouts()
         {
-            // Arrange & Act
             var tile3Rows = new BGServiceLandingTile { TileLayout = TileLayout.ThreeTilesInARow };
             var tile4Rows = new BGServiceLandingTile { TileLayout = TileLayout.FourTilesInARow };
 
-            // Assert
             Assert.Equal(TileLayout.ThreeTilesInARow, tile3Rows.TileLayout);
             Assert.Equal(3, (int)tile3Rows.TileLayout);
 
@@ -233,9 +210,8 @@ namespace YourCouncilWebsite.UnitTests.Pages
         [Fact]
         public void BGServiceLandingTile_With_All_Properties_Populated_Passes_Validation()
         {
-            // Arrange
             var tiles = new List<NavigationTile>();
-            for (int i = 0; i < 6; i++) // Within 3-16 range
+            for (int i = 0; i < 6; i++)
             {
                 tiles.Add(new NavigationTile
                 {
@@ -254,12 +230,10 @@ namespace YourCouncilWebsite.UnitTests.Pages
                 NavigationTile = tiles
             };
 
-            // Act
             var validationResults = new List<ValidationResult>();
             var validationContext = new ValidationContext(tile);
             var isValid = Validator.TryValidateObject(tile, validationContext, validationResults, true);
 
-            // Assert
             Assert.True(isValid);
             Assert.Empty(validationResults);
         }
@@ -267,7 +241,6 @@ namespace YourCouncilWebsite.UnitTests.Pages
         [Fact]
         public async Task BGServiceLandingTile_Can_Be_Retrieved_By_Path_From_DataService()
         {
-            // Arrange
             var expectedTile = new BGServiceLandingTile
             {
                 PageTitle = "DataService Test",
@@ -281,23 +254,21 @@ namespace YourCouncilWebsite.UnitTests.Pages
 
             var tilesList = new List<BGServiceLandingTile> { expectedTile };
 
-            _mockDataService.Setup(x => x.GetAllAsync("/test-path"))
-                            .ReturnsAsync(tilesList);
+            _mockDataService
+                .Setup(x => x.GetAllAsync("/test-path", null))
+                .ReturnsAsync(tilesList);
 
-            // Act
             var result = (await _mockDataService.Object.GetAllAsync("/test-path")).FirstOrDefault();
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal("DataService Test", result.PageTitle);
             Assert.Equal(3, result.NavigationTile.Count);
-            _mockDataService.Verify(x => x.GetAllAsync("/test-path"), Times.Once);
+            _mockDataService.Verify(x => x.GetAllAsync("/test-path", null), Times.Once);
         }
 
         [Fact]
-        public void BGServiceLandingTile_Can_Get_ChildEntries_With_NavigationTiles()
+        public async Task BGServiceLandingTile_Can_Get_ChildEntries_With_NavigationTiles()
         {
-            // Arrange
             var childTiles = new List<BGServiceLandingTile>
             {
                 new BGServiceLandingTile
@@ -321,24 +292,20 @@ namespace YourCouncilWebsite.UnitTests.Pages
                 }
             };
 
-            _mockRepo.Setup(r => r.GetChildEntries<BGServiceLandingTile>("/parent"))
-                     .Returns(childTiles);
+            _mockRepo
+                .Setup(r => r.GetChildEntriesAsync<BGServiceLandingTile>("/parent"))
+                .ReturnsAsync(childTiles);
 
-            // Act
-            var result = _mockRepo.Object.GetChildEntries<BGServiceLandingTile>("/parent").ToList();
+            var result = (await _mockRepo.Object
+                .GetChildEntriesAsync<BGServiceLandingTile>("/parent"))
+                .ToList();
 
-            // Assert
             Assert.Equal(2, result.Count);
             Assert.Equal("Child 1", result[0].PageTitle);
             Assert.Equal(2, result[0].NavigationTile.Count);
             Assert.Equal("Child 2", result[1].PageTitle);
             Assert.Equal(3, result[1].NavigationTile.Count);
-            _mockRepo.Verify(r => r.GetChildEntries<BGServiceLandingTile>("/parent"), Times.Once);
+            _mockRepo.Verify(r => r.GetChildEntriesAsync<BGServiceLandingTile>("/parent"), Times.Once);
         }
     }
 }
-
-
-
-  
-

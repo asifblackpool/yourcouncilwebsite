@@ -9,7 +9,11 @@ namespace RazorPageYourCouncilWebsite.Controllers
     {
         // Tell the base controller to look for views in the "Your council" folder
         protected override string ViewFolder => WebsiteConstants.VIEW_FOLDER;
-        public YourCouncilSectionController(IZengentiClient cmsClient, ICmsViewModelFactory viewModelFactory, ILogger<YourCouncilSectionController> logger)
+
+        public YourCouncilSectionController(
+            IZengentiClient cmsClient,
+            ICmsViewModelFactory viewModelFactory,
+            ILogger<YourCouncilSectionController> logger)
             : base(cmsClient, viewModelFactory, logger) { }
 
         public async Task<IActionResult> Index(string section, string slug)
@@ -17,30 +21,16 @@ namespace RazorPageYourCouncilWebsite.Controllers
             if (string.IsNullOrEmpty(section))
                 return NotFound();
 
-            // 1. Get the "your council" root node
-            var node = await _cmsClient.GetNodeByPathAsync(ViewFolder);
-            if (node == null)
-                return NotFound();
-
-            // 2. Get all direct children of the your council node
-            var children = await _cmsClient.GetChildNodesAsync(node.Path);
-            if (children == null || children.Count == 0)
-                return NotFound();
-
-            // 3. Find a child whose Slug matches the requested section (case‑insensitive)
-            var matchedChild = children.FirstOrDefault(c =>
-                string.Equals(c.Slug, section, StringComparison.OrdinalIgnoreCase));
-
-            if (matchedChild == null)
-                return NotFound();
-
-            // 4. Build the full slug for RenderDynamicPageAsync
-            //    Use matchedChild.Slug as the base, then append any remaining slug parts
+            // Build the full slug for RenderDynamicPageAsync directly.
+            // We do NOT need to enumerate children of "your-council" to
+            // validate the section — the fetch inside RenderDynamicPageAsync
+            // will 404 naturally if the path doesn't exist.
             string fullSlug = string.IsNullOrEmpty(slug)
-                ? matchedChild.Slug
-                : $"{matchedChild.Slug}/{slug}";
+                ? section
+                : $"{section}/{slug}";
 
-            // 5. Delegate to base dynamic rendering (sectionRoot = "your-council")
+            // sectionRoot is "your-council" (the ViewFolder).
+            // RenderDynamicPageAsync builds the full path and fetches once.
             return await RenderDynamicPageAsync(ViewFolder, fullSlug);
         }
     }

@@ -5,6 +5,6 @@ namespace RazorPageYourCouncilWebsite.Core.Interfaces
 {
     public interface IContentService
     {
-        List<IPageTemplates> GetChildPages(string parentUri);
+        Task<List<IPageTemplates>> GetChildPagesAsync(string parentUri);
     }
 }

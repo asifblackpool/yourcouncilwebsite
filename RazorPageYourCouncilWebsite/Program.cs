@@ -47,7 +47,7 @@ builder.Services.AddScoped<ContensisClient>(sp =>
 });
 
 // Register generic data service (this depends on IContensisClient)
-builder.Services.AddTransient(typeof(IDataService<>), typeof(ContensisDataService<>));
+builder.Services.AddScoped(typeof(IDataService<>), typeof(ContensisDataService<>));
 builder.Services.AddTransient<IContentRepository, ContensisContentRepository>();
 
 // Register helpers
@@ -109,7 +109,15 @@ builder.Services.AddContentModelling(builder.Configuration, options =>
 // Register the factory that maps Contensis content types to view models
 builder.Services.AddScoped<ICmsViewModelFactory, CmsViewModelFactory>();
 
-builder.Services.AddMemoryCache();
+// ===== In-memory cache with size limit =====
+// SetSize(1) is used on every cache entry in ZengentiClientAdapter and
+// ContensisDataService, so this limit is enforced.
+// 1024 entries × ~5 min TTL is plenty for a site of this size; tune up if
+// you have a large number of distinct pages.
+builder.Services.AddMemoryCache(options =>
+{
+    options.SizeLimit = 1024;
+});
 
 var app = builder.Build();
 
@@ -135,7 +143,7 @@ else
 app.UseStaticFiles();
 
 // Redirect root to your-council
-app.UseRewriter(new RewriteOptions().AddRedirect("^$", WebsiteConstants.SITE_PATH,  app.Environment.IsDevelopment() ? 302 : 301));
+app.UseRewriter(new RewriteOptions().AddRedirect("^$", WebsiteConstants.SITE_PATH, app.Environment.IsDevelopment() ? 302 : 301));
 
 // Restrictive middleware has been REMOVED – now routing and controllers handle 404s.
 
@@ -156,8 +164,6 @@ app.MapControllerRoute(
     pattern: WebsiteConstants.SITE_PATH + "/{section}/{**slug}",
     defaults: new { controller = string.Format("{0}Section", WebsiteConstants.SITE_CONTROLLER), action = "Index" }
 );
-
-
 
 app.UseMiddleware<BreadcrumbMiddleware>();
 app.UseStatusCodePagesWithReExecute("/Error");

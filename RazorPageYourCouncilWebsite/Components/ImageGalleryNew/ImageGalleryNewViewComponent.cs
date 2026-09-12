@@ -1,5 +1,4 @@
-﻿using Content.Modelling.Models.Canvas.Images;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RazorPageYourCouncilWebsite.Components.Extensions;
 using RazorPageYourCouncilWebsite.Core.Models.ViewModels;
 using RazorPageYourCouncilWebsite.Helpers;

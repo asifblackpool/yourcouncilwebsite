@@ -1,53 +1,29 @@
 ﻿using RazorPageYourCouncilWebsite.Constants;
 using RazorPageYourCouncilWebsite.Core.Models;
 using System.Globalization;
-using System.IO;
 
 namespace RazorPageYourCouncilWebsite.Services.Breadcrumb
 {
-
+    /// <summary>
+    /// Builds breadcrumb navigation items from the request path.
+    ///
+    /// NOTE: This service is registered as Scoped in Program.cs.
+    /// The _items / _autoGenerate fields are per-request state.
+    /// Do NOT change this to Singleton without moving that state into
+    /// HttpContext.Items or similar, otherwise breadcrumbs will leak
+    /// between requests.
+    /// </summary>
     public class BreadcrumbService
     {
-        private readonly List<BreadcrumbItem> _items = new List<BreadcrumbItem>();
+        private readonly List<BreadcrumbItem> _items = new();
         private bool _autoGenerate = true;
 
-        #region filter breadcrumb
-
-        private string[] GetIgnoreListFromPath(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                return Array.Empty<string>();
-            }
-
-            // Split by '/' and remove empty entries (like leading/trailing slashes)
-            return path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        private List<BreadcrumbItem> FilterBreadcrumbs(List<BreadcrumbItem> breadcrumbs, string[] ignoreList)
-        {
-            if (breadcrumbs == null || ignoreList == null)
-                return breadcrumbs?.ToList() ?? new List<BreadcrumbItem>();
-
-            // Replace hyphens with spaces in ignoreList and convert to lowercase
-            var processedIgnoreList = ignoreList
-                .Select(x => x.Replace("-", " ").ToLowerInvariant())
-                .ToArray();
-
-            return breadcrumbs
-                .Where(b => b.Title != null &&
-                           !processedIgnoreList.Contains(
-                               b.Title.Replace("-", " ").ToLowerInvariant()))
-                .ToList();
-        }
-
-
-        #endregion
+        #region manual items (currently unused — kept for callers)
 
         public void AddItem(string title, string? url = null)
         {
             _items.Add(new BreadcrumbItem { Title = title, Url = url });
-            _autoGenerate = false; // Manual addition disables auto-generation
+            _autoGenerate = false;
         }
 
         public void Reset()
@@ -56,38 +32,46 @@ namespace RazorPageYourCouncilWebsite.Services.Breadcrumb
             _autoGenerate = true;
         }
 
-        public void EnableAutoGeneration()
-        {
-            _autoGenerate = true;
-        }
-
+        public void EnableAutoGeneration() => _autoGenerate = true;
         public void DisableAutoGeneration() => _autoGenerate = false;
+
+        #endregion
 
         public List<BreadcrumbItem> GetBreadcrumbs(HttpContext context)
         {
-            var finalItems = new List<BreadcrumbItem>();
+            var finalItems = new List<BreadcrumbItem>
+            {
+                // 1. Home
+                new BreadcrumbItem { Title = "Home", Url = "/" }
+            };
 
-            // 1. Root home page (domain root)
-            finalItems.Add(new BreadcrumbItem { Title = "Home", Url = "/" });
+            // 2. Section root (e.g. "your-council")
+            string? nodePath = WebsiteConstants.SITE_VIEW_PATH?
+                .TrimStart('/')
+                .TrimEnd('/');
 
-            // 2. your council node (from SITE_VIEW_PATH)
-            string? nodePath = WebsiteConstants.SITE_VIEW_PATH?.TrimStart('/').TrimEnd('/');
             if (!string.IsNullOrEmpty(nodePath))
             {
-                string councilTitle = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nodePath.Replace("-", " "));
-                finalItems.Add(new BreadcrumbItem { Title = councilTitle, Url = "/" + nodePath });
-            }
+                string councilTitle = CultureInfo.CurrentCulture.TextInfo
+                    .ToTitleCase(nodePath.Replace("-", " ").ToLowerInvariant());
 
+                finalItems.Add(new BreadcrumbItem
+                {
+                    Title = councilTitle,
+                    Url = "/" + nodePath.ToLowerInvariant()
+                });
+            }
 
             if (_autoGenerate)
             {
-                // Auto-generate from route
                 var path = context.Request.Path.Value ?? "";
-                // Remove leading slash and split
-                var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries).ToList();
+                var segments = path
+                    .Split('/', StringSplitOptions.RemoveEmptyEntries)
+                    .ToList();
 
-                // If the first segment matches the your-council path, skip it (already added)
-                if (segments.Count > 0 && segments[0].Equals(nodePath, StringComparison.OrdinalIgnoreCase))
+                // Skip the section root segment if present — already added above.
+                if (segments.Count > 0 &&
+                    segments[0].Equals(nodePath, StringComparison.OrdinalIgnoreCase))
                 {
                     segments.RemoveAt(0);
                 }
@@ -97,43 +81,47 @@ namespace RazorPageYourCouncilWebsite.Services.Breadcrumb
                 foreach (var segment in segments)
                 {
                     accumulatedPath += $"/{segment}";
-                    var title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(segment.Replace("-", " "));
-                    finalItems.Add(new BreadcrumbItem { Title = title, Url = string.Format("/{0}{1}", nodePath, accumulatedPath) });
+
+                    // Preserve natural casing for display.
+                    // "BLACKPOOL-CO-PRODUCTION" → "Blackpool Co Production".
+                    var title = CultureInfo.CurrentCulture.TextInfo
+                        .ToTitleCase(segment.Replace("-", " ").ToLowerInvariant());
+
+                    finalItems.Add(new BreadcrumbItem
+                    {
+                        Title = title,
+                        // Normalize URL to lowercase so it matches Contensis
+                        // path lookups (which are case-insensitive but serve
+                        // lowercase canonical URLs).
+                        Url = $"/{nodePath}{accumulatedPath}".ToLowerInvariant()
+                    });
                 }
             }
-            else
+            else if (_items.Count > 0)
             {
-                // Manual items – ensure root home is still first, then your-council, then manual items
-                // (but manual items may already include your-council; be careful not to duplicate)
-                if (_items.Count > 0)
+                // Merge manual items, skipping duplicates of what's already present.
+                var existingTitles = finalItems
+                    .Select(i => i.Title?.ToLowerInvariant() ?? "")
+                    .ToHashSet();
+
+                foreach (var item in _items)
                 {
-                    // If the first manual item is "Home" or matches your-council, we might skip adding our defaults.
-                    // For simplicity, we'll just merge: start with root home + your-council, then append manual items
-                    // that aren't duplicates of the first two.
-                    var existingTitles = finalItems.Select(i => i.Title.ToLowerInvariant()).ToList();
-                    foreach (var item in _items)
+                    var key = item.Title?.ToLowerInvariant() ?? "";
+                    if (!string.IsNullOrEmpty(key) && !existingTitles.Contains(key))
                     {
-                        if (!existingTitles.Contains(item.Title?.ToLowerInvariant() ?? ""))
-                        {
-                            finalItems.Add(item);
-                        }
+                        finalItems.Add(item);
+                        existingTitles.Add(key);
                     }
                 }
             }
 
-            // Mark the last item as active (no link)
+            // Mark the last item as the current page — remove its link.
             if (finalItems.Count > 0)
             {
-                finalItems.Last().Url = null;
+                finalItems[^1].Url = null;
             }
 
-            // Apply ignore list filtering (optional)
-            //string[] ignoreList = GetIgnoreListFromPath(WebsiteConstants.SITE_VIEW_PATH);
-            var filteredBreadcrumbs = finalItems; // FilterBreadcrumbs(finalItems, ignoreList);
-
-            return filteredBreadcrumbs;
+            return finalItems;
         }
-
     }
-
 }

@@ -1,11 +1,11 @@
-﻿using Content.Modelling.Models.Templates;
+﻿using Content.Modelling.Models.GenericTypes;
+using Content.Modelling.Models.Templates;
 using Microsoft.Extensions.Logging;
 using Moq;
 using RazorPageYourCouncilWebsite.Core.Interfaces;
 using RazorPageYourCouncilWebsite.Core.Models;
 using RazorPageYourCouncilWebsite.Services.Breadcrumb;
 using RazorPageYourCouncilWebsite.Services.Interfaces;
-
 using Xunit;
 
 namespace YourCouncilWebsite.UnitTests.Pages
@@ -13,7 +13,7 @@ namespace YourCouncilWebsite.UnitTests.Pages
     public class BasePageTests
     {
         [Fact]
-        public async Task BasePageModel_Can_Get_ChildEntriesAsync()
+        public async Task BasePageModel_OnGetByPathAsync_Populates_Items()
         {
             // Arrange
             var mockLogger = new Mock<ILogger<BasePageModel<BGStandard>>>();
@@ -22,31 +22,30 @@ namespace YourCouncilWebsite.UnitTests.Pages
             var mockRepo = new Mock<IContentRepository>();
 
             var fakeChildren = new List<BGStandard>
-        {
-            new BGStandard { PageTitle = "Child 1" },
-            new BGStandard { PageTitle = "Child 2" }
-        };
+            {
+                new BGStandard { PageTitle = "Child 1" },
+                new BGStandard { PageTitle = "Child 2" }
+            };
 
-            mockRepo.Setup(r => r.GetChildEntries<BGStandard>("/campaigns"))
-                    .Returns(fakeChildren);
-
-            mockDataService.Setup(x => x.GetAllAsync("")).ReturnsAsync(fakeChildren);
+            // OnGetByPathAsync calls _dataService.GetAllAsync(path)
+            mockDataService
+                .Setup(x => x.GetAllAsync("/campaigns", null))
+                .ReturnsAsync(fakeChildren);
 
             var pageModel = new BasePageModel<BGStandard>(
                 mockLogger.Object,
                 mockDataService.Object,
                 mockRepo.Object,
-                mockBreadcrumb.Object
-               );
+                mockBreadcrumb.Object);
 
-
+            // Act
             await pageModel.OnGetByPathAsync("/campaigns");
             var result = pageModel.Items.ToList();
 
             // Assert
             Assert.Equal(2, result.Count);
             Assert.Equal("Child 1", result[0].PageTitle);
+            mockDataService.Verify(x => x.GetAllAsync("/campaigns", null), Times.Once);
         }
     }
-
 }

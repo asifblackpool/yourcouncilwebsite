@@ -17,11 +17,10 @@ namespace RazorPageYourCouncilWebsite.Core.Services
             _repository = repository;
         }
 
-        public List<IPageTemplates> GetChildPages(string parentUri)
+        public async Task<List<IPageTemplates>> GetChildPagesAsync(string parentUri)
         {
-            return _repository.GetChildEntries<BaseBG>(parentUri)
-                       .Cast<IPageTemplates>()
-                       .ToList();
+            var entries = await _repository.GetChildEntriesAsync<BaseBG>(parentUri);
+            return entries.Cast<IPageTemplates>().ToList();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using RazorPageYourCouncilWebsite.Models;
-using System.Xml;
 
 namespace RazorPageYourCouncilWebsite.Services.Interfaces
 {
@@ -8,5 +7,8 @@ namespace RazorPageYourCouncilWebsite.Services.Interfaces
         Task<List<string>> GetTopLevelSectionNamesAsync();
         Task<CmsNode?> GetNodeByPathAsync(string path);
         Task<List<CmsNode>> GetChildNodesAsync(string parentPath);
+
+        // NEW: fetch a single entry by id, hydrated with its inline refs resolved.
+        Task<Newtonsoft.Json.Linq.JObject?> GetHydratedEntryByIdAsync(Guid entryId);
     }
 }
