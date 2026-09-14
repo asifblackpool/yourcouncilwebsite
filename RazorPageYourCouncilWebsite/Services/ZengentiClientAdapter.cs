@@ -50,7 +50,7 @@ namespace RazorPageYourCouncilWebsite.Services
 
             var entryJson = JObject.FromObject(entry);
 
-            _logger.LogInformation(
+            _logger.LogDebug(
                 "Path={Path} | ContentType={CT} | Fields=[{Fields}] | mainContent={MC}",
                 path,
                 entry.ContentTypeId ?? "<null>",

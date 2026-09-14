@@ -26,7 +26,7 @@ namespace RazorPageYourCouncilWebsite.Controllers.Base
         protected async Task<IActionResult> RenderDynamicPageAsync(string sectionRoot, string slug)
         {
             var fullPath = string.IsNullOrEmpty(slug) ? sectionRoot.ToLower() : $"{sectionRoot.ToLower()}/{slug}";
-            _logger.LogInformation("Rendering dynamic page. SectionRoot: {SectionRoot}, Slug: {Slug}, FullPath: {FullPath}", sectionRoot, slug, fullPath);
+            _logger.LogDebug("Rendering dynamic page. SectionRoot: {SectionRoot}, Slug: {Slug}, FullPath: {FullPath}", sectionRoot, slug, fullPath);
 
             var node = await _cmsClient.GetNodeByPathAsync(fullPath);
             if (node == null)

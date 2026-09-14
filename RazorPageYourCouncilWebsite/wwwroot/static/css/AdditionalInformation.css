@@ -43,7 +43,7 @@
 
 .section-title {
     color: var(--primary-base-color);
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 600;
     margin-bottom: 0.75rem;
     letter-spacing: 0.5px;
@@ -85,7 +85,7 @@ nav.nav-contents > ul > li > a {
     color: #495057;
     text-decoration: none;
     transition: all 0.2s ease;
-    font-size: 1.6rem;
+    font-size: 1.1rem;
 }
 
 .nav-link:hover {
@@ -220,7 +220,7 @@ nav.nav-contents > ul > li > a {
 
 .entry-title {
     margin: 0 0 0.5rem 0;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 400;
     color: var(--secondary-base-color);
     line-height: 1.3;

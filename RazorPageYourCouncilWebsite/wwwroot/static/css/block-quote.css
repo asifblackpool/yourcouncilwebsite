@@ -21,9 +21,9 @@
 .quote::before {
     content: open-quote;
     position: absolute;
-    left: 0.5rem;
-    top: 0.25rem;
-    font-size: 4rem;                   /* bigger than body text */
+    left: 1.25rem;
+    top: 1.25rem;
+    font-size: 2.5rem;                   /* bigger than body text */
     line-height: 1;
     color: var(--quote-border);
     font-family: Georgia, "Times New Roman", serif;

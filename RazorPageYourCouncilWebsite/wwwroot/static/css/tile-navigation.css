@@ -2,7 +2,12 @@
     --primary-purple-color: #830065;
 }
 
-.tile-boar {}
+.tile-board {
+
+    padding-top: 10px;
+    padding-bottom:40px;
+
+}
 
 div.justify-content-center {
     justify-content: center;

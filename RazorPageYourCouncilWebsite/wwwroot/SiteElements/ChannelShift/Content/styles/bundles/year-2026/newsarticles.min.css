@@ -1249,7 +1249,8 @@ li.add-bullet-with-indent {
         }
 
         div#mainbar.col-md-10 {
-            margin: 20px 0 0
+            margin: 20px 0 0;
+            border-right: solid 5px white;
         }
 
         div#last-modified-container {
