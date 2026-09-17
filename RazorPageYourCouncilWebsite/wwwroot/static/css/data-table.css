@@ -3,14 +3,24 @@
     display: none;
 }
 
-/* Base table styles (already yours, slightly scoped) */
+/* Scroll wrapper — enables horizontal scrolling */
+.tbl-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    margin: 0 auto 15px;
+}
+
+/* Base table styles */
 .data-table {
     margin: 0 auto 15px;
     width: 100%;
     border: none;
+    border-collapse: collapse;
 }
 
-.data-table th, .data-table tbody td {
+.data-table th,
+.data-table tbody td {
     border: 1px solid #fff;
     background: #830065;
     color: #fff;
@@ -18,23 +28,28 @@
 }
 
 .data-table tbody td {
-    color: #041c2c;
-}
-
-.data-table tbody td {
     background: #e3e4e6;
+    color: #041c2c;
     border: 1px solid #fff;
-    font-weight:400;
+    font-weight: 400;
 }
 
 .data-table td {
     font-weight: bold;
 }
 
+/* Prevent headers/cells from forcing the table wider than needed */
+.data-table th,
+.data-table td {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
 /* Mobile responsive styles - scoped to .data-table */
 @media screen and (max-width: 640px) {
     .data-table thead,
-    .data-table th { 
+    .data-table th {
         display: none;
     }
 
@@ -86,7 +101,6 @@
         text-align: left;
     }
 
-    /* Note: .tbl-responsive may be a separate container – if it wraps the table, include it */
     .tbl-responsive .data-table tbody td.width-full:before {
         content: attr(data-th);
         font-weight: 700;
