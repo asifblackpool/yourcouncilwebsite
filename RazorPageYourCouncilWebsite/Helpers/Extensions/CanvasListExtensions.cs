@@ -93,6 +93,14 @@ namespace RazorPageYourCouncilWebsite.Helpers.Extensions
                 var fragments = new List<string>();
                 foreach (var fragment in complex.Fragments)
                 {
+                    /*
+                    System.Diagnostics.Debug.WriteLine(
+                         $"[EXTRACT] runtime={fragment.GetType().FullName} | " +
+                         $"type field=\"{fragment.Type}\" | " +
+                         $"Text=\"{fragment.Text}\" | " +
+                         $"isLink={fragment is LinkFragment} | " +
+                         $"Url=\"{(fragment as LinkFragment)?.Url}\""); */
+
                     if (fragment is TextFragment text)
                         fragments.Add(text.Text ?? string.Empty);
                     else if (fragment is HtmlFragment html)

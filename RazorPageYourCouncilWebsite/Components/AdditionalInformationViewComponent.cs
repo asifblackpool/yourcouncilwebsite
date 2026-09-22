@@ -20,12 +20,12 @@ namespace RazorPageYourCouncilWebsite.Components
 
         public IViewComponentResult Invoke(BaseBG? model)
         {
-
             // Try to get model from parameter first
             if (model == null)
             {
                 // Try to get from ViewData
                 model = ViewData["Model"] as BaseBG;
+
                 // Try to get from ViewBag
                 if (model == null && ViewBag.Model is BaseBG viewBagModel)
                 {
@@ -39,48 +39,52 @@ namespace RazorPageYourCouncilWebsite.Components
                 model = ViewContext.ViewData.Model as BaseBG;
             }
 
-            if (model == null || !(model is BGStandard bgStandard || model is BGStandardWithDocuments BGStandardWithDocs))
+            if (model == null)
                 return Content(string.Empty);
 
+            // IMPORTANT: check most derived types first, so that if
+            // BGStandardWithImages / BGStandardWithDocuments inherit from
+            // BGStandard, they don't get swallowed by the BGStandard branch.
 
-            if (model is BGStandardWithDocuments)
+            // 1) BGStandardWithDocuments
+            if (model is BGStandardWithDocuments withDocs)
             {
-                var temp = model as BGStandardWithDocuments;
-
-                if (temp == null)
-                    return Content(string.Empty); // Return empty if not the right type
-
-                // Create view model with only the data needed for the sidebar
                 var viewModel = new AdditionalInformationViewModel
                 {
-                    LinkedEntries = temp.GetReferencedEntries(_contensisClient, 1, null)
+                    LinkedEntries = withDocs.GetReferencedEntries(_contensisClient, 1, null)
                 };
 
                 return View(ViewComponentExtensions.GetViewPath("AdditionalInformation"), viewModel);
             }
 
-            if (model is BGStandard)
+            // 2) BGStandardWithImages  (must come BEFORE BGStandard)
+            if (model is BGStandardWithImages withImages)
             {
-                var temp = model as BGStandard;
-
-                if (temp == null)
-                    return Content(string.Empty); // Return empty if not the right type
-
-                // Create view model with only the data needed for the sidebar
                 var viewModel = new AdditionalInformationViewModel
                 {
-
-                    Assets = temp.Assets ?? new List<Asset>(),
-                    DataNavigationLinks = temp.GetDataNavigationLinks ?? new List<DataNavigationLink>(),
-                    LinkedEntries = temp.GetReferencedEntries(_contensisClient, 1, null)
-
+                    Assets = withImages.Assets ?? new List<Asset>(),
+                    LinkedEntries = withImages.GetReferencedEntries(_contensisClient, 1, null),
+                    Url = withImages.Url ?? string.Empty
                 };
 
                 return View(ViewComponentExtensions.GetViewPath("AdditionalInformation"), viewModel);
             }
-            // Cast to BGStandard to access the properties
+
+            // 3) BGStandard (base / plain variant)
+            if (model is BGStandard standard)
+            {
+                var viewModel = new AdditionalInformationViewModel
+                {
+                    Assets = standard.Assets ?? new List<Asset>(),
+                    DataNavigationLinks = standard.GetDataNavigationLinks ?? new List<DataNavigationLink>(),
+                    LinkedEntries = standard.GetReferencedEntries(_contensisClient, 1, null)
+                };
+
+                return View(ViewComponentExtensions.GetViewPath("AdditionalInformation"), viewModel);
+            }
+
+            // Unknown / unsupported model type
             return Content(string.Empty);
-
         }
     }
 }

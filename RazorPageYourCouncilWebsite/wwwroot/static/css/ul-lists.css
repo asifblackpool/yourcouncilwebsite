@@ -23,6 +23,9 @@ ol.shade-black {
     
     /* INDENTATION: GOV.UK uses padding-left on the list itself */
     padding-left: 20px;
+
+    position:relative;
+    left:20px;
 }
 
 /* ----- UNORDERED (bullets) ----- */

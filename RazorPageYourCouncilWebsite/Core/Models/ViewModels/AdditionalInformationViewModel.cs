@@ -12,5 +12,12 @@ namespace RazorPageYourCouncilWebsite.Core.Models.ViewModels
         public List<dynamic> Entries { get; set; } = new List<dynamic>();
         public List<BaseBG> LinkedEntries { get; set; } = new List<BaseBG>();
         public List<DataNavigationLink> DataNavigationLinks { get; set; } = new List<DataNavigationLink>();
+        public string Url { get; set; } = string.Empty;
+
+        public bool HasContent =>
+         DataNavigationLinks.Any()
+         || Assets.Any()
+         || LinkedEntries.Any()
+         || !string.IsNullOrEmpty(Url);
     }
 }

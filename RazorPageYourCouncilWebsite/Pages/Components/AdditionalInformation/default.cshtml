@@ -10,13 +10,11 @@
 
 @model AdditionalInformationViewModel
 
-
-
-@if (Model.DataNavigationLinks.Any() || Model.Assets.Any() || Model.LinkedEntries.Any())
+@if (Model.HasContent)
 {
     <aside class="additional-information-sidebar">
         <h4 class="sidebar-title">Additional information</h4>
-        
+
         <!-- Data Navigation Links -->
         @if (Model.DataNavigationLinks.Any())
         {
@@ -28,7 +26,7 @@
                         if (!string.IsNullOrEmpty(link.URL) && !string.IsNullOrEmpty(link.LinkText))
                         {
                             <li class="nav-link-item">
-                                <a href="@link.URL" 
+                                <a href="@link.URL"
                                    class="nav-link @(IsExternalUrl(link.URL) ? "external-link" : "")"
                                    target="@(IsExternalUrl(link.URL) ? "_blank" : "_self")"
                                    title="@link.LinkText">
@@ -44,7 +42,7 @@
                 </ul>
             </div>
         }
-        
+
         <!-- Assets Section -->
         @if (Model.Assets.Any())
         {
@@ -82,9 +80,9 @@
                     }
                 </ul>
             </div>
-
         }
-        
+
+
         <!-- Entries Section -->
         @if (Model.LinkedEntries.Any())
         {
@@ -95,7 +93,6 @@
                     {
                         <div class="entry-item">
                             @{
-                                // Handle dynamic entry - adjust based on your actual entry structure
                                 var entryTitle = GetEntryTitle(entry);
                                 var entryDescription = GetEntryDescription(entry);
                                 var entryUrl = GetEntryUrl(entry);
@@ -115,10 +112,67 @@
                 </div>
             </div>
         }
+
+
+        <!-- External link (BGStandardWithImages) -->
+        @if (!string.IsNullOrEmpty(Model.Url))
+        {
+            <div class="sidebar-section external-link-section">
+                <h4 class="section-title">External link</h4>
+                <ul class="nav-links-list">
+                    <li class="nav-link-item">
+                        <a href="@Model.Url"
+                           class="nav-link @(IsExternalUrl(Model.Url) ? "external-link" : "")"
+                           target="@(IsExternalUrl(Model.Url) ? "_blank" : "_self")"
+                           rel="noopener"
+                           title="@Model.Url">
+                            <span>@GetLinkLabel(Model.Url)</span>
+                            @if (IsExternalUrl(Model.Url))
+                            {
+                                <span class="external-icon">↗</span>
+                            }
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        }
     </aside>
 }
 
 @functions {
+
+    private string GetLinkLabel(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+            return "Link";
+
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            return "Link";
+
+        // Strip www.
+        var host = uri.Host;
+        if (host.StartsWith("www.", StringComparison.OrdinalIgnoreCase))
+            host = host.Substring(4);
+
+        // Drop the TLD (last segment), keep the rest
+        // e.g. my-site.co.uk -> my-site
+        var parts = host.Split('.');
+        if (parts.Length > 1)
+        {
+            // Take everything except the final segment (the TLD)
+            // For my-site.co.uk -> ["my-site","co","uk"] -> join "my-site" only
+            // For example.com   -> ["example","com"]      -> "example"
+            host = parts[0];
+        }
+
+        // Replace dashes/underscores with spaces and title-case each word
+        host = host.Replace('-', ' ').Replace('_', ' ');
+
+        var words = host.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(w => char.ToUpper(w[0]) + w.Substring(1).ToLower());
+
+        return string.Join(" ", words);
+    }
 
     private string GetFileIconClass(string fileExtension)
     {
@@ -138,20 +192,20 @@
             _ => "fas fa-file text-muted"
         };
     }
+
     private bool IsExternalUrl(string url)
     {
         if (string.IsNullOrEmpty(url))
             return false;
-            
-        // Check if URL is absolute (starts with http:// or https://)
+
         return url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
                url.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
     }
-    
+
     private string GetFileIcon(string fileExtension)
     {
         var extension = fileExtension?.ToLower().TrimStart('.');
-        
+
         return extension switch
         {
             "pdf" => "📄",
@@ -165,12 +219,11 @@
             _ => "📎"
         };
     }
-    
+
     private string GetEntryTitle(dynamic entry)
     {
         try
         {
-            // Try different possible property names for title
             return entry.PageTitle ?? entry.Name ?? entry.Title ?? entry.DisplayName ?? "Untitled";
         }
         catch
@@ -178,12 +231,11 @@
             return "Untitled";
         }
     }
-    
+
     private string GetEntryDescription(dynamic entry)
     {
         try
         {
-            // Try different possible property names for description
             return entry.Description ?? entry.Summary ?? entry.EntryDescription ?? "";
         }
         catch
@@ -191,12 +243,11 @@
             return "";
         }
     }
-    
+
     private string GetEntryUrl(dynamic entry)
     {
         try
         {
-            // Try different possible property names for URL
             return entry.Sys?.Uri.ToString() ?? "#";
         }
         catch
