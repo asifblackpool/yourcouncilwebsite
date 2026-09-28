@@ -20,6 +20,10 @@ using Zengenti.Contensis.Delivery;
 using Microsoft.AspNetCore.Rewrite;
 using Content.Modelling.Extensions;
 using RazorPageBusinessWebsite.Infrastructure.Repositories;
+using Content.Modelling.Helpers.ContentTypes;
+using Content.Modelling.HtmlWrapper.PrivacyNotices;
+using RazorPageYourCouncilWebsite.Core.Services.ContentHandling.Handlers;
+using RazorPageYourCouncilWebsite.Core.Services.ContentHandling.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,6 +70,11 @@ builder.Services.AddScoped<IGovUkAccordionWithCtaButtonRenderer, GovUkAccordionW
 builder.Services.AddScoped<IGovUkAccordionWithImagesRenderer, GovUkAccordionWithImagesRenderer>();
 builder.Services.AddScoped<IGovUkAccordionRenderer, GovUkAccordionRenderer>();
 builder.Services.AddScoped<ViewComponentRenderer>();
+
+// ── Privacy Notices accordion ──
+builder.Services.AddPrivacyNoticesAccordion();                                                       // registers PrivacyNoticeHelper + PrivacyNoticeHtmlWrapper
+builder.Services.AddScoped<IPrivacyNoticesAccordionRenderer, PrivacyNoticesAccordionRenderer>();     // per-website renderer
+builder.Services.AddScoped<IContentHandler, PrivacyNoticesAccordionHandler>();                       // per-website handler
 
 // Processors
 builder.Services.AddScoped<ITextProcessor, HtmlTextProcessor>();

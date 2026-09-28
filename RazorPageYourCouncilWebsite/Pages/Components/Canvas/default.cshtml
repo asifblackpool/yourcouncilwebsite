@@ -23,7 +23,7 @@
                     <br/>
                 }
                 var handler = HandlerFactory.GetHandler(item.ClassName);
-                @await handler.HandleAsync(item)
+                @await handler.HandleAsync(item, ViewContext)
                 
         
             counter++;

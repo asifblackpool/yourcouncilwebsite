@@ -1,0 +1,39 @@
+﻿@using Content.Modelling.Models.Components
+@using Content.Modelling.HtmlWrapper.PrivacyNotices
+@model PrivacyNoticeAccordionSection
+
+@if (Model != null && Model.Items != null && Model.Items.Any())
+{
+    <h2 id="privacy-title-@Model.AnchorId" class="privacy-header">
+        <a href="#privacy-title-@Model.AnchorId">@Model.Title</a>
+    </h2>
+
+    <div class="govuk-accordion"
+         data-module="govuk-accordion"
+         id="accordion-default-@Model.AnchorId">
+        @{
+            var counter = 1;
+        }
+        @foreach (AccordionContent item in Model.Items)
+        {
+            if (!string.IsNullOrEmpty(item.Body))
+            {
+                <div class="govuk-accordion__section">
+                    <div class="govuk-accordion__section-header">
+                        <h3 class="govuk-accordion__section-heading">
+                            <span class="govuk-accordion__section-button"
+                                  id="accordion-default-heading-@Model.AnchorId-@counter">
+                                @item.Title
+                            </span>
+                        </h3>
+                    </div>
+                    <div id="accordion-default-content-@Model.AnchorId-@counter"
+                         class="govuk-accordion__section-content">
+                        <div class="govuk-body">@Html.Raw(item.Body)</div>
+                    </div>
+                </div>
+                counter++;
+            }
+        }
+    </div>
+}

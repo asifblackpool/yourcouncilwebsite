@@ -10,6 +10,14 @@
     <RazorCompileOnPublish>true</RazorCompileOnPublish>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="bin\Legacy\**" />
     <Compile Remove="Core\Models\Content\Components\**" />
@@ -40,7 +48,7 @@
     <PackageReference Include="Zengenti.Contensis.Delivery" Version="17.0.1" />
     <PackageReference Include="Zengenti.Contensis.Management" Version="17.0.1" />
     <!-- Shared library pulled securely from GitHub Packages during CI/CD pipeline -->
-    <PackageReference Include="Content.Modelling" Version="1.0.19" />
+    <PackageReference Include="Content.Modelling" Version="1.0.22" />
   </ItemGroup>
 
   <ItemGroup>
