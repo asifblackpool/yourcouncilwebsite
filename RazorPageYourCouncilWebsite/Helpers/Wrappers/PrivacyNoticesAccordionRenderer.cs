@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.DependencyInjection;
-using RazorPageYourCouncilWebsite.Components.Extensions;
+
 using RazorPageYourCouncilWebsite.Helpers.Interfaces;
 
 namespace RazorPageYourCouncilWebsite.Helpers.Wrappers
 {
     public class PrivacyNoticesAccordionRenderer : IPrivacyNoticesAccordionRenderer
     {
+        private const string TocPlaceholderRenderedKey = "PrivacyNotices.TocPlaceholderRendered";
+
         private readonly PrivacyNoticeHtmlWrapper _wrapper;
 
         public PrivacyNoticesAccordionRenderer(PrivacyNoticeHtmlWrapper wrapper)
@@ -30,7 +31,7 @@ namespace RazorPageYourCouncilWebsite.Helpers.Wrappers
                 return HtmlString.Empty;
             }
 
-            var sections = _wrapper.Build(5);
+            var sections = _wrapper.BuildPrivacyNotesNew(title, label, 5);
 
             var helper = viewContext.HttpContext.RequestServices
                 .GetRequiredService<IViewComponentHelper>();
@@ -43,19 +44,21 @@ namespace RazorPageYourCouncilWebsite.Helpers.Wrappers
 
             using var writer = new StringWriter();
 
-            // Table of contents (jump links) — mirrors the original privacy-notices.cshtml
-            writer.Write("<ul class=\"privacy-toc\">");
-            foreach (var section in renderableSections)
-            {
-                writer.Write("<li><a href=\"#privacy-title-");
-                writer.Write(HtmlEncoder.Default.Encode(section.AnchorId));
-                writer.Write("\">");
-                writer.Write(HtmlEncoder.Default.Encode(section.Title));
-                writer.Write("</a></li>");
-            }
-            writer.Write("</ul>");
+            // Security guard: only emit the TOC placeholder once per HTTP request,
+            // before the first accordion that appears on the page. Subsequent
+            // components on the same page see the flag and skip it.
+            // The list itself is populated client-side (see privacy-notices-toc.js).
+            var items = viewContext.HttpContext.Items;
+            bool placeholderAlreadyRendered = items.TryGetValue(TocPlaceholderRenderedKey, out var flag)
+                                              && flag is true;
 
-            // Each section (heading + accordion)
+            if (!placeholderAlreadyRendered && renderableSections.Any())
+            {
+                WriteTocPlaceholder(writer);
+                items[TocPlaceholderRenderedKey] = true;
+            }
+
+            // Each section (heading + accordion) for THIS component
             foreach (var section in renderableSections)
             {
                 var rendered = await helper.InvokeAsync("PrivacyNotices", section);
@@ -63,6 +66,13 @@ namespace RazorPageYourCouncilWebsite.Helpers.Wrappers
             }
 
             return new HtmlString(writer.ToString());
+        }
+
+        private static void WriteTocPlaceholder(StringWriter writer)
+        {
+            writer.Write("<nav id='privacy-list-container' aria-label='Privacy notice sections' hidden>");
+            writer.Write("<ul class='shade-black'></ul>");
+            writer.Write("</nav>");
         }
     }
 }

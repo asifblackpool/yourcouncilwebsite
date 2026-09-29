@@ -1,4 +1,4 @@
-﻿<script>
+﻿``
     (function () {
         function wrapTables() {
             var tables = document.querySelectorAll('table.data-table');
@@ -22,4 +22,3 @@
         wrapTables();
     }
 })();
-</script>

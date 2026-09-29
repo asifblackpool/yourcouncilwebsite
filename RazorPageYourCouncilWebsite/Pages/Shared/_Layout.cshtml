@@ -48,9 +48,8 @@
     <link rel="stylesheet" href="~/static/css/call-to-action-buttons.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/service-contact.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/old-forms.css" asp-append-version="true" />
-
-
-
+    <link rel="stylesheet" href="~/static/css/privacy-notices.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/css/privacy-notices.css" asp-append-version="true" />
 
     <link rel="shortcut icon" href="~/SiteElements/ChannelShift/content/images/favicons/favicon.ico" type="image/x-icon" />
 
@@ -73,8 +72,10 @@
 
     <script type="text/javascript" src="~/static/js/services/formservices.js"></script>
     <script type="text/javascript" src="~/static/js/services/automenuservices.js"></script>
+    <script type="text/javascript" src="~/static/js/services/privacyservices.js"></script>
     <script type="text/javascript" src="~/static/js/table-cleaner.js"></script>
     <script type="text/javascript" src="~/static/js/table-responsive-wrapper.js"></script>
+ 
 
     <script type="text/javascript">
         //<![CDATA[
@@ -90,6 +91,7 @@
     <script type='text/javascript'>
         $(document).ready(function () {
             window.commonservices.init('https://cms-blackpool.cloud.contensis.com', 'https://api.blackpool.gov.uk/preview/');
+            privacyServices.init();
         });
     </script>
     @if (Model.ViewModel != null && Model.ViewModel.ModelType == typeof(BGStandardWithDocuments).Name)
