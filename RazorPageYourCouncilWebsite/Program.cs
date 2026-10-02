@@ -121,11 +121,11 @@ builder.Services.AddScoped<ICmsViewModelFactory, CmsViewModelFactory>();
 // ===== In-memory cache with size limit =====
 // SetSize(1) is used on every cache entry in ZengentiClientAdapter and
 // ContensisDataService, so this limit is enforced.
-// 1024 entries × ~5 min TTL is plenty for a site of this size; tune up if
-// you have a large number of distinct pages.
+// 10,000 entries × ~5 min TTL comfortably covers a site with hundreds of
+// pages plus their canvas child entries without hitting the eviction cliff.
 builder.Services.AddMemoryCache(options =>
 {
-    options.SizeLimit = 1024;
+    options.SizeLimit = 10_000;
 });
 
 var app = builder.Build();
@@ -158,44 +158,54 @@ app.UseRewriter(new RewriteOptions().AddRedirect("^$", WebsiteConstants.SITE_PAT
 
 app.UseRouting();
 
+// Capture the original path so the error page can display it.
+app.UseErrorContext();
+
 string siteViewRoot = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/').TrimEnd('/'); // "your-council"
 
-// 1. EXACT match for /Your-counil (or /your-council) – must come first
+// 1. EXACT match for /Your-council (or /your-council) – must come first
 app.MapControllerRoute(
     name: string.Format("{0}_root_exact", WebsiteConstants.SITE_CONTROLLER),
     pattern: WebsiteConstants.SITE_PATH,  // literal "Your-council" (case‑insensitive matches /your-council too)
     defaults: new { controller = WebsiteConstants.SITE_CONTROLLER, action = "Dynamic", slug = "" }
 );
 
-// 2. Your-counl Section route for /your-council/{section}/... (requires at least one segment after your-council/)
+// 2. Your-council Section route for /your-council/{section}/... (requires at least one segment after your-council/)
 app.MapControllerRoute(
     name: string.Format("{0}_section", WebsiteConstants.SITE_CONTROLLER),
     pattern: WebsiteConstants.SITE_PATH + "/{section}/{**slug}",
     defaults: new { controller = string.Format("{0}Section", WebsiteConstants.SITE_CONTROLLER), action = "Index" }
 );
 
-app.UseMiddleware<BreadcrumbMiddleware>();
-app.UseStatusCodePagesWithReExecute("/Error");
-app.MapRazorPages(); // Razor Pages still available for non your council routes
+app.MapRazorPages(); // Razor Pages still available for non your-council routes
 
-// ===== WARM UP CONTENSIS CLIENT to avoid first‑request timeout =====
+// Breadcrumb runs after routing so it can see the matched endpoint,
+// but before status-code pages so it can log the original request.
+app.UseMiddleware<BreadcrumbMiddleware>();
+
+// Status-code re-execution LAST, so it catches 404s from everything above.
+// Requires an endpoint at /Error — provided by ErrorController.
+app.UseStatusCodePagesWithReExecute("/Error");
+
+// ===== WARM UP CONTENSIS CLIENT to avoid first-request timeout =====
 using (var warmupScope = app.Services.CreateScope())
 {
     var warmupClient = warmupScope.ServiceProvider.GetRequiredService<IZengentiClient>();
     var logger = warmupScope.ServiceProvider.GetRequiredService<ILogger<Program>>();
     try
     {
-        // Synchronous call to initialise the client (avoids async complications)
-        warmupClient.GetNodeByPathAsync("/").GetAwaiter().GetResult();
+        // Warm up against the actual site root so a real node is resolved.
+        // Failures are non-fatal — the first real request will just be slower.
+        await warmupClient.GetNodeByPathAsync(WebsiteConstants.SITE_PATH.TrimStart('/'));
         logger.LogInformation("Contensis client warmed up successfully.");
     }
     catch (Exception ex)
     {
-        logger.LogWarning(ex, "Contensis client warm‑up failed – first request may be slow.");
+        logger.LogWarning(ex, "Contensis client warm-up failed – first request may be slow.");
     }
 }
 
-app.Run();
+await app.RunAsync();
 
 #region ContensisClientFactory (unchanged)
 public static class ContensisClientFactory

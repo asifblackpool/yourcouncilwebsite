@@ -12,6 +12,11 @@
  *
  * Usage (once, from a layout or page):
  *     privacyServices.init();
+ *
+ * Debug logging:
+ *     privacyServices.setDebug(true);   // turn logs on
+ *     privacyServices.setDebug(false);  // turn logs off
+ *     privacyServices.setDebug('warn'); // only warnings/errors
  */
 window.privacyServices = (function () {
     'use strict';
@@ -20,13 +25,28 @@ window.privacyServices = (function () {
     var CONTAINER_ID = 'privacy-list-container';
     var HEADING_SELECTOR = '[id^="privacy-title-"]';
 
+    // ---------------------------------------------------------------------
+    // Debug switch
+    //   false      -> no logging at all (default)
+    //   true       -> log + warn
+    //   'warn'     -> warn only
+    // ---------------------------------------------------------------------
+    var debug = false;
+
+    function setDebug(value) {
+        debug = value;
+        return debug;
+    }
+
     function log() {
+        if (debug !== true) { return; }
         var args = Array.prototype.slice.call(arguments);
         args.unshift(LOG_PREFIX);
         console.log.apply(console, args);
     }
 
     function warn() {
+        if (debug !== true && debug !== 'warn') { return; }
         var args = Array.prototype.slice.call(arguments);
         args.unshift(LOG_PREFIX);
         console.warn.apply(console, args);
@@ -62,8 +82,6 @@ window.privacyServices = (function () {
         var added = 0;
 
         headings.forEach(function (heading, index) {
-            // The visible title text — adjust to match the element your
-            // PrivacyNotices view component renders inside the heading.
             var titleEl = heading.querySelector('.govuk-accordion__section-heading-text')
                 || heading.querySelector('h2, h3, button')
                 || heading;
@@ -88,7 +106,6 @@ window.privacyServices = (function () {
 
         log('added ' + added + ' item(s) to the TOC list');
 
-        // Only reveal the container if we actually added something.
         if (list.children.length) {
             container.hidden = false;
             log('container revealed (hidden=false)');
@@ -113,7 +130,7 @@ window.privacyServices = (function () {
 
     return {
         init: init,
-        // Exposed for testing / re-runs after dynamic content changes.
-        rebuild: buildTableOfContents
+        rebuild: buildTableOfContents,
+        setDebug: setDebug
     };
 })();

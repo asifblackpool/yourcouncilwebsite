@@ -1,14 +1,101 @@
-﻿@{
-    ViewData["Title"] = "Error";
+﻿@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Hosting
+@inject IWebHostEnvironment Env
+
+@{
+    ViewData["Title"] = "Sorry, there is a problem";
+    ViewData["PageHeading"] = "Error";
+
+    var originalPath = Context.Items["OriginalPath"]?.ToString() ?? Context.Request.Path.ToString();
+    var cmsError = Context.Items["CmsError"]?.ToString();
+    var exceptionFeature = Context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+@if (!Env.IsDevelopment())
+{
+    @* Production / staging — friendly message only *@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l">Sorry, there is a problem</h1>
+            <p class="govuk-body">Please try again later.</p>
+            <p class="govuk-body">
+                If the problem continues, please
+                <a class="govuk-link" href="/your-council/">contact us</a>.
+            </p>
+        </div>
+    </div>
+}
+else
+{
+    @* Development — full-width diagnostics *@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-l">Sorry, there is a problem</h1>
+            <p class="govuk-body">Please try again later.</p>
+       
+        </div>
+    </div>
+  
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <div style="margin-top:2rem; padding:1.25rem; border:2px dashed #b00; background:#fff5f5; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:0.85rem; line-height:1.5; color:#111; overflow:hidden;">
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>Development environment should not be enabled in deployed applications</strong>, as it can result in sensitive information from exceptions being displayed to end users. For local debugging, development environment can be enabled by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>, and restarting the application.
-</p>
+                <p style="margin:0 0 1rem; font-weight:bold; font-size:1rem; color:#900;">
+                    🛠 Development diagnostics
+                </p>
+
+                <div style="margin:0 0 1rem;">
+                    <div style="font-weight:bold; color:#900; margin-bottom:0.25rem;">Original path</div>
+                    <div style="padding:0.5rem 0.75rem; background:#fff; border:1px solid #e0b0b0; border-radius:3px; white-space:pre-wrap; word-break:break-all; overflow-wrap:anywhere;">@originalPath</div>
+                </div>
+
+                <div style="margin:0 0 1rem;">
+                    <div style="font-weight:bold; color:#900; margin-bottom:0.25rem;">Status code</div>
+                    <div style="padding:0.5rem 0.75rem; background:#fff; border:1px solid #e0b0b0; border-radius:3px;">@Context.Response.StatusCode</div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(cmsError))
+                {
+                    <div style="margin:0 0 1rem;">
+                        <div style="font-weight:bold; color:#900; margin-bottom:0.25rem;">CMS error</div>
+                        <div style="padding:0.75rem; background:#fff; border:1px solid #e0b0b0; border-radius:3px; white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere; max-height:32rem; overflow:auto;">@cmsError</div>
+                    </div>
+                }
+
+                @if (exceptionFeature?.Error is not null)
+                {
+                    <div style="margin:0 0 1rem;">
+                        <div style="font-weight:bold; color:#900; margin-bottom:0.25rem;">Exception</div>
+                        <div style="padding:0.5rem 0.75rem; background:#fff; border:1px solid #e0b0b0; border-radius:3px; word-break:break-all; overflow-wrap:anywhere;">@exceptionFeature.Error.GetType().FullName</div>
+                    </div>
+
+                    <div style="margin:0 0 1rem;">
+                        <div style="font-weight:bold; color:#900; margin-bottom:0.25rem;">Message</div>
+                        <div style="padding:0.5rem 0.75rem; background:#fff; border:1px solid #e0b0b0; border-radius:3px; white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere;">@exceptionFeature.Error.Message</div>
+                    </div>
+
+                    <div style="margin:0 0 0.25rem; font-weight:bold; color:#900;">Stack trace</div>
+                    <pre style="margin:0 0 1rem; padding:0.75rem; background:#fff; border:1px solid #e0b0b0; border-radius:3px; white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere; max-height:32rem; overflow:auto; font-family:inherit; font-size:0.85rem; line-height:1.5;">@exceptionFeature.Error.ToString()</pre>
+                }
+
+                @if (string.IsNullOrEmpty(cmsError) && exceptionFeature?.Error is null)
+                {
+                    <p style="margin:0; color:#555;">No exception or CMS error recorded. This was a pure status-code re-execute (e.g. a plain 404).</p>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<style type="text/css">
+    .error-friendly-message h1.govuk-heading-l {
+        font-size: 2rem; 
+        line-height: 1.15;
+    }
+
+    .error-friendly-message p.govuk-body,
+    .error-friendly-message p.govuk-body a {
+        font-size: 1.125rem;
+        line-height: 1.4;
+    }
+</style>

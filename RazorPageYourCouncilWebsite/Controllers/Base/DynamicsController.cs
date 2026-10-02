@@ -25,13 +25,24 @@ namespace RazorPageYourCouncilWebsite.Controllers.Base
 
         protected async Task<IActionResult> RenderDynamicPageAsync(string sectionRoot, string slug)
         {
-            var fullPath = string.IsNullOrEmpty(slug) ? sectionRoot.ToLower() : $"{sectionRoot.ToLower()}/{slug}";
-            _logger.LogDebug("Rendering dynamic page. SectionRoot: {SectionRoot}, Slug: {Slug}, FullPath: {FullPath}", sectionRoot, slug, fullPath);
+            // Normalise the slug: trim stray leading/trailing slashes and
+            // treat null/empty as the section root. This prevents duplicate
+            // lookups for "foo/bar" and "foo/bar/" and gives Contensis a
+            // clean, canonical path.
+            var cleanSlug = (slug ?? string.Empty).Trim('/');
+            var fullPath = string.IsNullOrEmpty(cleanSlug)
+                ? sectionRoot.ToLower()
+                : $"{sectionRoot.ToLower()}/{cleanSlug}";
+
+            _logger.LogDebug("Rendering dynamic page. SectionRoot: {SectionRoot}, Slug: {Slug}, FullPath: {FullPath}",
+                sectionRoot, slug, fullPath);
 
             var node = await _cmsClient.GetNodeByPathAsync(fullPath);
             if (node == null)
             {
-                _logger.LogWarning("Node not found for path: {FullPath}", fullPath);
+                // A missing node is normal traffic (bad links, stale bookmarks),
+                // not a warning — log at Information so real warnings stand out.
+                _logger.LogInformation("Node not found for path: {FullPath}", fullPath);
                 return NotFound();
             }
 
@@ -48,11 +59,13 @@ namespace RazorPageYourCouncilWebsite.Controllers.Base
                 ViewData["ContentTypeId"] = detailsVm.ContentTypeId;
 
                 SetViewDataFromViewModel(detailsVm);
-                _logger.LogDebug("ViewData set for DetailsViewModel. ModelType: {ModelType}, Title: {Title}", detailsVm.ModelType, ViewData["Title"]);
+                _logger.LogDebug("ViewData set for DetailsViewModel. ModelType: {ModelType}, Title: {Title}",
+                    detailsVm.ModelType, ViewData["Title"]);
             }
             else
             {
-                _logger.LogWarning("ViewModel is not of expected type (ViewModelWrapper with DetailsViewModel). Actual type: {Type}", viewModel?.GetType().Name);
+                _logger.LogWarning("ViewModel is not of expected type (ViewModelWrapper with DetailsViewModel). Actual type: {Type}",
+                    viewModel?.GetType().Name);
             }
 
             return View($"~/Views/{ViewFolder}/{viewName}.cshtml", viewModel);

@@ -20,7 +20,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@(Model.ViewModel?.ModelTitle ?? "Page not found")</title>
+    <title>@((Model?.ViewModel?.ModelTitle) ?? ViewData["Title"]?.ToString() ?? "Blackpool Council")</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" asp-append-version="true" />
     <link rel="stylesheet" href="~/SiteElements/ChannelShift/Content/styles/bundles/year-2026/base.min.css" asp-append-version="true" />
@@ -75,7 +75,7 @@
     <script type="text/javascript" src="~/static/js/services/privacyservices.js"></script>
     <script type="text/javascript" src="~/static/js/table-cleaner.js"></script>
     <script type="text/javascript" src="~/static/js/table-responsive-wrapper.js"></script>
- 
+
 
     <script type="text/javascript">
         //<![CDATA[
@@ -94,7 +94,7 @@
             privacyServices.init();
         });
     </script>
-    @if (Model.ViewModel != null && Model.ViewModel.ModelType == typeof(BGStandardWithDocuments).Name)
+    @if (Model?.ViewModel != null && Model.ViewModel.ModelType == typeof(BGStandardWithDocuments).Name)
     {
         <script type='text/javascript'>$(document).ready(function () { window.automenuservices.init('#sidebar'); });</script>
     }
@@ -135,7 +135,10 @@
                                 </div>
                             }
                             @await Component.InvokeAsync("Title")
-                            <partial name="Global/_linkstopdf" model="Model.ViewModel.ConcreteModel" />
+                            @if (Model?.ViewModel != null)
+                            {
+                                <partial name="Global/_linkstopdf" model="Model.ViewModel.ConcreteModel" />
+                            }
                         </div>
                     </div>
                     <div class="row zero-pad-left zero-pad-right">

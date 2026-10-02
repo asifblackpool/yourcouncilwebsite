@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://localhost:5001/your-council/transparency-and-open-data/data-protection/privacy-notices",
+      "applicationUrl": "https://localhost:5001/your-council/have-your-say/consultations/consultations-and-other-engagement",
       "sslPort": 44322
     }
   },
@@ -13,7 +13,7 @@
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/your-council/transparency-and-open-data/data-protection/privacy-notices",
+      "launchUrl": "https://localhost:5001/your-council/have-your-say/consultations/consultations-and-other-engagement",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +21,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/your-council/transparency-and-open-data/data-protection/privacy-notices",
+      "launchUrl": "https://localhost:5001/your-council/have-your-say/consultations/consultations-and-other-engagement",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

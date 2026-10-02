@@ -15,15 +15,15 @@ namespace RazorPageYourCouncilWebsite.Services
         private readonly ILogger<ZengentiClientAdapter> _logger;
 
         private static readonly TimeSpan CacheTtl = TimeSpan.FromMinutes(5);
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ZengentiClientAdapter(
-            ContensisClient contensisClient,
-            IMemoryCache cache,
-            ILogger<ZengentiClientAdapter> logger)
+                    ContensisClient contensisClient, IMemoryCache cache,ILogger<ZengentiClientAdapter> logger,IHttpContextAccessor httpContextAccessor)
         {
             _contensisClient = contensisClient;
             _cache = cache;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // ─── public API ──────────────────────────────────────────────────
@@ -44,20 +44,15 @@ namespace RazorPageYourCouncilWebsite.Services
             // and lazily resolves the entry without honouring entryFields,
             // which is why title and mainContent were coming back empty.
             var entryId = node.EntryId ?? node.Id;
-            var entry = await _contensisClient.Entries.GetAsync(entryId);
 
+            // Safe fetch: if the entry has a broken composed field (e.g. 'canvas'),
+            // the SDK throws a NullReferenceException inside ObjectFactory.
+            // TryGetEntryAsync logs and returns null so one bad entry can't take
+            // the whole request down.
+            var entry = await TryGetEntryAsync(entryId);
             if (entry == null) return null;
 
             var entryJson = JObject.FromObject(entry);
-
-            _logger.LogDebug(
-                "Path={Path} | ContentType={CT} | Fields=[{Fields}] | mainContent={MC}",
-                path,
-                entry.ContentTypeId ?? "<null>",
-                string.Join(", ", entryJson.Properties().Select(p => p.Name)),
-                entry.Get<string>("mainContent") is string mc
-                    ? (mc.Length > 80 ? mc.Substring(0, 80) + "..." : mc)
-                    : "<null or not string>");
 
             async Task<JObject?> Resolver(Guid id) => await ResolveEntryAsync(id);
 
@@ -98,7 +93,10 @@ namespace RazorPageYourCouncilWebsite.Services
             foreach (var child in children)
             {
                 var childEntryId = child.EntryId ?? child.Id;
-                var entry = await _contensisClient.Entries.GetAsync(childEntryId);
+
+                // Same guard as GetNodeByPathAsync — a child with a broken
+                // composed field must not throw.
+                var entry = await TryGetEntryAsync(childEntryId);
 
                 list.Add(new CmsNode
                 {
@@ -130,7 +128,9 @@ namespace RazorPageYourCouncilWebsite.Services
             foreach (var child in children)
             {
                 var childEntryId = child.EntryId ?? child.Id;
-                var entry = await _contensisClient.Entries.GetAsync(childEntryId);
+
+                // Same guard again.
+                var entry = await TryGetEntryAsync(childEntryId);
 
                 slugs.Add(entry?.Slug ?? child.Slug);
             }
@@ -141,6 +141,40 @@ namespace RazorPageYourCouncilWebsite.Services
 
         // ─── private ─────────────────────────────────────────────────────
 
+        private async Task<Entry?> TryGetEntryAsync(Guid entryId)
+        {
+            try
+            {
+                return await _contensisClient.Entries.GetAsync(entryId);
+            }
+            catch (Exception ex)
+            {
+                // Log the full exception (message + stack trace) — this is what
+                // shows up in the terminal.
+                _logger.LogError(
+                    ex,
+                    "Contensis entry {EntryId} could not be deserialised — " +
+                    "likely a broken composed field (e.g. 'canvas'). " +
+                    "Check the entry in the CMS and republish.",
+                    entryId);
+
+                // Stash the reason — including the full stack trace — so the
+                // error page can display it in Development.
+                var ctx = _httpContextAccessor.HttpContext;
+                if (ctx is not null)
+                {
+                    var fullStackTrace = ex.ToString(); // includes type, message, inner exceptions, and stack trace
+
+                    ctx.Items["CmsError"] =
+                        $"Entry {entryId} could not be resolved: {ex.Message}"
+                        + "\n\n"
+                        + fullStackTrace;
+                }
+
+                return null;
+            }
+        }
+
         /// <summary>
         /// Resolve one entry id to its JSON. Cached by entry id.
         /// </summary>
@@ -150,21 +184,13 @@ namespace RazorPageYourCouncilWebsite.Services
             if (_cache.TryGetValue(cacheKey, out JObject? cached) && cached != null)
                 return cached;
 
-            try
-            {
-                var entry = await _contensisClient.Entries.GetAsync(entryId);
-                if (entry == null) return null;
+            var entry = await TryGetEntryAsync(entryId);
+            if (entry == null) return null;
 
-                var json = JObject.FromObject(entry);
+            var json = JObject.FromObject(entry);
 
-                _cache.Set(cacheKey, json, CacheOptions());
-                return json;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Failed to resolve entry {EntryId}", entryId);
-                return null;
-            }
+            _cache.Set(cacheKey, json, CacheOptions());
+            return json;
         }
 
         private static MemoryCacheEntryOptions CacheOptions() =>

@@ -4,4 +4,4 @@
 @model LayoutModel
 
 
- <h1 class="@string.Format("{0} header-wrapper txt-align-responsive",Model.HeaderClass)">@Model.Title</h1>
+<h1 class="@($"{Model.HeaderClass} header-wrapper txt-align-responsive".Trim())">@Model.Title</h1>
