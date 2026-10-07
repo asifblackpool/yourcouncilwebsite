@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://localhost:5001/your-council/have-your-say/consultations/consultations-and-other-engagement",
+      "applicationUrl": "https://localhost:5001/your-council/council-meetings/blackpool-council-meeting-webcasts",
       "sslPort": 44322
     }
   },
@@ -13,7 +13,7 @@
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/your-council/have-your-say/consultations/consultations-and-other-engagement",
+      "launchUrl": "https://localhost:5001/your-council/council-meetings/blackpool-council-meeting-webcasts",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +21,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/your-council/have-your-say/consultations/consultations-and-other-engagement",
+      "launchUrl": "https://localhost:5001/your-council/council-meetings/blackpool-council-meeting-webcasts",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

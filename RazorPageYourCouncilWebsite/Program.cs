@@ -1,5 +1,8 @@
 ﻿using DotNetEnv;
 using Microsoft.AspNetCore.HttpOverrides;
+using Zengenti.Contensis.Delivery;
+using Microsoft.AspNetCore.Rewrite;
+using Content.Modelling.Extensions;
 using RazorPageYourCouncilWebsite.Constants;
 using RazorPageYourCouncilWebsite.Core.Interfaces;
 using RazorPageYourCouncilWebsite.Core.Services.ContentHandling;
@@ -16,12 +19,7 @@ using RazorPageYourCouncilWebsite.Middleware;
 using RazorPageYourCouncilWebsite.Services;
 using RazorPageYourCouncilWebsite.Services.Breadcrumb;
 using RazorPageYourCouncilWebsite.Services.Interfaces;
-using Zengenti.Contensis.Delivery;
-using Microsoft.AspNetCore.Rewrite;
-using Content.Modelling.Extensions;
-using RazorPageBusinessWebsite.Infrastructure.Repositories;
-using Content.Modelling.Helpers.ContentTypes;
-using Content.Modelling.HtmlWrapper.PrivacyNotices;
+using RazorPageYourCouncilWebsite.Infrastructure.Repositories;
 using RazorPageYourCouncilWebsite.Core.Services.ContentHandling.Handlers;
 using RazorPageYourCouncilWebsite.Core.Services.ContentHandling.Interfaces;
 
@@ -75,6 +73,8 @@ builder.Services.AddScoped<ViewComponentRenderer>();
 builder.Services.AddPrivacyNoticesAccordion();                                                       // registers PrivacyNoticeHelper + PrivacyNoticeHtmlWrapper
 builder.Services.AddScoped<IPrivacyNoticesAccordionRenderer, PrivacyNoticesAccordionRenderer>();     // per-website renderer
 builder.Services.AddScoped<IContentHandler, PrivacyNoticesAccordionHandler>();                       // per-website handler
+
+builder.Services.AddScoped<IWebCastRenderer, WebCastRenderer>();
 
 // Processors
 builder.Services.AddScoped<ITextProcessor, HtmlTextProcessor>();

@@ -5,7 +5,7 @@ using RazorPageYourCouncilWebsite.Core.Interfaces;
 using RazorPageYourCouncilWebsite.Models;
 using RazorPageYourCouncilWebsite.Services;
 
-namespace RazorPageBusinessWebsite.Infrastructure.Repositories
+namespace RazorPageYourCouncilWebsite.Infrastructure.Repositories
 {
     public class ContensisContentRepository : IContentRepository
     {

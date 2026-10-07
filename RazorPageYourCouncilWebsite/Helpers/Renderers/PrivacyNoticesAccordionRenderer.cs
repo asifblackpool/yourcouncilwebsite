@@ -6,10 +6,9 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-
 using RazorPageYourCouncilWebsite.Helpers.Interfaces;
 
-namespace RazorPageYourCouncilWebsite.Helpers.Wrappers
+namespace RazorPageYourCouncilWebsite.Helpers.Renderers
 {
     public class PrivacyNoticesAccordionRenderer : IPrivacyNoticesAccordionRenderer
     {

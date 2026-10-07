@@ -1,0 +1,29 @@
+﻿:root {
+    /* Main brand colors */
+    --corporate-green-color: #B3bd00;
+    --corporate-purple-color: #830065;
+    --corporate-dark-blue-color: #041c2c;
+    --corporate-grey-color: #e6e6e6;
+    --corporate-yellow-color: #ffd800
+}
+
+
+
+#webcast-video-placeholder a {
+    color: var(--corporate-purple-color) !important;
+}
+
+#webcast-video-placeholder a:visited {
+    color: var(--corporate-purple-color) !important;
+}
+
+#webcast-video-placeholder a:hover,
+#webcast-video-placeholder a:focus {
+    color: var(--corporate-purple-color);
+    text-decoration: underline;
+}
+
+a.you-tube-link, 
+a.other-webcast-link {
+    color: var(--corporate-purple-color) !important;
+}
