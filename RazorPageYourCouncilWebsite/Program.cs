@@ -90,6 +90,10 @@ builder.Services.AddScoped<ContentViewModelService>();
 // ===== MVC Controllers =====
 builder.Services.AddControllersWithViews();
 
+// Required by PdfController to fetch files from Contensis storage
+builder.Services.AddHttpClient();
+
+
 // ===== Razor Pages =====
 string relativeUrlPath = WebsiteConstants.SITE_VIEW_PATH.TrimEnd('/');
 builder.Services
@@ -163,6 +167,18 @@ app.UseErrorContext();
 
 string siteViewRoot = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/').TrimEnd('/'); // "your-council"
 
+// ─────────────────────────────────────────────────────────────────────
+// ENDPOINT REGISTRATION — ORDER MATTERS
+//
+// Attribute-routed controllers (like PdfController with [Route("pdf")])
+// are registered FIRST by MapControllers, and take precedence over the
+// conventional routes below. But we still add an explicit exclusion on
+// the section route so /pdf/... can never be captured by it.
+// ─────────────────────────────────────────────────────────────────────
+
+// Register all attribute-routed controllers first (PdfController, ErrorController)
+app.MapControllers();
+
 // 1. EXACT match for /Your-council (or /your-council) – must come first
 app.MapControllerRoute(
     name: string.Format("{0}_root_exact", WebsiteConstants.SITE_CONTROLLER),
@@ -170,10 +186,13 @@ app.MapControllerRoute(
     defaults: new { controller = WebsiteConstants.SITE_CONTROLLER, action = "Dynamic", slug = "" }
 );
 
-// 2. Your-council Section route for /your-council/{section}/... (requires at least one segment after your-council/)
+// 2. Your-council Section route for /your-council/{section}/...
+//    Requires at least one segment after your-council/
+//    The :regex constraint excludes reserved top-level segments (pdf, error)
+//    so they are never swallowed by the section catch-all.
 app.MapControllerRoute(
     name: string.Format("{0}_section", WebsiteConstants.SITE_CONTROLLER),
-    pattern: WebsiteConstants.SITE_PATH + "/{section}/{**slug}",
+    pattern: WebsiteConstants.SITE_PATH + "/{section:regex(^(?!pdf$|error$).+)}/{**slug}",
     defaults: new { controller = string.Format("{0}Section", WebsiteConstants.SITE_CONTROLLER), action = "Index" }
 );
 

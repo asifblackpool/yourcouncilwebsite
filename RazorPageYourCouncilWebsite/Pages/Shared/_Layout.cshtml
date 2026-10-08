@@ -73,6 +73,7 @@
     <script type="text/javascript" src="~/static/js/services/formservices.js"></script>
     <script type="text/javascript" src="~/static/js/services/automenuservices.js"></script>
     <script type="text/javascript" src="~/static/js/services/privacyservices.js"></script>
+    <script type="text/javascript" src="~/static/js/services/pdflinkservices.js"></script>
     <script type="text/javascript" src="~/static/js/table-cleaner.js"></script>
     <script type="text/javascript" src="~/static/js/table-responsive-wrapper.js"></script>
 
@@ -92,6 +93,7 @@
         $(document).ready(function () {
             window.commonservices.init('https://cms-blackpool.cloud.contensis.com', 'https://api.blackpool.gov.uk/preview/');
             privacyServices.init();
+            
         });
     </script>
     @if (Model?.ViewModel != null && Model.ViewModel.ModelType == typeof(BGStandardWithDocuments).Name)
