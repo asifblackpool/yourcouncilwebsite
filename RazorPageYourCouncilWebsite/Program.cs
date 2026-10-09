@@ -70,9 +70,9 @@ builder.Services.AddScoped<IGovUkAccordionRenderer, GovUkAccordionRenderer>();
 builder.Services.AddScoped<ViewComponentRenderer>();
 
 // ── Privacy Notices accordion ──
-builder.Services.AddPrivacyNoticesAccordion();                                                       // registers PrivacyNoticeHelper + PrivacyNoticeHtmlWrapper
-builder.Services.AddScoped<IPrivacyNoticesAccordionRenderer, PrivacyNoticesAccordionRenderer>();     // per-website renderer
-builder.Services.AddScoped<IContentHandler, PrivacyNoticesAccordionHandler>();                       // per-website handler
+builder.Services.AddPrivacyNoticesAccordion();                                                       
+builder.Services.AddScoped<IPrivacyNoticesAccordionRenderer, PrivacyNoticesAccordionRenderer>();     
+builder.Services.AddScoped<IContentHandler, PrivacyNoticesAccordionHandler>();                      
 
 builder.Services.AddScoped<IWebCastRenderer, WebCastRenderer>();
 
@@ -179,17 +179,13 @@ string siteViewRoot = WebsiteConstants.SITE_VIEW_PATH.TrimStart('/').TrimEnd('/'
 // Register all attribute-routed controllers first (PdfController, ErrorController)
 app.MapControllers();
 
-// 1. EXACT match for /Your-council (or /your-council) – must come first
+// 1. EXACT match for /xxxxx (or /xxxxx) – must come first
 app.MapControllerRoute(
     name: string.Format("{0}_root_exact", WebsiteConstants.SITE_CONTROLLER),
     pattern: WebsiteConstants.SITE_PATH,  // literal "Your-council" (case‑insensitive matches /your-council too)
     defaults: new { controller = WebsiteConstants.SITE_CONTROLLER, action = "Dynamic", slug = "" }
 );
 
-// 2. Your-council Section route for /your-council/{section}/...
-//    Requires at least one segment after your-council/
-//    The :regex constraint excludes reserved top-level segments (pdf, error)
-//    so they are never swallowed by the section catch-all.
 app.MapControllerRoute(
     name: string.Format("{0}_section", WebsiteConstants.SITE_CONTROLLER),
     pattern: WebsiteConstants.SITE_PATH + "/{section:regex(^(?!pdf$|error$).+)}/{**slug}",
