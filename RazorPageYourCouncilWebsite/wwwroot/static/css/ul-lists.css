@@ -31,6 +31,7 @@ ol.shade-black {
 /* ----- UNORDERED (bullets) ----- */
 ul.shade-black {
     list-style-type: disc;
+    margin-bottom:20px;
 }
 
 /* ----- ORDERED (numbers) ----- */
