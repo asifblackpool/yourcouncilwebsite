@@ -1,5 +1,5 @@
 {
     "port": 3001,
-    "enableFullUriRouting": true",
-     static_paths": ["Assets","Documents"]
+    "enableFullUriRouting": true,
+    "static_paths": ["Assets","Documents"]
 }
