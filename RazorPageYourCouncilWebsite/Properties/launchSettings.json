@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://localhost:5001/your-council/blackpool-co-production/areas-of-work/born-into-care",
+      "applicationUrl": "https://localhost:5001/Your-Council/Blackpool-Co-production/Assets/A5-Foldable-Overview-Map.pdf?proxytest=1",
       "sslPort": 44322
     }
   },
@@ -13,7 +13,7 @@
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/your-council/blackpool-co-production/areas-of-work/born-into-care",
+      "launchUrl": "https://localhost:5001/Your-Council/Blackpool-Co-production/Assets/A5-Foldable-Overview-Map.pdf?proxytest=1",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +21,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/your-council/blackpool-co-production/areas-of-work/born-into-care",
+      "launchUrl": "https://localhost:5001/your-council/Transparency-and-open-data/Documents/Spending/20212022/Transparency-spend-over-250-March-2022.csv?proxytest=1",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

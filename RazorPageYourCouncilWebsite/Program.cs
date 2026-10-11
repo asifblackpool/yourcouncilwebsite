@@ -92,6 +92,12 @@ builder.Services.AddControllersWithViews();
 
 // Required by PdfController to fetch files from Contensis storage
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("ClassicAssetProxy", client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(60);
+    // Classic backend serves files. We don't want to buffer, so no default
+    // accept header beyond what the request carries.
+});
 
 
 // ===== Razor Pages =====
@@ -154,6 +160,11 @@ else
 }
 
 app.UseStaticFiles();
+
+// Proxy asset requests to the Classic backend so PDFs, CSVs, Office
+// documents etc. are served correctly instead of being routed to the
+// Block renderer.
+app.UseMiddleware<ClassicAssetProxyMiddleware>();
 
 // Redirect root to your-council
 app.UseRewriter(new RewriteOptions().AddRedirect("^$", WebsiteConstants.SITE_PATH, app.Environment.IsDevelopment() ? 302 : 301));
