@@ -53,6 +53,40 @@ namespace RazorPageYourCouncilWebsite.Models.Helpers
                 viewModel.ModelTitle = viewModel.ConcreteModel.PageTitle;
             }
 
+            // ── Diagnostic: warn if every content-specific property is null ──
+            // This almost always means a field the model expects isn't in
+            // ZengentiClientAdapter.EntryFields (or isn't being returned by the
+            // API). It's the exact failure mode that caused blank pages after
+            // the memory fix narrowed the field list. Logged at warning level
+            // so it shows up without needing to attach a debugger.
+            //
+            // Remove once you've moved to per-content-type field selection.
+            if (concreteModel != null)
+            {
+                try
+                {
+                    var allNull = concreteModel.GetType().GetProperties()
+                        .Where(p => p.Name is not "Sys"
+                                 and not "VersionInfo"
+                                 and not "IsPublished")
+                        .All(p => p.GetValue(concreteModel) == null);
+
+                    if (allNull)
+                    {
+                        Console.WriteLine(
+                            $"[WARN] Entry deserialized to {concreteModel.GetType().Name} " +
+                            $"with all properties null. Content type: {contentTypeId}. " +
+                            $"Check EntryFields in ZengentiClientAdapter.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Never let the diagnostic itself take the page down.
+                    Console.WriteLine(
+                        $"[WARN] Null-property diagnostic failed for {contentTypeId}: {ex.Message}");
+                }
+            }
+
             viewModel.DataMessage = message;
             return viewModel;
         }
