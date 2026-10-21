@@ -53,11 +53,12 @@
                 <ul class="assets-list">
                     @foreach (var asset in Model.Assets)
                     {
+                        var linkTitle = !string.IsNullOrEmpty(asset.Title) ? asset.Title : !string.IsNullOrEmpty(asset.EntryTitle) ? asset.EntryTitle : System.IO.Path.GetFileName(asset.Uri);
                         if (!string.IsNullOrEmpty(asset.Uri) && !string.IsNullOrEmpty(asset.Title))
                         {
                             <li class="asset-item">
                                 <a href="@asset.Uri" class="asset-link" target="_blank" title="Download @asset.Title" download>
-                                    <span class="file-title">@asset.Title</span>
+                                    <span class="file-title">@linkTitle</span>
                                     <span class="asset-meta">
                                         @if (asset.FileSize > 0)
                                         {

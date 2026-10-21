@@ -21,25 +21,25 @@
     top: -1rem;
 }
 
-    .sidebar-title, nav.nav-contents > h3 {
-        color: var(--primary-base-color);
-        border-bottom: 2px solid #dee2e6;
-        padding-bottom: 0.75rem;
-        margin-bottom: 1.5rem;
-        font-size: 1.7rem;
-        font-weight: 600;
-        /* padding-top: 1rem; */
-        /* position: relative; */
-        /* top: -1rem; */
-    }
+.sidebar-title, nav.nav-contents > h3 {
+    color: var(--primary-base-color);
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.7rem;
+    font-weight: 600;
+    /* padding-top: 1rem; */
+    /* position: relative; */
+    /* top: -1rem; */
+}
 
 .sidebar-section {
     margin-bottom: 2rem;
 }
 
-    .sidebar-section:last-child {
-        margin-bottom: 0;
-    }
+.sidebar-section:last-child {
+    margin-bottom: 0;
+}
 
 .section-title {
     color: var(--primary-base-color);
@@ -136,17 +136,17 @@ nav.nav-contents > ul > li > a {
     transition: all 0.2s ease;
 }
 
-    .asset-link:hover {
-        background-color: lightgray;
-        color: white;
-        text-decoration: none;
-    }
+.asset-link:hover {
+    background-color: lightgray;
+    color: white;
+    text-decoration: none;
+}
 
 .file-title {
     display: block;
-    font-size: 1.6rem;
+    font-size: 1.1rem;
     font-weight: 400;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.75rem;
 }
 
 .asset-meta {
@@ -179,11 +179,11 @@ nav.nav-contents > ul > li > a {
     background-color: #f8f9fa;
 }
 
-    .asset-link:hover + .asset-description,
-    .asset-description:hover {
-        background-color: #e8f5e8;
-        color: #155724;
-    }
+.asset-link:hover + .asset-description,
+.asset-description:hover {
+    background-color: #e8f5e8;
+    color: #155724;
+}
 /* ===== END ASSETS STYLES ===== */
 
 /* Entries Styles */
@@ -201,10 +201,10 @@ nav.nav-contents > ul > li > a {
     transition: all 0.2s ease;
 }
 
-    .entry-item:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+.entry-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
 
 .entry-link {
     display: block;
@@ -214,9 +214,9 @@ nav.nav-contents > ul > li > a {
     transition: all 0.2s ease;
 }
 
-    .entry-link:hover {
-        text-decoration: none;
-    }
+.entry-link:hover {
+    text-decoration: none;
+}
 
 .entry-title {
     margin: 0 0 0.5rem 0;

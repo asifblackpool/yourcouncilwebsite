@@ -22,15 +22,20 @@ namespace RazorPageYourCouncilWebsite.Services
         /// Fields we actually need on every entry we resolve. Narrowing this
         /// list is the single biggest lever on payload size — the Contensis
         /// API only returns what you ask for.
+        ///
+        /// IMPORTANT: with linkDepth: 0, the API only returns fields requested
+        /// here. Any content type reachable as an _inlineEntry MUST have its
+        /// top-level field ids listed below, or its resolved entries come back
+        /// as { sys: {...} } only — which looks identical to an unresolved stub.
         /// </summary>
         private static readonly string[] EntryFields =
         {
             // ── Common page metadata ──
-            "pageTitle",                        // title field on standardWebpage*, websiteLandingPage*, websiteSubsectionLandingPage
-            "title",                            // legacy — no-op on current content types, kept for safety
-            "slug",                             // node metadata — no-op, kept for safety
-            "metaTitle",                        // standardWebpage, websiteLandingPageMain, websiteLandingPageMainCopy, websiteSubsectionLandingPage
-            "shortText1",                       // meta title on standardWebpageImages, standardWebpageCopy, standardWebpageImagesCopy
+            "pageTitle",
+            "title",
+            "slug",
+            "metaTitle",
+            "shortText1",
             "metaDescription",
             "pageAlias",
             "chatBotID",
@@ -39,32 +44,36 @@ namespace RazorPageYourCouncilWebsite.Services
 
             // ── Page content ──
             "canvas",
-            "mainContent",                      // legacy — no-op, kept for safety
-            "dataNavigationLink",               // standardWebpage additional info
-            "entry",                            // standardWebpage / landing page child entries
+            "mainContent",
+            "dataNavigationLink",
+            "entry",
 
             // ── Forms ──
-            "formID",                           // standardWebpageCopy (legacy form embed)
+            "formID",
 
             // ── Service announcements ──
-            "serviceAnnouncement",              // websiteSubsectionLandingPage, standardWebpageCopy, standardWebpageImagesCopy
+            "serviceAnnouncement",
 
             // ── Tile landing pages ──
-            "navigationTile",                   // websiteLandingPageMainCopy
-            "howManyTilesInARowDoYouWant",      // websiteLandingPageMainCopy
+            "navigationTile",
+            "howManyTilesInARowDoYouWant",
 
             // ── Assets and links ──
-            "asset",                            // standardWebpage, standardWebpageImages
-            "url",                              // standardWebpageImages
+            "asset",
+            "url",
 
             // ── Inline data entries: dataBGContactPanel ──
             "serviceName",
             "address",
-            "phoneNumber11",                    // yes, this is Phone number 1 — the CMS field id is odd
-            "phoneNumber1",                     // Phone number 2
-            "phoneNumber2",                     // Phone number 3
+            "phoneNumber11",
+            "phoneNumber1",
+            "phoneNumber2",
             "emailAddress",
-            "notes"
+            "notes",
+
+            // ── Inline data entries: accordions ──
+            "accordionName",
+            "accordionContent"
         };
 
         /// <summary>
@@ -73,13 +82,21 @@ namespace RazorPageYourCouncilWebsite.Services
         /// the tree further. Prevents a single pathological page from
         /// exhausting the container heap.
         /// </summary>
-        private const long MaxHydratedBytes = 2_000_000;   // 2 MB
+        private const long MaxHydratedBytes = 3_000_000;   // 3 MB
 
         /// <summary>
         /// Hard cap on how much a single resolved entry may contribute to the
         /// budget. Entries larger than this are logged and skipped.
         /// </summary>
         private const long MaxSingleEntryBytes = 500_000;  // 500 KB
+
+        /// <summary>
+        /// Maximum depth the canvas hydrator will recurse into nested inline
+        /// entries. 4 is sufficient for all known content types; raise only if
+        /// a new content type nests inline entries more deeply, and confirm
+        /// with the "genuinely unresolved" warning before doing so.
+        /// </summary>
+        private const int MaxHydrationDepth = 4;
 
         public ZengentiClientAdapter(
             ContensisClient contensisClient,
@@ -101,7 +118,6 @@ namespace RazorPageYourCouncilWebsite.Services
             if (_cache.TryGetValue(cacheKey, out CmsNode? cached) && cached != null)
                 return cached;
 
-            // Node fetch — we only need id/path/slug here.
             var node = await _contensisClient.Nodes.GetByPathAsync(
                 path, entryFields: null, entryLinkDepth: 0);
 
@@ -109,16 +125,11 @@ namespace RazorPageYourCouncilWebsite.Services
 
             var entryId = node.EntryId ?? node.Id;
 
-            // Fetch the entry with explicit field selection and no link
-            // resolution. This is what prevents the huge payloads that were
-            // blowing up deserialisation.
             var entry = await TryGetEntryAsync(entryId);
             if (entry == null) return null;
 
             var entryJson = JObject.FromObject(entry);
 
-            // Skip hydration entirely for entries without a canvas — no
-            // stubs to resolve, so no need to walk the tree.
             if (entryJson["canvas"] != null)
             {
                 async Task<JObject?> Resolver(Guid id) => await ResolveEntryAsync(id);
@@ -126,12 +137,35 @@ namespace RazorPageYourCouncilWebsite.Services
                 await CanvasHydrator.HydrateAsync(
                     entryJson,
                     Resolver,
-                    maxDepth: 3,
+                    maxDepth: MaxHydrationDepth,
                     maxResolvedBytes: MaxHydratedBytes);
+
+                // Diagnostic: only report stubs that are GENUINELY unresolved —
+                // i.e. a _inlineEntry whose value has nothing but a "sys" block.
+                // A successfully resolved entry for a non-page content type
+                // (e.g. accordion) has no "canvas" field, so we can't rely on
+                // that; instead we treat "value contains only sys" as the stub
+                // signature. This is the early-warning for a content type that
+                // has been added to the canvas without its fields being added
+                // to EntryFields.
+                var trulyUnresolved = entryJson.Descendants()
+                    .OfType<JObject>()
+                    .Where(o => o["type"]?.ToString() == "_inlineEntry")
+                    .Where(o => o["value"] is JObject v
+                             && v["sys"]?["id"] != null
+                             && v.Count == 1)   // only "sys" → still a stub
+                    .Select(o => o["value"]!["sys"]!["id"]!.ToString())
+                    .Distinct()
+                    .ToList();
+
+                if (trulyUnresolved.Count > 0)
+                {
+                    _logger.LogWarning(
+                        "Entry {EntryId} left {Count} inline stubs genuinely unresolved after hydration: {Ids}",
+                        entryId, trulyUnresolved.Count, string.Join(",", trulyUnresolved));
+                }
             }
 
-            // Serialise once. The string is what goes in the cache and what
-            // the view consumes — we don't keep the JObject around.
             var entryJsonString = entryJson.ToString(Formatting.None);
 
             var result = new CmsNode
@@ -139,9 +173,6 @@ namespace RazorPageYourCouncilWebsite.Services
                 EntryId = entryId,
                 Path = node.Path,
                 Slug = node.Slug,
-                // Title: pageTitle is the real title field on every content type
-                // we use. title is legacy. Fall back to the node display name
-                // if neither is populated.
                 Title = entry.Get<string>("pageTitle")
                      ?? entry.Get<string>("title")
                      ?? node.DisplayName,
@@ -175,8 +206,6 @@ namespace RazorPageYourCouncilWebsite.Services
             {
                 var childEntryId = child.EntryId ?? child.Id;
 
-                // For child listings we only need the title and slug, not the
-                // canvas. pageTitle is the real title field; title is legacy.
                 var entry = await TryGetEntryAsync(
                     childEntryId,
                     fields: new[] { "pageTitle", "title", "slug" });
@@ -238,15 +267,33 @@ namespace RazorPageYourCouncilWebsite.Services
         {
             try
             {
-                return await _contensisClient.Entries.GetAsync(
+                var effectiveFields = fields ?? EntryFields;
+                var entry = await _contensisClient.Entries.GetAsync(
                     entryId,
-                    fields: fields ?? EntryFields,
+                    fields: effectiveFields,
                     linkDepth: 0);
+
+                // Guard: if the entry came back with only a "sys" block, its
+                // content type has no fields listed in EntryFields. That entry
+                // will render as an empty/stub entry — surface it here rather
+                // than letting it fail silently four layers downstream.
+                if (entry != null)
+                {
+                    var probe = JObject.FromObject(entry);
+                    if (probe.Count == 1 && probe["sys"] != null)
+                    {
+                        _logger.LogWarning(
+                            "Entry {EntryId} ({ContentType}) returned only 'sys' — " +
+                            "its content type has no fields listed in EntryFields. " +
+                            "Add them or it will render as an empty/stub entry.",
+                            entryId, entry.ContentTypeId);
+                    }
+                }
+
+                return entry;
             }
             catch (OutOfMemoryException)
             {
-                // Don't try to build a fancy error message — the heap is
-                // already exhausted. Fail fast and let the request 500.
                 _logger.LogError(
                     "OutOfMemoryException resolving Contensis entry {EntryId}. " +
                     "Failing fast to avoid cascading failure.",
@@ -285,20 +332,21 @@ namespace RazorPageYourCouncilWebsite.Services
             var cacheKey = $"entry:{entryId}";
 
             if (_cache.TryGetValue(cacheKey, out string? cachedJson) && cachedJson != null)
-            {
-                // Cached as a string — parse into a fresh tree so the hydrator
-                // can safely mutate it without corrupting the cache.
                 return JObject.Parse(cachedJson);
-            }
 
             var entry = await TryGetEntryAsync(entryId);
-            if (entry == null) return null;
+            if (entry == null)
+            {
+                _logger.LogWarning(
+                    "ResolveEntryAsync: entry {EntryId} returned null " +
+                    "(see TryGetEntryAsync log for cause)",
+                    entryId);
+                return null;
+            }
 
             var json = JObject.FromObject(entry);
             var jsonString = json.ToString(Formatting.None);
 
-            // Guard against pathological entries: if a single resolved entry
-            // exceeds the per-entry cap, don't cache it — return it but log.
             if (jsonString.Length > MaxSingleEntryBytes)
             {
                 _logger.LogWarning(
